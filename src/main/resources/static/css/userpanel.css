@@ -1,0 +1,158 @@
+@import url('main.css');
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--color-bg);
+    padding: var(--space-xl) 0;
+    margin: 0;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    padding: 0 var(--space-sm);
+    max-width: 800px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 800px) {
+    .container {
+        flex-direction: column;
+    }
+}
+
+h1,
+h2 {
+    margin-top: 0;
+    /*margin-bottom: var(--space-sm);*/
+    margin-bottom: 0 !important;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--color-heading);
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+.panelOption {
+    display: block;
+    background: #fff;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    width: 350px;
+    max-width: auto;
+    margin: 0 auto;
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.3s ease;
+}
+
+.panelOption:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.panelOption.products {
+    min-width: 400px;
+}
+
+label {
+    display: block;
+    margin-top: var(--space-sm);
+    text-align: left;
+    color: var(--color-subheading);
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    box-sizing: border-box;
+    margin-top: 5px;
+    border-radius: var(--radius-sm);
+    border: 1px solid #ccc;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.accept-button {
+    margin-top: var(--space-md);
+    margin-bottom: var(--space-sm);
+    padding: 0.5rem 1rem;
+    font-size: 1.25rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    width: 100%;
+    color: #fff;
+    background-color: var(--color-primary);
+    transition: background 0.2s ease;
+}
+
+.accept-button:hover {
+    background: var(--color-primary-hover);
+}
+
+.accept-button:active {
+    background: var(--color-primary-active);
+}
+
+.add-to-cart-btn {
+    line-height: 1 !important;
+    padding: 5px 5px !important;
+    width: auto !important;
+}
+
+/* Collapsible form using max-height transition */
+.collapsibleForm {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+    background: #fff;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 0 var(--space-md);
+}
+
+/* Hover shadow for form */
+.panelOption:hover .collapsibleForm {
+    box-shadow: var(--shadow-md);
+}
+
+/* Smooth arrow rotation */
+#passwordArrow,
+#ordersArrow {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+#passwordPanel.open #passwordArrow {
+    transform: rotate(180deg);
+}
+
+#ordersPanel.open #ordersArrow {
+    transform: rotate(180deg);
+}
+
+/* Form input styles matching main.css */
+.collapsibleForm input[type="password"] {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    margin-top: var(--space-xs);
+}
+
+.orderRow:hover {
+    background-color: #f0f0f0;
+}
+

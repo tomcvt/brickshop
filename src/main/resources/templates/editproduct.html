@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Product</title>
+    <link rel="stylesheet" href="/css/editproduct.css">
+</head>
+
+<body>
+    <div id="product-data" th:data-public-id="${publicId}" style="display:none;"></div>
+    <main class="content">
+        <button id="edit-product-btn" class="btn btn-secondary">Edit Product</button>
+        <section class="card product-container">
+            <div id="product-details" class="product-info">
+                <h2 id="product-name" class="product-title"></h2>
+                <p id="product-description" class="product-description"></p>
+                <div class="field product-field">
+                    <strong>Price:</strong>
+                    <span id="product-price" class="price"></span>
+                </div>
+                <div class="field product-field">
+                    <strong>Stock:</strong>
+                    <span id="product-stock" class="stock"></span>
+                </div>
+            </div>
+            <div id="product-edit-box" class="edit-box" style="display:none;">
+                <div class="field product-field">
+                    <strong>Name:</strong>
+                    <input type="text" id="edit-name" name="name" class="input-edit" />
+                </div>
+                <div class="field product-field">
+                    <strong>Description:</strong>
+                    <textarea id="edit-description" name="description" class="input-edit" rows="4"></textarea>
+                </div>
+                <div class="field product-field">
+                    <strong>Price:</strong>
+                    <input type="number" id="edit-price" name="price" class="input-edit" />
+                </div>
+                <div class="field product-field">
+                    <strong>Stock:</strong>
+                    <input type="number" id="edit-stock" name="stock" class="input-edit" />
+                </div>
+            </div>
+            <div id="image-gallery-section">
+                <h2 class="center">Images</h2>
+                <div id="image-gallery" class="gallery-horizontal"></div>
+                <button id="save-order" class="btn btn-primary">Save Image Order</button>
+            </div>
+        </section>
+        <section id="categories-section" class="card categories-section">
+            <h2 class="center">Categories</h2>
+            <div id="categories-list" class="categories-list"></div>
+            <div class="add-category">
+                <input type="text" id="new-category" placeholder="New Category" />
+                <button id="add-category-btn" class="btn btn-secondary">Add Category</button>
+            </div>
+        </section>
+        <section id="image-upload-section" class="card upload-section">
+            <h2 class="center">Upload New Image</h2>
+            <form id="image-upload-form">
+                <input type="file" id="image-file" name="imageFile" accept="image/*" required>
+                <button type="submit" class="btn btn-primary">Upload Image</button>
+            </form>
+            <div id="upload-message" class="message"></div>
+        </section>
+    </main>
+    <script src="/js/editproduct.js"></script>
+</body>
+
+</html>

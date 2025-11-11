@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Your Orders</title>
+	<link rel="stylesheet" th:href="@{/css/main.css}" href="/css/main.css">
+	<style>
+		/* Extra style for clickable order row */
+		
+	</style>
+</head>
+<body>
+<div class="container">
+	<h2>Your Orders</h2>
+	<div id="orders-list">
+		<!-- Orders will be populated here -->
+	</div>
+	<div id="no-orders" class="center" style="display:none; color: var(--color-subheading); margin-top: 2rem;">No orders found.</div>
+</div>
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		fetch('/api/user/orders/summaries')
+			.then(res => {
+				if (!res.ok) throw new Error('Failed to fetch orders');
+				return res.json();
+			})
+			.then(data => {
+				const ordersList = document.getElementById('orders-list');
+				if (!data || data.length === 0) {
+					document.getElementById('no-orders').style.display = '';
+					return;
+				}
+				data.forEach(order => {
+					const row = document.createElement('div');
+					row.className = 'field click-row';
+					row.onclick = () => window.location.href = `/user/orders/${order.orderId}`;
+
+					// Order cells
+					row.innerHTML = `
+						<div class="cell">
+							<div class="cell-label">Order #</div>
+							<div class="cell-value">${order.orderId}</div>
+						</div>
+						<div class="cell">
+							<div class="cell-label">Status</div>
+							<div class="cell-value">${order.status}</div>
+						</div>
+						<div class="cell">
+							<div class="cell-label">Payment</div>
+							<div class="cell-value">${order.paymentMethod}</div>
+						</div>
+						<div class="cell">
+							<div class="cell-label">Total</div>
+							<div class="cell-value">${order.totalAmount} zł</div>
+						</div>
+					`;
+					ordersList.appendChild(row);
+				});
+			})
+			.catch(() => {
+				document.getElementById('no-orders').textContent = 'Could not load orders.';
+				document.getElementById('no-orders').style.display = '';
+			});
+	});
+</script>
+</body>
+</html>

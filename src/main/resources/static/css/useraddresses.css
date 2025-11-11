@@ -1,0 +1,28 @@
+.address-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 400px;
+        margin: 20px auto;
+    }
+
+    .address-card {
+        background: #fff;
+        padding: 10px 15px;
+        border-radius: 0.25rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-align: left;
+        font-size: 0.9rem;
+        line-height: 1.3;
+    }
+
+    .address-card .name {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .address-card .street,
+    .address-card .city-country,
+    .address-card .phone {
+        margin-bottom: 3px;
+    }

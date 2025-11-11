@@ -1,0 +1,114 @@
+@import url(main.css);
+
+body {
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #eee;
+    padding: 40px 0;
+    margin: 0;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 0 15px;
+    max-width: 1200px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 800px) {
+    .container {
+        flex-direction: column;
+    }
+}
+
+label,
+select,
+button {
+    display: block;
+    margin-top: 1rem;
+}
+
+#result {
+    margin-top: 2rem;
+    font-weight: bold;
+}
+
+/* Cart */
+
+#cart {
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 0.25rem;
+    max-width: 800px;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+#cart h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+#cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cart-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 0.25rem;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+}
+
+.cart-row .cart-cell {
+    margin-left: 15px;
+    min-width: 80px;
+    text-align: right;
+}
+
+.cart-row a {
+    font-weight: bold;
+    color: #145222;
+    text-decoration: none;
+}
+
+.cart-row a:hover {
+    text-decoration: underline;
+}
+
+#cart-total {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: right;
+}
+
+@media (max-width: 600px) {
+    .cart-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cart-row .cart-cell {
+        margin-left: 0;
+        margin-top: 5px;
+        text-align: left;
+    }
+
+    #cart-total {
+        text-align: left;
+    }
+}

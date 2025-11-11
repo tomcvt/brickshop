@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Order Details</title>
+    <link rel="stylesheet" href="/css/order.css">
+</head>
+
+<body>
+    <div id="orderId" hidden th:attr="data-order-id=${orderId}"></div>
+    <div class="container">
+        <h1>Your Order</h1>
+
+        <div id="order-container" class="order-card">
+            <p>Loading order details...</p>
+        </div>
+
+        <div id="order-error" class="error-message"></div>
+
+        <button onclick="window.location.href='/user/orders'" class="back-btn">
+            Back to Orders
+        </button>
+    </div>
+
+    <div class="container">
+        <div id="cart">
+            <h2>Your Cart</h2>
+            <div id="cart-items"></div>
+            <div id="cart-total"></div>
+        </div>
+    </div>
+
+    <script type="module" src="/js/orderdetails.js"></script>
+</body>
+
+</html>

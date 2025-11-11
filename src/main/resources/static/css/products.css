@@ -1,0 +1,116 @@
+/* Import main CSS */
+@import url('main.css');
+
+/* Override page background + padding */
+body {
+    background-color: #eee;
+    padding: 40px 0;
+    text-align: center;
+    margin-top: 60px;
+}
+
+/* Container layout for subpage */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 0 15px;
+    max-width: 1200px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 800px) {
+    .container {
+        flex-direction: column;
+    }
+}
+
+/* Product card */
+.product-card {
+    background: #fff;
+    padding: 15px;
+    margin: 10px;
+    border-radius: var(--radius-sm);
+    width: 250px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.product-card img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.product-card h2 {
+    font-size: 1.1rem;
+    margin: 5px 0;
+    color: var(--color-heading);
+}
+
+.product-card p {
+    margin: 2px 0;
+    color: var(--color-text);
+}
+
+/* Buttons in product card use main.css styles */
+.product-card button {
+    margin-top: 10px;
+    width: auto; /* override full-width from main.css */
+}
+
+.search-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff; /* Change to match site theme */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 10px 0;
+}
+
+.search-bar .contener {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 20px;
+}
+
+.search-bar input[type="text"] {
+    flex: 1;
+    max-width: 400px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.search-bar .search-button {
+    padding: 8px 16px;
+    max-width: 100px;
+    background-color: #0078d7;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.search-bar .search-button:hover {
+    background-color: #005fa3;
+}

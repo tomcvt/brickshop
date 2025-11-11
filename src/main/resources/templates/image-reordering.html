@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Details</title>
+    <style>
+        /* Part 1: Product details */
+        #product-details {
+            margin: 20px 0;
+        }
+
+        /* Part 2: Image gallery */
+        #image-gallery {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        .draggable-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            cursor: grab;
+            transition: transform 0.2s ease;
+        }
+
+        .dragging {
+            opacity: 0.5;
+            transform: scale(1.1);
+        }
+
+        .placeholder {
+            border: 2px dashed #aaa;
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div id="product-data" th:data-product-id="${productId}" style="display:none;"></div>
+
+    <div id="product-details"></div>
+    <div id="image-gallery"></div>
+    <button id="save-order">Save Image Order</button>
+
+    <script src="/js/image-reordering.js"></script>
+</body>
+</html>

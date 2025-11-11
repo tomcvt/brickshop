@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/cart-details.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Your Cart</h1>
+        <div id="cart-items" class="cart-details-list"></div>
+        <div id="cart-total" class="field" style="justify-content: flex-end; font-weight: bold;"></div>
+        <div class="rows">
+            <button class="btn btn-secondary" onclick="window.location.href='/checkout'">Proceed to checkout</button>
+        </div>
+    </div>
+    <script>
+        async function fetchCart() {
+            const res = await fetch('/api/cart/cartwithtotal');
+            if (!res.ok) {
+                document.getElementById('cart-items').innerHTML = '<div class="alert alert-danger">Failed to load cart.</div>';
+                return;
+            }
+            const cart = await res.json();
+            renderCart(cart);
+        }
+
+        function renderCart(cart) {
+            const itemsDiv = document.getElementById('cart-items');
+            itemsDiv.innerHTML = '';
+            if (!cart.items || cart.items.length === 0) {
+                itemsDiv.innerHTML = '<div class="alert">Your cart is empty.</div>';
+                document.getElementById('cart-total').innerText = '';
+                return;
+            }
+            cart.items.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'field';
+                row.style.alignItems = 'center';
+                row.style.gap = '16px';
+
+                // Thumbnail
+                const thumb = document.createElement('img');
+                thumb.className = 'cart-thumb';
+                thumb.src = item.thumbnailUuid ? `/outsideimages/${item.thumbnailUuid}.jpg` : '/no-image.jpg';
+                thumb.alt = 'Product image';
+                row.appendChild(thumb);
+
+                // Name (link)
+                const nameLink = document.createElement('a');
+                nameLink.className = 'cart-row-link';
+                nameLink.href = `/products/${item.productPublicId}`;
+                nameLink.innerText = item.productName;
+                nameLink.target = '_blank';
+                row.appendChild(nameLink);
+
+                // Quantity
+                const qty = document.createElement('span');
+                qty.innerText = `Qty: ${item.quantity}`;
+                qty.style.marginLeft = '16px';
+                row.appendChild(qty);
+
+                // Price (quantity * price)
+                const price = document.createElement('span');
+                const total = (item.price * item.quantity).toFixed(2);
+                price.innerText = `Subtotal: $${total}`;
+                price.style.marginLeft = '16px';
+                row.appendChild(price);
+
+                // Remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'cart-row-x';
+                removeBtn.innerText = '×';
+                removeBtn.title = 'Remove from cart';
+                removeBtn.onclick = async () => {
+                    await fetch(`/api/cart/remove/${item.cartItemId}`, { method: 'POST' });
+                    fetchCart();
+                };
+                row.appendChild(removeBtn);
+
+                itemsDiv.appendChild(row);
+            });
+            document.getElementById('cart-total').innerText = `Total: $${cart.totalPrice}`;
+        }
+
+        fetchCart();
+    </script>
+</body>
+</html>

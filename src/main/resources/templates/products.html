@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Product Catalog</title>
+    <link rel="stylesheet" href="/css/products.css">
+</head>
+
+<body>
+    <div id="searchBar" class="search-bar">
+        <div class="contener">
+            <input type="text" id="searchKeyword" placeholder="Enter keyword" />
+            <button id="searchButton" class="accept-button search-button">Search</button>
+        </div>
+    </div>
+
+    <button id="cart-toggle-btn">🛒</button>
+    <div id="cart-panel">
+        <div id="cart-header">Your Cart</div>
+        <div id="cart-items"></div>
+        <div id="cart-message"></div>
+        <div id="cart-total"></div>
+        <button id="checkout-btn" class="btn btn-primary">Proceed to Checkout</button>
+    </div>
+
+    <h1>Product Catalog</h1>
+    <div class="container" id="productList"></div>
+
+    <script type="module" src="/js/products.js"></script>
+</body>
+
+</html>

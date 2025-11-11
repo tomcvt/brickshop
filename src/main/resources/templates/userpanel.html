@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel - Add Product</title>
+    <link rel="stylesheet" href="/css/userpanel.css" />
+</head>
+
+<body>
+    <button id="cart-toggle-btn">🛒</button>
+    <div id="cart-panel">
+        <div id="cart-header">Your Cart</div>
+        <div id="cart-items"></div>
+        <div id="cart-message"></div>
+        <div id="cart-total"></div>
+        <button id="checkout-btn" class="btn btn-primary">Proceed to Checkout</button>
+    </div>
+    <h1 th:text="${username} + ' Panel'">User Panel</h1>
+    <div class="container">
+        <div class="panelOption products">
+            <h2>Existing Products</h2>
+            <div id="productList"></div>
+            <div class="message" id="messageProducts"></div>
+        </div>
+        <div class="panelOption" id="passwordPanel">
+            <h2 id="togglePasswordForm" style="cursor:pointer;">
+                Change User Password <span id="passwordArrow">⯆</span>
+            </h2>
+
+            <form id="passwordForm" class="collapsibleForm">
+                <label for="oldPassword">Old Password</label>
+                <input type="password" id="oldPassword" name="oldPassword" required>
+
+                <label for="newPassword">New Password</label>
+                <input type="password" id="newPassword" name="newPassword" required>
+
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+
+                <button class="accept-button" type="submit">Update Password</button>
+            </form>
+
+            <div class="alert" id="messagePassword" style="display: none;"></div>
+        </div>
+        <div class="panelOption" id="ordersPanel">
+            <h2 id="toggleOrdersPanel" style="cursor:pointer;">
+                My Orders <span id="ordersArrow">⯆</span>
+            </h2>
+
+            <div id="ordersForm" class="collapsibleForm"></div>
+
+            <div class="alert" id="messageOrders" style="display: none;"></div>
+        </div>
+    </div>
+    <script type="module" src="/js/userpanel.js"></script>
+</body>
+
+</html>

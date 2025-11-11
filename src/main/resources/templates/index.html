@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Home Page</title>
+    <link rel="stylesheet" href="/css/main.css" />
+</head>
+
+<body>
+    <h1 th:text="'Welcome ' + ${username}">Placeholder</h1>
+    <div class="content">
+        <div th:if="${username} == 'Guest'" class="menu-div rows">
+            <a th:href="@{/login}"><button class="btn btn-primary">Login</button></a>
+            <a th:href="@{/registration}"><button class="btn btn-primary">Register</button></a>
+        </div>
+        <div th:if="${username} == 'admin'">
+            <h2>Admin Menu</h2>
+            <div class="menu-div rows">
+                <a class="wide" th:href="@{/admin}"><button class="btn btn-primary wide">Admin Dashboard</button></a>
+                <a class="wide" th:href="@{/admin/products}"><button class="btn btn-primary wide">Manage
+                        Products</button></a>
+                <a class="wide" th:href="@{/admin/orders}"><button class="btn btn-primary wide">Manage
+                        Orders</button></a>
+                <a class="wide" th:href="@{/admin/users}"><button class="btn btn-primary wide">Manage Users</button></a>
+            </div>
+        </div>
+        <div class="menu-div rows">
+            <a class="wide" th:href="@{/products}"><button class="btn btn-primary wide">View Products</button></a>
+            <a class="wide" th:href="@{/cart}"><button class="btn btn-primary wide">View Cart</button></a>
+            <a class="wide" th:href="@{/user/orders}"><button class="btn btn-primary wide">View Orders</button></a>
+            <a class="wide" th:href="@{/user}"><button class="btn btn-primary wide">Profile</button></a>
+        </div>
+        <form th:action="@{/logout}" method="post">
+            <button class="btn btn-secondary" type="submit">Logout</button>
+        </form>
+    </div>
+</body>
+
+</html>

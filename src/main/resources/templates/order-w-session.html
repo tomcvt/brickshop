@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Order Details</title>
+    <link rel="stylesheet" href="/css/order.css">
+</head>
+
+<body>
+    <div id="sessionId" hidden th:attr="data-session-id=${sessionId}"></div>
+    <div class="container">
+        <h1>Your Order</h1>
+
+        <div id="order-container" class="order-card">
+            <p>Loading order details...</p>
+        </div>
+
+        <div id="order-error" class="error-message"></div>
+
+        <div id="paypal-button-container"></div>
+
+        <button onclick="window.location.href='/user'" class="back-btn">
+            Back to User Panel
+        </button>
+    </div>
+
+    <script type="module" src="/js/order-w-session.js"></script>
+</body>
+
+</html>

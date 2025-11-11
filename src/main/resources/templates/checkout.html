@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout Page</title>
+    <link rel="stylesheet" href="/css/checkout.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Checkout</h1>
+        <div id="cart">
+            <h2>Your Cart</h2>
+            <div id="cart-items"></div>
+            <div id="cart-total"></div>
+        </div>
+
+        <div id="paymentSection" class="field">
+            <label for="paymentSelect"><strong>Payment Method:</strong></label>
+            <select id="paymentSelect" class="styled-select">
+                <option value="1">Credit Card //not working</option>
+                <option value="2">PayPal</option>
+                <option value="3">Bank Transfer //not working</option>
+            </select>
+        </div>
+
+        <div id="addressSection" class="field" style="display:none; flex-direction: column; align-items: flex-start;">
+            <label for="addressSelect"><strong>Shipping Address:</strong></label>
+            <select id="addressSelect" class="styled-select"></select>
+            <button id="placeOrderBtn" class="btn btn-primary wide" style="margin-top: 16px;">Place Order</button>
+        </div>
+
+        <div id="result" class="field"></div>
+    </div>
+
+    <script src="/js/checkout.js"></script>
+</body>
+
+</html>
