@@ -1,5 +1,6 @@
 package com.tomcvt.brickshop.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.tomcvt.brickshop.dto.ShipmentDto;
@@ -27,10 +28,10 @@ public class Shipment {
     private String trackingNumber;
     private String addressString;
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User packedBy;
     @OneToMany(mappedBy = "shipment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ShipmentItem> items;
+    private List<ShipmentItem> items = new ArrayList<>();
 
     public Shipment() {
     }

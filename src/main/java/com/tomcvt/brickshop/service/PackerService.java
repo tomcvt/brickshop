@@ -19,7 +19,7 @@ public class PackerService {
     }
 
     public List<ShipmentDto> getShipmentsToPack(int page, int size) {
-        List<Long> shipmentIds = shipmentRepository.findShipmentIdsByStatus(ShipmentStatus.PENDING, Pageable.ofSize(size).withPage(page));
+        List<Long> shipmentIds = shipmentRepository.findIdsByStatus(ShipmentStatus.PENDING, Pageable.ofSize(size).withPage(page));
         List<Shipment> shipments = shipmentRepository.findShipmentsWithItemsByIds(shipmentIds);
         return shipments.stream()
                 .map(Shipment::toShipmentDto)

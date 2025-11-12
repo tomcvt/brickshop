@@ -34,7 +34,7 @@ public class ProductApiController {
         @RequestParam(required = false) String query,
         @RequestParam(required = false) List<String> category,
         @RequestParam(required = false, defaultValue = "0") Integer page,
-        @RequestParam(required = false, defaultValue = "100") Integer size
+        @RequestParam(required = false, defaultValue = "20") Integer size
     ) {
         if (query == null && (category == null || category.isEmpty())) {
             return productService.getProductSummaries(page, size);

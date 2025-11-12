@@ -1,6 +1,7 @@
 package com.tomcvt.brickshop.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +48,7 @@ public class ShipmentCreator {
             shipmentItem.setQuantity(cartItem.getQuantity());
             shipmentItem.setStatus(ShipmentItemStatus.PENDING);
             return shipmentItem;
-        }).toList();
+        }).collect(Collectors.toList());
         shipmentItemRepository.saveAll(shipmentItems);
         savedShipment.setItems(shipmentItems);
         return shipmentRepository.save(savedShipment);
