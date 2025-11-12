@@ -43,16 +43,16 @@ public class PackerApiController {
             @AuthenticationPrincipal WrapUserDetails userDetails,
             @RequestParam(name = "orderId") Long orderId
     ) {
-        packingService.startPackingShipment(orderId, userDetails.getUser());
-        return ResponseEntity.ok().body("Started packing shipment " + orderId);
+        ShipmentDto dto = packingService.startPackingShipment(orderId, userDetails.getUser());
+        return ResponseEntity.ok().body(dto);
     }
 
     @PostMapping("/pack-all")
     public ResponseEntity<?> packAllItemsInOrder(
             @RequestParam(name = "orderId") Long orderId
     ) {
-        packingService.packAllItemsInShipment(orderId);
-        return ResponseEntity.ok().body("All items packed for shipment " + orderId);
+        ShipmentDto dto = packingService.packAllItemsInShipment(orderId);
+        return ResponseEntity.ok().body(dto);
     }
 
     @PostMapping("/pack")
@@ -60,8 +60,8 @@ public class PackerApiController {
             @RequestParam(name = "orderId") Long orderId,
             @RequestParam(name = "productId") Long productId
     ) {
-        packingService.packItemInShipment(orderId, productId);
-        return ResponseEntity.ok().body("Item " + productId + " packed for shipment " + orderId);
+        ShipmentDto dto = packingService.packItemInShipment(orderId, productId);
+        return ResponseEntity.ok().body(dto);
     }
     
 }

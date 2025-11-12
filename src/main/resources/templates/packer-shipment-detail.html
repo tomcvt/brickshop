@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Packer Shipment Detail</title>
+	<style>
+		table { border-collapse: collapse; width: 100%; }
+		th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+		th { background: #f0f0f0; }
+		button { margin: 2px 0; }
+	</style>
+</head>
+<body>
+   <h1>Packer Shipment Detail</h1>
+   <button id="start-packing-btn" onclick="startPacking()">Start Packing</button>
+   <div id="shipment-info">
+	   Loading shipment data...
+   </div>
+   <script>
+		// Get orderId from URL: /packer/{orderId}
+		function getOrderIdFromUrl() {
+			const match = window.location.pathname.match(/packer\/(\d+)/);
+			return match ? match[1] : null;
+		}
+
+		const orderId = getOrderIdFromUrl();
+		const apiBase = '/api/packer';
+
+		async function fetchShipment() {
+			if (!orderId) {
+				document.getElementById('shipment-info').innerText = 'Order ID not found in URL.';
+				return;
+			}
+			const resp = await fetch(`${apiBase}/with-order/${orderId}`);
+			if (!resp.ok) {
+				document.getElementById('shipment-info').innerText = 'Failed to load shipment data.';
+				return;
+			}
+			const shipment = await resp.json();
+			renderShipment(shipment);
+		}
+
+
+		   async function startPacking() {
+			   const resp = await fetch(`${apiBase}/start-packing?orderId=${orderId}`, { method: 'POST' });
+			   if (resp.ok) {
+				   const shipment = await resp.json();
+				   renderShipment(shipment);
+			   }
+		   }
+
+		   async function packAll() {
+			   const resp = await fetch(`${apiBase}/pack-all?orderId=${orderId}`, { method: 'POST' });
+			   if (resp.ok) {
+				   const shipment = await resp.json();
+				   renderShipment(shipment);
+			   }
+		   }
+
+		async function packItem(productId) {
+			const resp = await fetch(`${apiBase}/pack?orderId=${orderId}&productId=${productId}`, { method: 'POST' });
+			if (resp.ok) {
+				const shipment = await resp.json();
+				renderShipment(shipment);
+			}
+		}
+
+		function renderShipment(shipment) {
+			let html = `<h2>Shipment #${shipment.shipmentId}</h2>`;
+			html += `<p><strong>Order ID:</strong> ${shipment.orderId}</p>`;
+			html += `<p><strong>Tracking Number:</strong> ${shipment.trackingNumber || '-'}</p>`;
+			html += `<p><strong>Address:</strong> ${shipment.addressString}</p>`;
+			html += `<p><strong>Packed By:</strong> ${shipment.packedByUsername || '-'}</p>`;
+			html += `<p><strong>Status:</strong> ${shipment.status}</p>`;
+			html += `<button onclick="packAll()">Pack All Items</button>`;
+			html += `<h3>Items</h3>`;
+			html += `<table><thead><tr><th>Product ID</th><th>Name</th><th>Quantity</th><th>Status</th><th>Action</th></tr></thead><tbody>`;
+			for (const item of shipment.items) {
+				html += `<tr>`;
+				html += `<td>${item.productId}</td>`;
+				html += `<td>${item.productName}</td>`;
+				html += `<td>${item.quantity}</td>`;
+				html += `<td>${item.status}</td>`;
+				html += `<td><button onclick="packItem(${item.productId})">Pack</button></td>`;
+				html += `</tr>`;
+			}
+			html += `</tbody></table>`;
+			document.getElementById('shipment-info').innerHTML = html;
+		}
+
+		// Initial load
+		fetchShipment();
+	</script>
+</body>
+</html>
