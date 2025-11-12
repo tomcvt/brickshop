@@ -2,6 +2,7 @@ package com.tomcvt.brickshop.model;
 
 import java.util.UUID;
 
+import com.tomcvt.brickshop.dto.ShipmentItemDto;
 import com.tomcvt.brickshop.enums.ShipmentItemStatus;
 
 import jakarta.persistence.*;
@@ -49,6 +50,21 @@ public class ShipmentItem {
     }
     public void setShipment(Shipment shipment) {
         this.shipment = shipment;
+    }
+    public ShipmentItemStatus getStatus() {
+        return status;
+    }
+    public void setStatus(ShipmentItemStatus status) {
+        this.status = status;
+    }
+
+    public ShipmentItemDto toDto() {
+        return new ShipmentItemDto(
+            this.product.getId(),
+            this.product.getName(),
+            this.quantity,
+            this.status
+        );
     }
 
 }

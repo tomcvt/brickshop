@@ -2,6 +2,8 @@ package com.tomcvt.brickshop.model;
 
 import java.util.List;
 
+import com.tomcvt.brickshop.dto.ShipmentDto;
+import com.tomcvt.brickshop.dto.ShipmentItemDto;
 import com.tomcvt.brickshop.enums.ShipmentStatus;
 
 import jakarta.persistence.*;
@@ -23,6 +25,7 @@ public class Shipment {
     @Column(name = "tracking_number", nullable = true)
     //TODO: implement tracking number assignment
     private String trackingNumber;
+    private String addressString;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User packedBy;
@@ -55,6 +58,12 @@ public class Shipment {
     public void setTrackingNumber(String trackingNumber) {
         this.trackingNumber = trackingNumber;
     }
+    public String getAddressString() {
+        return addressString;
+    }
+    public void setAddressString(String addressString) {
+        this.addressString = addressString;
+    }
     public User getPackedBy() {
         return packedBy;
     }
@@ -66,5 +75,20 @@ public class Shipment {
     }
     public void setItems(List<ShipmentItem> items) {
         this.items = items;
+    }
+
+    public ShipmentDto toShipmentDto() {
+        List<ShipmentItemDto> itemDtos = this.items.stream()
+                .map(ShipmentItem::toDto)
+                .toList();
+        return new ShipmentDto(
+                this.id,
+                this.order.getId(),
+                this.trackingNumber,
+                this.addressString,
+                this.packedBy != null ? this.packedBy.getUsername() : null,
+                this.status,
+                itemDtos
+        );
     }
 }

@@ -31,6 +31,14 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     WHERE c.userId = :userId AND c.active = TRUE
     """)
     Optional<Cart> findHydratedActiveCartByUserId(@Param("userId") Long userId);
+    @Query("""
+    SELECT DISTINCT c
+    FROM Cart c
+    LEFT JOIN FETCH c.items ci
+    LEFT JOIN FETCH ci.product p
+    WHERE c.id = :id
+    """)
+    Optional<Cart> findHydratedCartById(@Param("id") Long id);
 
     @Query("""
     SELECT DISTINCT c

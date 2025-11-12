@@ -25,6 +25,7 @@ public class CheckoutSessionService {
     private final CartRepository cartRepository;
     private final CartService cartService;
     private final OrderCreator orderCreator;
+    private final ShipmentCreator shipmentCreator;
 
     public CheckoutSessionService(
             CheckoutSessionRepository checkoutSessionRepository,
@@ -32,13 +33,15 @@ public class CheckoutSessionService {
             ShipmentAddressRepository shipmentAddressRepository,
             OrderRepository orderRepository,
             CartService cartService,
-            OrderCreator orderCreator) {
+            OrderCreator orderCreator, 
+            ShipmentCreator shipmentCreator) {
         this.checkoutSessionRepository = checkoutSessionRepository;
         this.cartRepository = cartRepository;
         this.shipmentAddressRepository = shipmentAddressRepository;
         this.orderRepository = orderRepository;
         this.cartService = cartService;
         this.orderCreator = orderCreator;
+        this.shipmentCreator = shipmentCreator;
     }
 
     @Transactional
@@ -102,6 +105,7 @@ public class CheckoutSessionService {
                 continue;
             }
         }
+        shipmentCreator.createShipmentForOrder(newOrder);
         return newOrder;
     }
 }

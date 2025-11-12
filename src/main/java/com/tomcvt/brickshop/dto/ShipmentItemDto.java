@@ -1,10 +1,12 @@
 package com.tomcvt.brickshop.dto;
 
+import com.tomcvt.brickshop.enums.ShipmentItemStatus;
+
 public record ShipmentItemDto(
-    String productId,
+    Long productId,
     String productName,
     Integer quantity,
-    String status
+    ShipmentItemStatus status
 ) {
     
 }
