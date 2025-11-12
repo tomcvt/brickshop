@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tomcvt.brickshop.dto.ShipmentDto;
+import com.tomcvt.brickshop.model.WrapUserDetails;
 import com.tomcvt.brickshop.service.PackingService;
 
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,12 @@ public class PackerApiController {
             @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
         List<ShipmentDto> shipments = packingService.getShipmentsToPack(page, size);
         return ResponseEntity.ok().body(shipments);
+    }
+    @GetMapping("/with-order/{orderId}")
+    public ResponseEntity<?> getShipmentWithOrder(
+            @PathVariable Long orderId) {
+        ShipmentDto shipment = packingService.getShipmentHydratedByOrderOrderId(orderId);
+        return ResponseEntity.ok().body(shipment);
     }
     @PostMapping("/start-packing")
     public ResponseEntity<?> startPackingShipment(

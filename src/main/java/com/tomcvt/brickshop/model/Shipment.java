@@ -3,6 +3,8 @@ package com.tomcvt.brickshop.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.BatchSize;
+
 import com.tomcvt.brickshop.dto.ShipmentDto;
 import com.tomcvt.brickshop.dto.ShipmentItemDto;
 import com.tomcvt.brickshop.enums.ShipmentStatus;
@@ -10,6 +12,7 @@ import com.tomcvt.brickshop.enums.ShipmentStatus;
 import jakarta.persistence.*;
 
 @Entity
+@BatchSize(size = 20)
 @Table(name = "shipments", indexes = {
     @Index(name = "idx_shipment_order_id", columnList = "order_id"),
     @Index(name = "idx_shipment_status", columnList = "status")
@@ -19,13 +22,14 @@ public class Shipment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_order_id", nullable = false, referencedColumnName = "order_id")
     private Order order;
     @Enumerated(EnumType.STRING)
     private ShipmentStatus status;
     @Column(name = "tracking_number", nullable = true)
-    //TODO: implement tracking number assignment
     private String trackingNumber;
+    //TODO: implement tracking number assignment logic
+    @Column(name = "address_string", nullable = false, length = 1000)
     private String addressString;
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -47,6 +51,7 @@ public class Shipment {
     public void setOrder(Order order) {
         this.order = order;
     }
+
     public ShipmentStatus getStatus() {
         return status;
     }
@@ -84,7 +89,7 @@ public class Shipment {
                 .toList();
         return new ShipmentDto(
                 this.id,
-                this.order.getId(),
+                this.order.getOrderId(),
                 this.trackingNumber,
                 this.addressString,
                 this.packedBy != null ? this.packedBy.getUsername() : null,
