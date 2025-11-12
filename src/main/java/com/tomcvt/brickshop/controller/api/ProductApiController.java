@@ -28,12 +28,13 @@ public class ProductApiController {
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
+    //TODO implement correct paging
     @GetMapping("/summaries")
     public List<ProductSummaryDto> searchProductSummaries(
         @RequestParam(required = false) String query,
         @RequestParam(required = false) List<String> category,
         @RequestParam(required = false, defaultValue = "0") Integer page,
-        @RequestParam(required = false, defaultValue = "200") Integer size
+        @RequestParam(required = false, defaultValue = "100") Integer size
     ) {
         if (query == null && (category == null || category.isEmpty())) {
             return productService.getProductSummaries(page, size);
