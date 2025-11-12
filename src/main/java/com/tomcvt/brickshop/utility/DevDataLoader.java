@@ -35,6 +35,7 @@ public class DevDataLoader {
 
     public void loadDevData() {
         authService.registerActivatedUser("admin", "123", "abc@mail.com", "ADMIN");
+        authService.registerActivatedUser("packer", "123", "abe@mail.com", "PACKER");
         authService.registerActivatedUser("user", "123", "abd@mail.com", "USER");
         var u1 = userService.findByUsername("admin");
         csvloader.loadProductsFromCSV();

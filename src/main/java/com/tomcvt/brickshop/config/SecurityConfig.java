@@ -43,8 +43,9 @@ public class SecurityConfig {
             .httpBasic(httpBasic -> httpBasic.disable())
             //.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/admin/**","/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/users/**","/api/users/**").hasAnyRole("ADMIN", "USER", "PACKER")
+                .requestMatchers("/packer/**","/api/packer/**").hasAnyRole("ADMIN", "PACKER")
                 .requestMatchers(WHITELIST).permitAll()
                 .anyRequest().authenticated()
             )
