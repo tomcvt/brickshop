@@ -6,13 +6,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.tomcvt.brickshop.exception.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private final static Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<String> handleResponseStatusException(ResponseStatusException ex) {
+        log.error("ResponseStatusException: {}", ex);
+        return ResponseEntity.status(ex.getStatusCode()).body(ex.getReason());
+    }
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<String> handleUserAlreadyExists(UserAlreadyExistsException ex) {
         log.error("UserAlreadyExistsException: {}", ex);
@@ -29,6 +34,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(FileUploadException.class)
     public ResponseEntity<String> handleFileUploadException(FileUploadException ex) {
+        log.error("File upload exception: {}", ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
     @ExceptionHandler(EmptyCartException.class)
@@ -51,6 +57,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(NotAuthorizedException.class)
     public ResponseEntity<String> handleNotAuthorizedException(NotAuthorizedException ex) {
+        log.error("NotAuthorizedException: {}", ex);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 }

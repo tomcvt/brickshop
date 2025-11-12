@@ -13,7 +13,6 @@ import com.tomcvt.brickshop.service.ProductImageService;
 public class DummyImageLoader {
     private final ProductImageService productImageService;
     private final String dummyImagesPath;
-    //TODO configure path with variable
 
     public DummyImageLoader(ProductImageService productImageService, 
             @Value("${dummyimageloader.path}") String dummyImagesPath) {
