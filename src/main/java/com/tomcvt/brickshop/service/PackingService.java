@@ -11,10 +11,10 @@ import com.tomcvt.brickshop.model.Shipment;
 import com.tomcvt.brickshop.repository.ShipmentRepository;
 
 @Service
-public class PackerService {
+public class PackingService {
     private final ShipmentRepository shipmentRepository;
 
-    public PackerService(ShipmentRepository shipmentRepository) {
+    public PackingService(ShipmentRepository shipmentRepository) {
         this.shipmentRepository = shipmentRepository;
     }
 
