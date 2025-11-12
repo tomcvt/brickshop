@@ -23,11 +23,20 @@ public class SecurityConfig {
         "/js/**",
         "/css/**",
         "/images/**",
-        "/products",
-        "/products/**",
+        "/products", "/api/products",
+        "/products/**", "/api/products/**",
+        "/cart/**", "/api/cart/**",
+        "/login",
         "/registration",
         "/api/public/**"
     };
+    private final String[] PACKER_WHITELIST = {
+        "/packer/**",
+        "/api/packer/**",
+        "/packer",
+        "/api/packer"
+    };
+    
     //TODO refactor for config properties later
 
     SecurityConfig(AuthenticationManager authenticationManager, UserLoginSuccessHandler userLoginSuccessHandler) {
@@ -44,8 +53,8 @@ public class SecurityConfig {
             //.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/admin/**","/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/users/**","/api/users/**").hasAnyRole("ADMIN", "USER", "PACKER")
-                .requestMatchers("/packer/**","/api/packer/**").hasAnyRole("ADMIN", "PACKER")
+                .requestMatchers("/user/**","/api/user/**").hasAnyRole("ADMIN", "USER", "PACKER")
+                .requestMatchers(PACKER_WHITELIST).hasAnyRole("ADMIN", "PACKER")
                 .requestMatchers(WHITELIST).permitAll()
                 .anyRequest().authenticated()
             )
