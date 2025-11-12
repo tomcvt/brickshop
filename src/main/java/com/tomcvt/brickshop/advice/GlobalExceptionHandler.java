@@ -41,7 +41,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleEmptyCartException(EmptyCartException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
-    //TODO refactor
     @ExceptionHandler(NoSuchEntityExistsException.class)
     public ResponseEntity<String> handleNoSuchEntityExists(NoSuchEntityExistsException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
