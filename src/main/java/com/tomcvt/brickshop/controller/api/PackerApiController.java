@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tomcvt.brickshop.dto.ShipmentDto;
 import com.tomcvt.brickshop.service.PackerService;
 
-import io.micrometer.core.ipc.http.HttpSender.Response;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
