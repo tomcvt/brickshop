@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tomcvt.brickshop.dto.ProductDto;
 import com.tomcvt.brickshop.dto.ProductSummaryDto;
 import com.tomcvt.brickshop.model.Product;
+import com.tomcvt.brickshop.pagination.SimplePage;
 import com.tomcvt.brickshop.service.CategoryService;
 import com.tomcvt.brickshop.service.ProductService;
 
@@ -28,9 +29,8 @@ public class ProductApiController {
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
-    //TODO implement correct paging
     @GetMapping("/summaries")
-    public List<ProductSummaryDto> searchProductSummaries(
+    public SimplePage<ProductSummaryDto> searchProductSummaries(
         @RequestParam(required = false) String query,
         @RequestParam(required = false) List<String> category,
         @RequestParam(required = false, defaultValue = "0") Integer page,
@@ -44,6 +44,7 @@ public class ProductApiController {
         }
         return productService.getProductSummariesByKeywordAndCategoriesAndPage(query, category, page, size);
     }
+    //TODO implement correct paging
     @GetMapping("/summaries-no-pic/search")
     public List<ProductSummaryDto> searchProducts(@RequestParam String keyword) {
         return productService.getProductSummariesNoPicByKeyword(keyword);
