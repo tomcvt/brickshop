@@ -15,6 +15,7 @@ import com.tomcvt.brickshop.model.Product;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findByName(String name);
 
+    //TODO implement paging
     List<Product> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String name, String description);
 
     @Query("""

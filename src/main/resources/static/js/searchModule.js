@@ -40,14 +40,14 @@ export async function fetchData(keyword = '', categories = []) {
         }
 
         const data = await response.json();
-        return data; // list of objects
+        return data; // SimplePage<ProductSummaryDto>
     } catch (error) {
         console.error('Fetch failed:', error);
-        return [];
+        return null;
     }
 }
 
-export async function initSearchBar(onResults) {
+export async function initSearchBar(onResults, config = {}) {
     const searchInput = document.getElementById('searchKeyword');
     const searchButton = document.getElementById('searchButton');
     const searchBarContainer = document.getElementById('searchBarContainer') || searchInput.parentElement;
@@ -116,21 +116,78 @@ export async function initSearchBar(onResults) {
             .map(cb => cb.value);
     }
 
-    async function handleSearch() {
-        const keyword = searchInput.value;
-        const selectedCategories = getSelectedCategories();
-        const results = await fetchData(keyword, selectedCategories);
+    async function handleSearch(opts = {}) {
+        // opts: { page, query, categories }
+        let keyword = opts.query !== undefined ? opts.query : searchInput.value;
+        let selectedCategories = opts.categories !== undefined ? opts.categories : getSelectedCategories();
+        let page = opts.page !== undefined ? opts.page : 0;
 
-        if (onResults) onResults(results);
+        // Build endpoint with page
+        let endpoint = '/api/products/summaries';
+        const params = [];
+        if (keyword.trim() !== '') {
+            params.push(`query=${encodeURIComponent(keyword)}`);
+        }
+        if (selectedCategories.length > 0) {
+            selectedCategories.forEach(cat => {
+                params.push(`category=${encodeURIComponent(cat)}`);
+            });
+        }
+        if (page > 0) {
+            params.push(`page=${page}`);
+        }
+        if (params.length > 0) {
+            endpoint += '?' + params.join('&');
+        }
+
+        try {
+            const response = await fetch(endpoint, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (!response.ok) throw new Error(`Error: ${response.status}`);
+            const data = await response.json();
+            if (onResults) onResults(data, { page, query: keyword, categories: selectedCategories });
+        } catch (error) {
+            console.error('Fetch failed:', error);
+            if (onResults) onResults(null, { page, query: keyword, categories: selectedCategories });
+        }
     }
 
-    searchButton.addEventListener('click', handleSearch);
-
+    searchButton.addEventListener('click', () => handleSearch());
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             handleSearch();
         }
     });
+
+    // Navigation buttons
+    if (config.nextPage && Array.isArray(config.nextPage)) {
+        config.nextPage.forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    let page = config.getCurrentPage ? config.getCurrentPage() + 1 : 1;
+                    let query = config.getQuery ? config.getQuery() : searchInput.value;
+                    let categories = config.getCategories ? config.getCategories() : getSelectedCategories();
+                    handleSearch({ page, query, categories });
+                });
+            }
+        });
+    }
+    if (config.previousPage && Array.isArray(config.previousPage)) {
+        config.previousPage.forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    let page = config.getCurrentPage ? Math.max(0, config.getCurrentPage() - 1) : 0;
+                    let query = config.getQuery ? config.getQuery() : searchInput.value;
+                    let categories = config.getCategories ? config.getCategories() : getSelectedCategories();
+                    handleSearch({ page, query, categories });
+                });
+            }
+        });
+    }
 }
 
 //TODO check the logic and do the controller part

@@ -1,34 +1,65 @@
+
 import * as Cart from './sidebar-cart.js';
 import { initSearchBar } from './searchModule.js';
 
+let currentPage = 0;
+let lastPage = false;
+let firstPage = true;
+let lastQuery = '';
+let lastCategories = [];
+let lastResults = null;
+
 document.addEventListener('DOMContentLoaded', function () {
-    initSearchBar((results) => {
-        loadAndShowProducts(results)
+    initSearchBar((results, opts = {}) => {
+        // opts: { page, query, categories }
+        if (opts.page !== undefined) currentPage = opts.page;
+        if (opts.query !== undefined) lastQuery = opts.query;
+        if (opts.categories !== undefined) lastCategories = opts.categories;
+        loadAndShowProducts(results);
+    }, {
+        nextPage: ['nextPageBtnTop', 'nextPageBtnBottom'],
+        previousPage: ['prevPageBtnTop', 'prevPageBtnBottom'],
+        getCurrentPage: () => currentPage,
+        getQuery: () => lastQuery,
+        getCategories: () => lastCategories
     });
 });
 
 
-async function loadAndShowProducts(products) {
+async function loadAndShowProducts(pageObj) {
     const container = document.getElementById('productList');
-    container.innerHTML = ''; // clear old
-    if (products) {
-        products.forEach(item => {
-            createProductCard(item);
-        })
-        return;
+    container.innerHTML = '';
+    let products = [];
+    if (pageObj && pageObj.content) {
+        products = pageObj.content;
+        currentPage = pageObj.number || 0;
+        lastPage = pageObj.last;
+        firstPage = pageObj.first;
+        lastResults = pageObj;
+    } else if (Array.isArray(pageObj)) {
+        products = pageObj;
+    } else {
+        // fallback fetch
+        try {
+            const response = await fetch(`/api/products/summaries?page=${currentPage}`);
+            const data = await response.json();
+            products = data.content || [];
+            currentPage = data.number || 0;
+            lastPage = data.last;
+            firstPage = data.first;
+            lastResults = data;
+        } catch (err) {
+            console.error('Failed to load products', err);
+        }
     }
-    try {
-        const response = await fetch('/api/products/summaries');
-        const items = await response.json();
-        console.log(items);
 
+    // Update navigation panels (top and bottom)
+    updateNavPanel('prevPageBtnTop', 'nextPageBtnTop', 'pageNumTop', currentPage, firstPage, lastPage);
+    updateNavPanel('prevPageBtnBottom', 'nextPageBtnBottom', 'pageNumBottom', currentPage, firstPage, lastPage);
 
-        items.forEach(item => {
-            createProductCard(item);
-        });
-    } catch (err) {
-        console.error('Failed to load products', err);
-    }
+    products.forEach(item => {
+        createProductCard(item);
+    });
 }
 
 function createProductCard(item) {
@@ -53,10 +84,8 @@ function createProductCard(item) {
     const addToCartBtn = document.createElement('button');
     addToCartBtn.classList.add('btn', 'btn-primary');
     addToCartBtn.textContent = 'Add to Cart';
-    //addToCartBtn.style.marginLeft = '10px';
 
     button.addEventListener('click', () => {
-        // Redirect to dynamic product page
         window.location.href = `/products/${item.publicId}`;
     });
 
@@ -73,6 +102,14 @@ function createProductCard(item) {
     container.appendChild(card);
 }
 
-loadAndShowProducts();
+
+function updateNavPanel(prevBtnId, nextBtnId, pageNumId, page, first, last) {
+    const prevBtn = document.getElementById(prevBtnId);
+    const nextBtn = document.getElementById(nextBtnId);
+    const pageNum = document.getElementById(pageNumId);
+    if (prevBtn) prevBtn.disabled = !!first;
+    if (nextBtn) nextBtn.disabled = !!last;
+    if (pageNum) pageNum.textContent = ` Page ${page + 1} `;
+}
 
 Cart.loadAndShowCart();
