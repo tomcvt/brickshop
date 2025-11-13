@@ -71,7 +71,8 @@
 			let html = `<h2>Shipment #${shipment.shipmentId}</h2>`;
 			html += `<p><strong>Order ID:</strong> ${shipment.orderId}</p>`;
 			html += `<p><strong>Tracking Number:</strong> ${shipment.trackingNumber || '-'}</p>`;
-			html += `<p><strong>Address:</strong> ${shipment.addressString}</p>`;
+			let addressString = shipment.addressString.replace(/\n/g, '<br>');
+			html += `<p><strong>Address:</strong> ${addressString}</p>`;
 			html += `<p><strong>Packed By:</strong> ${shipment.packedByUsername || '-'}</p>`;
 			html += `<p><strong>Status:</strong> ${shipment.status}</p>`;
 			html += `<button onclick="packAll()">Pack All Items</button>`;
