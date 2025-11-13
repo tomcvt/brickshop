@@ -72,7 +72,7 @@ public class ProductService {
         return productRepository.findAll().stream()
                 .map(Product::toSummaryDto).toList();
     }
-
+    //TODO add sorting options (for starters by price)
     public SimplePage<ProductSummaryDto> getProductSummariesByPage(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
         return SimplePage.fromPage(productRepository.findAll(pageable).map(Product::toSummaryDto));
