@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.tomcvt.brickshop.dto.ProductSummaryDto;
 import com.tomcvt.brickshop.model.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -24,7 +24,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                 LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
             )
             """)
-    List<Product> findByNameOrDescriptionContaining(@Param("keyword") String keyword, Pageable pageable);
+    Page<Product> findByNameOrDescriptionContaining(@Param("keyword") String keyword, Pageable pageable);
 
     //TODO track where to use, if need to fetch categories
     @Query("""
@@ -42,7 +42,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             JOIN p.categories c
             WHERE c.id IN :categoryIds
             """)
-    List<Long> findIdsByCategoryIds(@Param("categoryIds") List<Long> categoryIds, Pageable pageable);
+    Page<Long> findIdsByCategoryIds(@Param("categoryIds") List<Long> categoryIds, Pageable pageable);
 
     @Query("""
             SELECT DISTINCT p.id
@@ -52,7 +52,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                 LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
             )
     """)
-    List<Long> findIdsByCategoryIdsAndKeyword(@Param("categoryIds") List<Long> categoryIds, @Param("keyword") String keyword, Pageable pageable);
+    Page<Long> findIdsByCategoryIdsAndKeyword(@Param("categoryIds") List<Long> categoryIds, @Param("keyword") String keyword, Pageable pageable);
 
 
     @Query("""

@@ -13,5 +13,4 @@ public record ShipmentDto(
     ShipmentStatus status,
     List<ShipmentItemDto> items
 ) {
-    
 }

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import com.tomcvt.brickshop.exception.EntityAlreadyExists;
 import com.tomcvt.brickshop.exception.NoSuchEntityExistsException;
 import com.tomcvt.brickshop.model.Category;
 import com.tomcvt.brickshop.model.Product;
+import com.tomcvt.brickshop.pagination.SimplePage;
 import com.tomcvt.brickshop.repository.CategoryRepository;
 import com.tomcvt.brickshop.repository.ProductRepository;
 import com.tomcvt.brickshop.utility.CategoryReferenceMap;
@@ -71,38 +73,41 @@ public class ProductService {
                 .map(Product::toSummaryDto).toList();
     }
 
-    public List<ProductSummaryDto> getProductSummaries(Integer page, Integer size) {
+    public SimplePage<ProductSummaryDto> getProductSummariesByPage(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
-        return productRepository.findAll(pageable).stream()
-                .map(Product::toSummaryDto).toList();
+        return SimplePage.fromPage(productRepository.findAll(pageable).map(Product::toSummaryDto));
     }
 
-    public List<ProductSummaryDto> getProductSummariesByCategoriesAndPage(List<String> categories, Integer page,
+    public SimplePage<ProductSummaryDto> getProductSummariesByCategoriesAndPage(List<String> categories, Integer page,
             Integer size) {
         List<Long> categoryIds = categoryReferenceMap.getIdsList(categories);
         Pageable pageable = PageRequest.of(page, size);
         if (categoryIds.isEmpty()) {
-            return productRepository.findAll(pageable).stream().map(Product::toSummaryDto).toList();
+            Page<Product> productPage = productRepository.findAll(pageable);
+            return SimplePage.fromPage(productPage.map(Product::toSummaryDto));
         }
-        List<Long> productIds = productRepository.findIdsByCategoryIds(categoryIds, pageable);
-        return productRepository.findAllById(productIds).stream().map(Product::toSummaryDto).toList();
+        Page<Long> productIds = productRepository.findIdsByCategoryIds(categoryIds, pageable);
+        List<Product> products = productRepository.findByIds(productIds.getContent());
+        return SimplePage.of(products, productIds).map(Product::toSummaryDto);
     }
 
-    public List<ProductSummaryDto> getProductSummariesByKeywordAndCategoriesAndPage(String keyword,
+    public SimplePage<ProductSummaryDto> getProductSummariesByKeywordAndCategoriesAndPage(String keyword,
             List<String> categories, Integer page, Integer size) {
         if (categories == null || categories.isEmpty()) {
             return getProductSummariesByKeywordAndPage(keyword, page, size);
         }
         List<Long> categoryIds = categoryReferenceMap.getIdsList(categories);
         Pageable pageable = PageRequest.of(page, size);
-        List<Long> productIds = productRepository.findIdsByCategoryIdsAndKeyword(categoryIds, keyword, pageable);
-        return productRepository.findAllById(productIds).stream().map(Product::toSummaryDto).toList();
+        Page<Long> productIds = productRepository.findIdsByCategoryIdsAndKeyword(categoryIds, keyword, pageable);
+        List<Product> products = productRepository.findByIds(productIds.getContent());
+        return SimplePage.of(products, productIds).map(Product::toSummaryDto);
     }
 
-    public List<ProductSummaryDto> getProductSummariesByKeywordAndPage(String keyword, Integer page, Integer size) {
+    public SimplePage<ProductSummaryDto> getProductSummariesByKeywordAndPage(String keyword, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        return productRepository.findByNameOrDescriptionContaining(keyword, pageable).stream()
-                .map(Product::toSummaryDto).toList();
+        Page<Product> productPage = productRepository.findByNameOrDescriptionContaining(keyword, pageable);
+        return SimplePage.fromPage(productPage.map(Product::toSummaryDto));
+
     }
     public Product getProductHydratedByPublicId(UUID publicId) {
         return productRepository.findByPublicIdHydrated(publicId)
