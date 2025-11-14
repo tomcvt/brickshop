@@ -40,12 +40,17 @@ public class DevDataLoader {
         var u1 = userService.findByUsername("admin");
         csvloader.loadProductsFromCSV();
         categoryExtractor.initCategories();
-        var p1 = productService.getProductById(1l);
-        cartService.addProductToActiveUserCart(1L, p1.getPublicId(), 1);
+        var p1 = productService.getProductById(1L);
+        var p2 = productService.getProductById(2L);
+        var p3 = productService.getProductById(3L);
+        cartService.addProductToActiveUserCart(1L, p1.getId(), 1);
+        cartService.addProductToActiveUserCart(1L, p2.getId(), 2);
+        cartService.addProductToActiveUserCart(1L, p3.getId(), 3);
         shipmentAddressService.addShipmentAddressForUser(
                 new ShipmentAddress(null, "JohnDoe", "123 Main St", "12-345", "Mielno", "Poland",
                         "123-456-7890"),
                 u1);
         dummyImageLoader.loadDummyImages();
+
     }
 }

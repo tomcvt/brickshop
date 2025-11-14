@@ -70,6 +70,7 @@ public class CheckoutSessionService {
         return checkoutSessionRepository.findById(uuid).orElse(null);
     }
 
+    //TODO think about payment method implementation, and maybe it should be in order service
     @Transactional
     public Order closeSessionAndCreateOrderForUser(User user, CheckoutDataDto checkoutData) {
         //TODO implement Payment Method

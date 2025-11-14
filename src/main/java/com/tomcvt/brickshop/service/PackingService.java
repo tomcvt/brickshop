@@ -2,6 +2,7 @@ package com.tomcvt.brickshop.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,7 @@ import com.tomcvt.brickshop.enums.ShipmentItemStatus;
 import com.tomcvt.brickshop.enums.ShipmentStatus;
 import com.tomcvt.brickshop.model.Shipment;
 import com.tomcvt.brickshop.model.User;
+import com.tomcvt.brickshop.pagination.SimplePage;
 import com.tomcvt.brickshop.repository.ShipmentRepository;
 
 @Service
@@ -27,12 +29,19 @@ public class PackingService {
         return shipment.toShipmentDto();
     }
 
-    public List<ShipmentDto> getShipmentsToPack(int page, int size) {
-        List<Long> shipmentIds = shipmentRepository.findIdsByStatus(ShipmentStatus.PENDING, Pageable.ofSize(size).withPage(page));
-        List<Shipment> shipments = shipmentRepository.findShipmentsWithItemsByIds(shipmentIds);
-        return shipments.stream()
-                .map(Shipment::toShipmentDto)
-                .toList();
+    public SimplePage<ShipmentDto> getShipmentsByStatus(ShipmentStatus status, int page, int size) {
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        Page<Long> shipmentIds = shipmentRepository.findIdsByStatus(status, pageable);
+        List<Shipment> shipments = shipmentRepository.findShipmentsWithItemsByIds(shipmentIds.getContent());
+        return SimplePage.of(shipments, shipmentIds).map(Shipment::toShipmentDto);
+    }
+
+    public SimplePage<ShipmentDto> getShipmentsToPack(int page, int size) {
+        //TODO AND NOW HERE WE GO WITH PAGINATION
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        Page<Long> shipmentIds = shipmentRepository.findIdsByStatus(ShipmentStatus.PENDING, pageable);
+        List<Shipment> shipments = shipmentRepository.findShipmentsWithItemsByIds(shipmentIds.getContent());
+        return SimplePage.of(shipments, shipmentIds).map(Shipment::toShipmentDto);
     }
 
     //TODO refactor to custom exception and better logging

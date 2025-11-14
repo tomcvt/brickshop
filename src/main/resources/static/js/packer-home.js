@@ -1,28 +1,19 @@
-async function loadAndShowShipmentsToPack() {
-    const messageDiv = document.getElementById('messageShipments');
-    try {
-        const response = await fetch('/api/packer/to-pack');
-        if (!response.ok) {
-            throw new Error('Failed to fetch shipments' + await response.text());
-        }
-        const shipments = await response.json();
-        renderShipmentsToPack(shipments);
-    } catch (error) {
-        console.error('Error loading shipments:', error);
-        messageDiv.innerText = 'Error fetching shipments: ' + error.message;
-        messageDiv.className = 'alert alert-error';
-    }
-}
+import { initSearchModule } from './pageModule.js';
 
-function renderShipmentsToPack(shipments) {
+// Configurable variables
+let currentPage = 0;
+let pageSize = 10;
+let currentStatus = 'PENDING';
+const endpoint = '/api/packer/to-pack';
+
+function renderShipmentsToPack(simplePage) {
     const shipmentListDiv = document.getElementById('shipmentList');
-    console.log('Shipments to pack:', shipments);
     shipmentListDiv.innerHTML = '';
-    if (!shipments || shipments.length === 0) {
+    if (!simplePage || !simplePage.content || simplePage.content.length === 0) {
         shipmentListDiv.innerHTML = '<div class="alert alert-error">No shipments to pack.</div>';
         return;
     }
-    shipments.forEach(shipment => {
+    simplePage.content.forEach(shipment => {
         const div = document.createElement('div');
         div.className = 'field clr-primary';
         div.style.cursor = 'pointer';
@@ -48,5 +39,41 @@ function renderShipmentsToPack(shipments) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadAndShowShipmentsToPack();
+    // Status button logic
+    const statusBtns = document.querySelectorAll('.status-btn');
+    let lastSelectedBtn = null;
+    statusBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Unselect previous
+            if (lastSelectedBtn) lastSelectedBtn.classList.remove('btn-primary');
+            // Select current
+            btn.classList.add('btn-primary');
+            lastSelectedBtn = btn;
+            // Set currentStatus and trigger hidden search button
+            currentStatus = btn.getAttribute('data-status');
+            document.getElementById('searchButtonStatus').click();
+        });
+    });
+    // Set default selected
+    if (statusBtns.length > 0) {
+        statusBtns[0].classList.add('btn-primary');
+        lastSelectedBtn = statusBtns[0];
+    }
+
+    initSearchModule(
+        (results, opts) => {
+            currentPage = opts.page;
+            pageSize = opts.size;
+            currentStatus = opts.state;
+            renderShipmentsToPack(results);
+        },
+        {
+            navBarIds: ['navPanelShipments'],
+            getCurrentPage: () => currentPage,
+            getSize: () => pageSize,
+            getState: () => currentStatus,
+            getEndpoint: () => endpoint,
+            searchButtonId: 'searchButtonStatus'
+        }
+    );
 });

@@ -11,9 +11,17 @@
     <div class="container">
         <div class="panelOption shipments">
             <h2>Shipments to Pack</h2>
+            <div id="statusSelector" style="margin-bottom: 16px; display: flex; gap: 10px; justify-content: center;">
+                <button class="btn btn-small status-btn" data-status="PENDING">PENDING</button>
+                <button class="btn btn-small status-btn" data-status="PACKING">PACKING</button>
+                <button class="btn btn-small status-btn" data-status="PACKED">PACKED</button>
+                <input type="checkbox" id="statusCheckbox" style="display:none;" />
+                <button id="searchButtonStatus" style="display:none;">Search</button>
+            </div>
+            <div id="navPanelShipments"></div>
             <div id="shipmentList"></div>
             <div class="message" id="messageShipments"></div>
         </div>
     </div>
-    <script src="/js/packer-home.js"></script>
+    <script type="module" src="/js/packer-home.js"></script>
 </body>

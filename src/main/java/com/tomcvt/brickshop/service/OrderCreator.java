@@ -40,7 +40,6 @@ public class OrderCreator {
         newOrder.setShippingAddressString(addressString);
         newOrder.setStatus(OrderStatus.PENDING);
         newOrder = orderRepository.save(newOrder);
-
         TransactionEntity transaction = transactionCreator.createTransaction(newOrder);
         newOrder.setCurrentTransaction(transaction);
         return newOrder;

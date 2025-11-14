@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tomcvt.brickshop.dto.ShipmentDto;
+import com.tomcvt.brickshop.enums.ShipmentStatus;
 import com.tomcvt.brickshop.model.WrapUserDetails;
+import com.tomcvt.brickshop.pagination.SimplePage;
 import com.tomcvt.brickshop.service.PackingService;
 
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +27,23 @@ public class PackerApiController {
         this.packingService = packingService;
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<?> searchShipmentsByStatus(
+            @RequestParam(name = "status", required = false, defaultValue = "PENDING") String statusStr,
+            @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+        ShipmentStatus status = ShipmentStatus.valueOf(statusStr.toUpperCase());
+        SimplePage<ShipmentDto> shipments = packingService.getShipmentsByStatus(status, page, size);
+        return ResponseEntity.ok().body(shipments);
+    }
+    //TODO refactor
     @GetMapping("/to-pack")
     public ResponseEntity<?> getOrdersToPack(
             @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
-            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
-        List<ShipmentDto> shipments = packingService.getShipmentsToPack(page, size);
+            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
+            @RequestParam(name = "status", required = false, defaultValue = "PENDING") String statusStr ) {
+        ShipmentStatus status = ShipmentStatus.valueOf(statusStr.toUpperCase());
+        SimplePage<ShipmentDto> shipments = packingService.getShipmentsByStatus(status, page, size);
         return ResponseEntity.ok().body(shipments);
     }
     @GetMapping("/with-order/{orderId}")
