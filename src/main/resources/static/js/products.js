@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', function () {
         getQuery: () => lastQuery,
         getCategories: () => lastCategories
     });
+    Cart.loadAndShowCart();
+    //handleSearch({ page: 0 });
 });
 
 
@@ -112,4 +114,3 @@ function updateNavPanel(prevBtnId, nextBtnId, pageNumId, page, first, last) {
     if (pageNum) pageNum.textContent = ` Page ${page + 1} `;
 }
 
-Cart.loadAndShowCart();

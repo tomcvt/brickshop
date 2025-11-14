@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.tomcvt.brickshop.model.ShipmentAddress;
 import com.tomcvt.brickshop.service.*;
+import com.tomcvt.brickshop.zdemo.DemoOrders;
 
 @Component
 @Profile({"dev", "demo"})
@@ -17,12 +18,14 @@ public class DevDataLoader {
     private final CategoryExtractor categoryExtractor;
     private final UserService userService;
     private final DummyImageLoader dummyImageLoader;
+    /// here the refactored part
+    private final DemoOrders demoOrders;
 
     public DevDataLoader(AuthService authService, ProductService productService,
             ProductImageService productImageService, CartService cartService,
             ShipmentAddressService shipmentAddressService, CSVloader csvloader, 
             CategoryExtractor categoryExtractor, UserService userService, 
-            DummyImageLoader dummyImageLoader) {
+            DummyImageLoader dummyImageLoader, DemoOrders demoOrders) {
         this.authService = authService;
         this.productService = productService;
         this.cartService = cartService;
@@ -31,6 +34,7 @@ public class DevDataLoader {
         this.categoryExtractor = categoryExtractor;
         this.userService = userService;
         this.dummyImageLoader = dummyImageLoader;
+        this.demoOrders = demoOrders;
     }
 
     public void loadDevData() {
@@ -51,6 +55,7 @@ public class DevDataLoader {
                         "123-456-7890"),
                 u1);
         dummyImageLoader.loadDummyImages();
-
+        // here the refactored part
+        demoOrders.createDemoOrders();
     }
 }

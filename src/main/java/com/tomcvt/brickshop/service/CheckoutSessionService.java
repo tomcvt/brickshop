@@ -71,6 +71,7 @@ public class CheckoutSessionService {
     }
 
     //TODO think about payment method implementation, and maybe it should be in order service
+    //TODO REFACTOR THIS spaghetti
     @Transactional
     public Order closeSessionAndCreateOrderForUser(User user, CheckoutDataDto checkoutData) {
         //TODO implement Payment Method
