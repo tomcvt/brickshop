@@ -9,6 +9,7 @@
     * initSearchModule((results, opts) => {
     *   // Handle displaying results
     *   currentPage = opts.page;
+    *   currentSize = opts.size;
     *   currentQuery = opts.query;
     *   currentState = opts.state;
     *   // opts: { page, query, state }
@@ -16,6 +17,7 @@
     * navBarIds: ['topNavBar', 'bottomNavBar'], // IDs of navigation bars (for now empty div to render data in)
     * getCurrentPage: () => currentPage,
     * getQuery: () => currentQuery,
+    * getSize: () => pageSize,
     * getState: () => document.getElementById('stateSelect').value,
     * getEndpoint: () => endPoint // endpoint to fetch data from
     * searchButtonId: 'searchBtn', // ID of search button
@@ -28,6 +30,7 @@ export async function initSearchModule(onResults, config) {
     let currentPage = 0;
     let lastQuery = '';
     let lastState = config.getState ? config.getState() : '';
+    let lastSize = config.getSize ? config.getSize() : 5;
     let endpoint = config.getEndpoint ? config.getEndpoint() : console.log('getEndpoint function is required in config');
     navBarIds.forEach(id => {
         const navBar = document.getElementById(id);
@@ -51,7 +54,8 @@ export async function initSearchModule(onResults, config) {
             prevBtn.onclick = async () => {
                 if (currentPage > 0) {
                     currentPage--;
-                    opts = { page: currentPage, query: lastQuery, state: lastState };
+                    lastSize = config.getSize ? config.getSize() : lastSize;
+                    const opts = { page: currentPage, query: lastQuery, state: lastState, size: lastSize };
                     const results = await fetchPage(endpoint, opts);
                     onResults(results, opts);
                     updateNavBars(results);
@@ -59,7 +63,8 @@ export async function initSearchModule(onResults, config) {
             };
             nextBtn.onclick = async () => {
                 currentPage++;
-                opts = { page: currentPage, query: lastQuery, state: lastState };
+                lastSize = config.getSize ? config.getSize() : lastSize;
+                const opts = { page: currentPage, query: lastQuery, state: lastState, size: lastSize };
                 const results = await fetchPage(endpoint, opts);
                 onResults(results, opts);
                 updateNavBars(results);
@@ -86,19 +91,19 @@ export async function initSearchModule(onResults, config) {
     const searchButton = document.getElementById(config.searchButtonId);
     if (searchButton) {
         searchButton.onclick = async () => {
-            //const queryInput = document.getElementById('searchKeyword');
             const query = config.getQuery ? config.getQuery() : '';
             const state = config.getState ? config.getState() : '';
-            const opts = { page: 0, query: query, state: state };
+            const size = config.getSize ? config.getSize() : lastSize;
+            const opts = { page: 0, query: query, state: state, size: size };
             currentPage = 0;
             lastQuery = query;
             lastState = state;
+            lastSize = size;
             const results = await fetchPage(endpoint, opts);
             onResults(results, opts);
             updateNavBars(results);
         };
     }
-
 }
 
 
@@ -106,15 +111,17 @@ export async function fetchPage(endpoint = '', opts = {}) {
     let url = endpoint;
     const page = opts.page || 0;
     const keyword = opts.query || '';
-    const status = opts.status || '';
+    const state = opts.state || '';
+    const size = opts.size || 5;
     const params = [];
     params.push(`page=${page}`);
+    params.push(`size=${size}`);
     if (keyword.trim() !== '') {
         params.push(`query=${encodeURIComponent(keyword)}`);
     }
     //categories not needed for now
-    if (status.trim() !== '') {
-        params.push(`status=${encodeURIComponent(status)}`);
+    if (state.trim() !== '') {
+        params.push(`state=${encodeURIComponent(state)}`);
     }
     if (params.length > 0) {
         url += '?' + params.join('&');

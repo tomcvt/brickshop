@@ -54,12 +54,24 @@ public class CartService {
         return newCart;
     }
 
-    //TODO refactor to not fetch every time
+    @Transactional 
+    public FlatCartRowDto addProductToActiveUserCart(Long userId, Long productId, int quantity) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+        return addProductToActiveUserCart(userId, product, quantity);
+    }
+
     @Transactional
     public FlatCartRowDto addProductToActiveUserCart(Long userId, UUID productPublicId, int quantity) {
-        Cart cart = getActiveCartByUserId(userId);
         Product product = productRepository.findByPublicId(productPublicId)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+        return addProductToActiveUserCart(userId, product, quantity);
+    }
+
+    //TODO refactor to not fetch every time???? why not? how else to check stock?
+    @Transactional
+    public FlatCartRowDto addProductToActiveUserCart(Long userId, Product product, int quantity) {
+        Cart cart = getActiveCartByUserId(userId);
         Optional<CartItem> optCartItem = cartItemRepository.findByCartAndProduct(cart, product);
         CartItem cartItem = null;
         if (optCartItem.isPresent()) {
@@ -83,7 +95,7 @@ public class CartService {
             cartItemRepository.save(cartItem);
         }
 
-        return new FlatCartRowDto(cart.getId(), cartItem.getId(), quantity, productPublicId, product.getName(),
+        return new FlatCartRowDto(cart.getId(), cartItem.getId(), quantity, product.getPublicId(), product.getName(),
                 product.getPrice(), product.getThumbnailUuid());
     }
 
