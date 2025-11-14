@@ -7,7 +7,7 @@
         </encoder>
     </appender>
 
-    <logger name="org.hibernate" level="INFO" additivity="false">
+    <logger name="org.hibernate" level="DEBUG" additivity="false">
         <appender-ref ref="HIBERNATE_FILE"/>
     </logger>
 
