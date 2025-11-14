@@ -42,15 +42,19 @@ public class DemoPersistenceLayer {
     }
 
     @Transactional
-    public Order createDemoOrder(User user) {
+    public Order createDemoOrder(User user, Long cartId) throws Exception {
         //TODO implement Payment Method
         
         ShipmentAddress address = shipmentAddressRepository.findById(1L).orElseThrow(() -> new RuntimeException("No such address"));
         String addressString = address.addressToString();
         PaymentMethod paymentMethod = PaymentMethod.PAYPAL;
+        //for now detached from session
         UUID sessionId = UUID.randomUUID();
         //Reusing demo cart
-        Cart cart = cartRepository.findById(1L).orElseThrow(() -> new RuntimeException("No demo cart found"));
+        //TODO think about using cartId in business logic to not fetch the cart when not needed
+        //TODO handle possible DataIntegrityViolationException on order ID conflict
+        //implement counter with retries, after 10 rethrow exception
+        Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new RuntimeException("No demo cart found"));
         Long orderId = orderCreator.getNextOrderId();
         // we relly here on having first mock order here, we can do this conditionally with null check too
         boolean created = false;
@@ -59,7 +63,6 @@ public class DemoPersistenceLayer {
             try {
                 log.info("Creating demo order with order ID: " + orderId);
                 newOrder = orderCreator.createOrderFromSession(sessionId, user, addressString, paymentMethod, cart, orderId);
-                
                 created = true;
             } catch (DataIntegrityViolationException e) {
                 orderId = orderCreator.getNextOrderId();

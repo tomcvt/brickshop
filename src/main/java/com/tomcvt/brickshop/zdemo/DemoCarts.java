@@ -22,7 +22,7 @@ public class DemoCarts {
         Long userId = 1L;
         for (int j = 0; j < 20; j++) {
             FlatCartRowDto fcrdto = null;
-            for (int i = 0; i < 5; i++) {
+            for (int i = 1; i < 6; i++) {
                 fcrdto = cartService.addProductToActiveUserCart(userId, Long.valueOf(j + i), i);
             }
             Long cartId = fcrdto != null ? fcrdto.cartId() : 1L;

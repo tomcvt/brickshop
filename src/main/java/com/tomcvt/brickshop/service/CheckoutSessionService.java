@@ -91,8 +91,7 @@ public class CheckoutSessionService {
         Cart cart = cartService.lockCartAndProducts(cartId);
         session.setActive(false);
         checkoutSessionRepository.save(session);
-        Long maxOrderId = orderRepository.findMaxOrderId();
-        Long orderId = maxOrderId == null ? 12345678L : maxOrderId + 1L;
+        Long orderId = orderCreator.getNextOrderId();
         // we relly here on having first mock order here, we can do this conditionally with null check too
         boolean created = false;
         Order newOrder = null;
@@ -102,7 +101,7 @@ public class CheckoutSessionService {
                 created = true;
             } catch (DataIntegrityViolationException e) {
                 //Assuming it's a unique constraint violation on orderId
-                orderId = orderRepository.findMaxOrderId() + 1L;
+                orderId = orderCreator.getNextOrderId();
                 log.warn("Order ID conflict detected, retrying with new order ID: " + orderId);
                 continue;
             }

@@ -30,7 +30,7 @@ public class OrderCreator {
     @Transactional
     public Long getNextOrderId() {
         Long maxOrderId = orderRepository.findMaxOrderId();
-        return maxOrderId == null ? 12345678L : maxOrderId + 1L;
+        return maxOrderId == null ? 10001000L : maxOrderId + 1L;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

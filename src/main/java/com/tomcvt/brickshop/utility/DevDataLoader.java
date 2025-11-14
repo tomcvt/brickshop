@@ -58,6 +58,6 @@ public class DevDataLoader {
                 u1);
         dummyImageLoader.loadDummyImages();
         // here the refactored part
-        //demoOrders.createDemoOrders();
+        demoOrders.createDemoOrders();
     }
 }
