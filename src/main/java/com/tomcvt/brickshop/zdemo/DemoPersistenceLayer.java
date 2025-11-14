@@ -42,7 +42,7 @@ public class DemoPersistenceLayer {
     }
 
     @Transactional
-    public Order createDemoOrder(User user, Long cartId) throws Exception {
+    public Order createDemoOrder(User user, Long cartId) {
         //TODO implement Payment Method
         
         ShipmentAddress address = shipmentAddressRepository.findById(1L).orElseThrow(() -> new RuntimeException("No such address"));
