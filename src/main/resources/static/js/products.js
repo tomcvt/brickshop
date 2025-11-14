@@ -1,6 +1,6 @@
 
 import * as Cart from './sidebar-cart.js';
-import { initSearchBar } from './searchModule.js';
+import { initSearchBar, firstSearch } from './searchModule.js';
 
 let currentPage = 0;
 let lastPage = false;

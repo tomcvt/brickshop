@@ -27,6 +27,12 @@ public class OrderCreator {
         this.cartRepository = cartRepository;
         this.transactionCreator = transactionCreator;
     }
+    @Transactional
+    public Long getNextOrderId() {
+        Long maxOrderId = orderRepository.findMaxOrderId();
+        return maxOrderId == null ? 12345678L : maxOrderId + 1L;
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Order createOrderFromSession(UUID sessionId, 
     User user, String addressString, PaymentMethod paymentMethod, Cart cart, Long orderId) {
@@ -42,6 +48,7 @@ public class OrderCreator {
         newOrder = orderRepository.save(newOrder);
         TransactionEntity transaction = transactionCreator.createTransaction(newOrder);
         newOrder.setCurrentTransaction(transaction);
+        newOrder = orderRepository.save(newOrder);
         return newOrder;
     }
 }

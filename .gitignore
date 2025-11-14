@@ -10,6 +10,7 @@ application-demo.yml
 application-prod.yml
 logs/
 dummydata/
+.VSCodeCounter/
 
 ### STS ###
 .apt_generated

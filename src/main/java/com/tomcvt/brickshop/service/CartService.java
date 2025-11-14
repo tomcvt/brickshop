@@ -120,9 +120,6 @@ public class CartService {
         return cartRepository.calculateTotalPriceById(cartId);
     }
 
-    // TODO Cart with CartItems -> to order.ProductList(Product(productid,
-    // quantity);
-
     public CartDto getActiveCartDtoByUserId(Long userId) {
         List<FlatCartRowDto> items = getActiveFlatCartDtoByUserId(userId);
         if (items.size() == 0) {
@@ -170,16 +167,11 @@ public class CartService {
             product.setStock(product.getStock() - cartitem.getQuantity());
             productRepository.save(product);
         }
-
-        //BigDecimal totalAmount = cartRepository.calculateTotalPriceById(cartId);
-        //List<FlatCartRowDto> itemsdto = cart.getItems().stream().map(CartItem::toFlatCartRowDto).toList();
-        //return new CartDto(itemsdto, totalAmount);
-
         cart = cartRepository.save(cart);
         return cart;
     }
 
-    //batch add from temp cart to user active cart
+    //TODO optimize to batch process, not fetch cart every time
     @Transactional
     public void cartTempCartItemsToUserActiveCart(Long userId, TempCart tempCart) {
         for (TempCartItem item : tempCart.getTempCartItems()) {

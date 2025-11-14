@@ -1,4 +1,6 @@
 // searchModule.js
+let onResultReference = null;
+
 export async function fetchCategories() {
     try {
         const response = await fetch('/api/products/categories', {
@@ -11,6 +13,10 @@ export async function fetchCategories() {
         console.error('Category fetch failed:', error);
         return [];
     }
+}
+
+export async function firstSearch() {
+
 }
 
 export async function fetchData(keyword = '', categories = []) {
@@ -188,6 +194,10 @@ export async function initSearchBar(onResults, config = {}) {
             }
         });
     }
+
+    setTimeout(() => {
+        handleSearch({ page: 0 });
+    }, 0);
 }
 
 //TODO check the logic and do the controller part
