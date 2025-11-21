@@ -121,7 +121,7 @@ export async function fetchPage(endpoint = '', opts = {}) {
     }
     //categories not needed for now
     if (state.trim() !== '') {
-        params.push(`state=${encodeURIComponent(state)}`);
+        params.push(`status=${encodeURIComponent(state)}`);
     }
     if (params.length > 0) {
         url += '?' + params.join('&');

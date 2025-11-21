@@ -36,16 +36,6 @@ public class PackerApiController {
         SimplePage<ShipmentDto> shipments = packingService.getShipmentsByStatus(status, page, size);
         return ResponseEntity.ok().body(shipments);
     }
-    //TODO refactor
-    @GetMapping("/to-pack")
-    public ResponseEntity<?> getOrdersToPack(
-            @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
-            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
-            @RequestParam(name = "status", required = false, defaultValue = "PENDING") String statusStr ) {
-        ShipmentStatus status = ShipmentStatus.valueOf(statusStr.toUpperCase());
-        SimplePage<ShipmentDto> shipments = packingService.getShipmentsByStatus(status, page, size);
-        return ResponseEntity.ok().body(shipments);
-    }
     @GetMapping("/with-order/{orderId}")
     public ResponseEntity<?> getShipmentWithOrder(
             @PathVariable Long orderId) {

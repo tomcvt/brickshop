@@ -4,7 +4,7 @@ import { initSearchModule } from './pageModule.js';
 let currentPage = 0;
 let pageSize = 10;
 let currentStatus = 'PENDING';
-const endpoint = '/api/packer/to-pack';
+const endpoint = '/api/packer/search';
 
 function renderShipmentsToPack(simplePage) {
     const shipmentListDiv = document.getElementById('shipmentList');
@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentPage = opts.page;
             pageSize = opts.size;
             currentStatus = opts.state;
+            console.log(`Rendering page ${currentPage} with size ${pageSize} and status ${currentStatus}`);
             renderShipmentsToPack(results);
         },
         {
