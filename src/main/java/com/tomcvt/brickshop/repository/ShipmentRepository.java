@@ -28,6 +28,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
         LEFT JOIN FETCH s.items si
         LEFT JOIN FETCH si.product
         WHERE s.order.orderId = :orderId
+        ORDER BY si.id
     """)
     Optional<Shipment> findHydratedByOrderOrderId(@Param("orderId") Long orderId);
     @Query("""
@@ -45,4 +46,10 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
         WHERE s.id IN :ids
     """)
     List<Shipment> findShipmentsWithItemsByIds(@Param("ids") List<Long> ids);
+    @Query("""
+        SELECT s
+        FROM Shipment s
+        WHERE s.id IN :ids
+    """)
+    List<Shipment> findShipmentsByIds(@Param("ids") List<Long> ids);
 }

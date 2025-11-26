@@ -39,16 +39,3 @@ product:
     upload:
       dir: ${PRODUCT_IMAGES_DIR}
 
-logging:
-  level:
-    root: WARN
-    org.springframework.security: DEBUG
-    com.tomcvt.brickshop: INFO
-    org.hibernate.SQL: DEBUG
-
-  file:
-    name: logs/app.log
-
-  pattern:
-    file: "%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
-    console: "%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n"

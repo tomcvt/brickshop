@@ -14,6 +14,7 @@ public class WebClientConfig {
         return builder.baseUrl("http://localhost:8080") // base URL for your microservice
                       .build();
     }
+    //TDO what ip does docker need here? 
 }
 
     

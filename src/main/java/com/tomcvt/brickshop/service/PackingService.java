@@ -32,7 +32,8 @@ public class PackingService {
     public SimplePage<ShipmentDto> getShipmentsByStatus(ShipmentStatus status, int page, int size) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         Page<Long> shipmentIds = shipmentRepository.findIdsByStatus(status, pageable);
-        List<Shipment> shipments = shipmentRepository.findShipmentsWithItemsByIds(shipmentIds.getContent());
+        //List<Shipment> shipments = shipmentRepository.findShipmentsWithItemsByIds(shipmentIds.getContent());
+        List<Shipment> shipments = shipmentRepository.findShipmentsByIds(shipmentIds.getContent());
         return SimplePage.of(shipments, shipmentIds).map(Shipment::toShipmentDto);
     }
 
@@ -40,7 +41,8 @@ public class PackingService {
         //TODO AND NOW HERE WE GO WITH PAGINATION
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         Page<Long> shipmentIds = shipmentRepository.findIdsByStatus(ShipmentStatus.PENDING, pageable);
-        List<Shipment> shipments = shipmentRepository.findShipmentsWithItemsByIds(shipmentIds.getContent());
+        //List<Shipment> shipments = shipmentRepository.findShipmentsWithItemsByIds(shipmentIds.getContent());
+        List<Shipment> shipments = shipmentRepository.findShipmentsByIds(shipmentIds.getContent());
         return SimplePage.of(shipments, shipmentIds).map(Shipment::toShipmentDto);
     }
 
