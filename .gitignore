@@ -13,6 +13,7 @@ application-prod.yml
 logs/
 dummydata/
 .VSCodeCounter/
+product-images/
 
 ### STS ###
 .apt_generated
