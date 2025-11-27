@@ -15,10 +15,6 @@ export async function fetchCategories() {
     }
 }
 
-export async function firstSearch() {
-
-}
-
 export async function fetchData(keyword = '', categories = []) {
     let endpoint = '/api/products/summaries';
     const params = [];

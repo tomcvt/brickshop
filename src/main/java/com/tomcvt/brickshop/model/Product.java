@@ -125,7 +125,7 @@ public class Product {
 
     public ProductSummaryDto toSummaryDto() {
         return new ProductSummaryDto(this.publicId, this.name, this.price, this.stock,
-                this.thumbnailUuid != null ? this.thumbnailUuid + ".jpg" : "no-image.jpg");
+                this.thumbnailUuid != null ? this.thumbnailUuid + ".jpg" : null);
     }
     public ProductDto toDto() {
         List<String> imageUrls = this.productImages.stream()

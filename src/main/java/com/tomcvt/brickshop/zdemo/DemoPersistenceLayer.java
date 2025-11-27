@@ -43,12 +43,10 @@ public class DemoPersistenceLayer {
 
     @Transactional
     public Order createDemoOrder(User user, Long cartId) {
-        //TODO implement Payment Method
-        
-        ShipmentAddress address = shipmentAddressRepository.findById(1L).orElseThrow(() -> new RuntimeException("No such address"));
+        ShipmentAddress address = shipmentAddressRepository.findByUser(user).stream().findFirst()
+                .orElseThrow(() -> new RuntimeException("No shipment address found for demo user"));
         String addressString = address.addressToString();
         PaymentMethod paymentMethod = PaymentMethod.PAYPAL;
-        //for now detached from session
         UUID sessionId = UUID.randomUUID();
         //Reusing demo cart
         //TODO think about using cartId in business logic to not fetch the cart when not needed

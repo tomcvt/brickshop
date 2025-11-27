@@ -39,3 +39,13 @@ product:
     upload:
       dir: ${PRODUCT_IMAGES_DIR}
 
+com:
+  tomcvt:
+    brickshop:
+      pagination:
+        default-page-size: 20
+        max-page-size: 100
+    superuser:
+      username: ${SUPERUSER_USERNAME}
+      password: ${SUPERUSER_PASSWORD}
+      email: ${SUPERUSER_EMAIL}

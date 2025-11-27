@@ -6,17 +6,16 @@ import org.springframework.stereotype.Component;
 import com.tomcvt.brickshop.service.AuthService;
 
 @Component
-@Profile({"dev"})
-public class DevUsers {
+@Profile({"dev","demo"})
+public class DemoUsers {
     private final AuthService authService;
     private final DemoCache demoCache;
-    public DevUsers(AuthService authService, DemoCache demoCache) {
+    public DemoUsers(AuthService authService, DemoCache demoCache) {
         this.authService = authService;
         this.demoCache = demoCache;
     }
 
-    public void createDevUsers() {
-        demoCache.demoUsersIds.add(authService.registerActivatedUser("admin", "123", "abc@mail.com", "ADMIN").getId());
+    public void createDemoUsers() {
         demoCache.demoUsersIds.add(authService.registerActivatedUser("packer", "123", "abe@mail.com", "PACKER").getId());
         demoCache.demoUsersIds.add(authService.registerActivatedUser("user", "123", "sdf@mail.com", "USER").getId());
     }

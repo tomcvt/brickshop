@@ -59,4 +59,9 @@ public class GlobalExceptionHandler {
         log.error("NotAuthorizedException: {}", ex);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
+    @ExceptionHandler(WrongOperationException.class)
+    public ResponseEntity<String> handleWrongOperationException(WrongOperationException ex) {
+        log.error("WrongOperationException: {}", ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
-public class AdminpanelController {
+public class AdminController {
     @GetMapping("/admin")
     public String getAdminpanel() {
         return "adminpanel";
@@ -22,6 +22,10 @@ public class AdminpanelController {
         model.addAttribute("publicId", productId);
         return "image-reordering";
     }*/
+    @GetMapping("/admin/manage-products")
+    public String getProductsManagementPage() {
+        return "admin/productsmanagement";
+    }
     @GetMapping("/admin/edit-product/{publicId}")
     public String getEditProductPage(@PathVariable UUID publicId, Model model) {
         model.addAttribute("publicId", publicId);

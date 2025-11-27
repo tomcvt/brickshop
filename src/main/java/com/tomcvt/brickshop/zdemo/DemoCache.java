@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile({"dev", "demo"})
 public class DemoCache {
-    public List<Long> demoUsersIds = new ArrayList<>();
-    public List<Long> demoClosedCartsIds = new ArrayList<>();
-    public Long demoCartId = null;
-    public List<Long> demoOrderIds = new ArrayList<>();
-    public List<Long> demoShipmentIds = new ArrayList<>();
+    protected List<Long> demoUsersIds = new ArrayList<>();
+    protected List<Long> demoClosedCartsIds = new ArrayList<>();
+    protected Long demoCartId = null;
+    protected List<Long> demoOrderIds = new ArrayList<>();
+    protected List<Long> demoShipmentIds = new ArrayList<>();
 }

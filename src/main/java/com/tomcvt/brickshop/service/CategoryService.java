@@ -2,14 +2,17 @@ package com.tomcvt.brickshop.service;
 
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import com.tomcvt.brickshop.exception.WrongOperationException;
 import com.tomcvt.brickshop.model.Category;
 import com.tomcvt.brickshop.repository.CategoryRepository;
 import com.tomcvt.brickshop.utility.CategoryReferenceMap;
 
 @Service
 public class CategoryService {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CategoryService.class);
     private CategoryRepository categoryRepository;
     private CategoryReferenceMap categoryReferenceMap;
 
@@ -34,7 +37,12 @@ public class CategoryService {
     public String deleteCategory(String categoryName) {
         Category category = categoryRepository.findByName(categoryName)
                 .orElseThrow(() -> new IllegalArgumentException("No such category"));
-        categoryRepository.delete(category);
+        try {
+            categoryRepository.delete(category);
+        } catch (DataIntegrityViolationException e) {
+            log.warn("Tried to delete category that is still referenced by products: {}", categoryName);
+            throw new WrongOperationException("Cannot delete category that is still referenced by products");
+        }
         categoryReferenceMap.remove(categoryName);
         return categoryName;
     }

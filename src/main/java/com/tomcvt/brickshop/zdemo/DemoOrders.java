@@ -18,7 +18,7 @@ public class DemoOrders {
     }
 
     public void createDemoOrders() {
-        User demoUser = userRepository.findById(1L).orElseThrow(() -> new RuntimeException("No demo user found"));
+        User demoUser = userRepository.findById(2L).orElseThrow(() -> new RuntimeException("No demo user found"));
         for (int i = 0; i < 20; i++) {
             demoPersistenceLayer.createDemoOrder(demoUser, Long.valueOf(i + 1));
         }

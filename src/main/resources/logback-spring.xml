@@ -27,7 +27,7 @@
         <appender-ref ref="APP_FILE"/>
         <appender-ref ref="CONSOLE"/>
     </logger>
-    <logger name="org.springframework.security" level="DEBUG"/>
+    <logger name="org.springframework.security" level="DEBUG" additivity="false">
         <appender-ref ref="APP_FILE"/>
         <appender-ref ref="CONSOLE"/>
     </logger>

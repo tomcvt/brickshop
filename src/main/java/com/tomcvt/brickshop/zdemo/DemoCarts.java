@@ -19,7 +19,7 @@ public class DemoCarts {
     }
 
     public void createDemoCarts() {
-        Long userId = 1L;
+        Long userId = demoCache.demoUsersIds.get(1); // the "user" account
         for (int j = 0; j < 20; j++) {
             FlatCartRowDto fcrdto = null;
             for (int i = 1; i < 6; i++) {

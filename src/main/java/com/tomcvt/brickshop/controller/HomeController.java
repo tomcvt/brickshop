@@ -12,6 +12,8 @@ import com.tomcvt.brickshop.model.WrapUserDetails;
 public class HomeController {
     @GetMapping("/")
     public String getHome(@AuthenticationPrincipal WrapUserDetails userDetails, Model model) {
+        model.addAttribute("isAdmin", userDetails != null && userDetails.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN")));
         if (userDetails != null) {
             model.addAttribute("username", userDetails.getUsername());
         } else {

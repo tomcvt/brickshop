@@ -13,11 +13,11 @@
             <a th:href="@{/login}"><button class="btn btn-primary">Login</button></a>
             <a th:href="@{/registration}"><button class="btn btn-primary">Register</button></a>
         </div>
-        <div th:if="${username} == 'admin'">
+        <div th:if="${isAdmin}" class="admin-section">
             <h2>Admin Menu</h2>
             <div class="menu-div rows">
                 <a class="wide" th:href="@{/admin}"><button class="btn btn-primary wide">Admin Dashboard</button></a>
-                <a class="wide" th:href="@{/admin/products}"><button class="btn btn-primary wide">Manage
+                <a class="wide" th:href="@{/admin/manage-products}"><button class="btn btn-primary wide">Manage
                         Products</button></a>
                 <a class="wide" th:href="@{/admin/orders}"><button class="btn btn-primary wide">Manage
                         Orders</button></a>

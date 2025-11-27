@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Products Management</title>
+    <link rel="stylesheet" href="/css/products.css">
+</head>
+<body>
+    <div id="searchBar" class="search-bar">
+        <div class="contener">
+            <input type="text" id="searchKeyword" placeholder="Enter keyword" />
+            <button id="searchButton" class="accept-button search-button">Search</button>
+        </div>
+    </div>
+    <h1>Products Management</h1>
+    <div id="navPanelTop" class="nav-panel">
+        <button id="prevPageBtnTop" class="btn btn-small">←</button>
+        <span id="pageNumTop" style="margin: 0 10px;"> Page 1 </span>
+        <button id="nextPageBtnTop" class="btn btn-small">→</button>
+    </div>
+    <div class="container" id="productList"></div>
+    <div id="navPanelBottom" class="nav-panel">
+        <button id="prevPageBtnBottom" class="btn btn-small">←</button>
+        <span id="pageNumBottom" style="margin: 0 10px;"> Page 1 </span>
+        <button id="nextPageBtnBottom" class="btn btn-small">→</button>
+    </div>
+    <script type="module" src="/js/productsmanagement.js"></script>
+</body>
+</html>

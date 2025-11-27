@@ -1,6 +1,9 @@
 package com.tomcvt.brickshop.model;
 
+import java.util.UUID;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tomcvt.brickshop.dto.ShipmentAddressDto;
 
 import jakarta.persistence.*;
 
@@ -10,6 +13,8 @@ public class ShipmentAddress {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "public_id", nullable = false, unique = true, updatable = false)
+    private UUID publicId = UUID.randomUUID();
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
@@ -36,6 +41,12 @@ public class ShipmentAddress {
     }
     public void setId(Long id) {
         this.id = id;
+    }
+    public UUID getPublicId() {
+        return publicId;
+    }
+    public void setPublicId(UUID publicId) {
+        this.publicId = publicId;
     }
     public User getUser() {
         return user;
@@ -92,5 +103,17 @@ public class ShipmentAddress {
         resultBuilder.append("\n");
         resultBuilder.append(phoneNumber);
         return resultBuilder.toString();
+    }
+
+    public ShipmentAddressDto toDto() {
+        return new ShipmentAddressDto(
+            this.publicId,
+            this.fullName,
+            this.street,
+            this.zipCode,
+            this.city,
+            this.country,
+            this.phoneNumber
+        );
     }
 }
