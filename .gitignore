@@ -14,6 +14,7 @@ logs/
 dummydata/
 .VSCodeCounter/
 product-images/
+product-images
 
 ### STS ###
 .apt_generated
