@@ -39,10 +39,11 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(EmptyCartException.class)
     public ResponseEntity<String> handleEmptyCartException(EmptyCartException ex) {
+        log.warn("EmptyCartException: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
-    @ExceptionHandler(NoSuchEntityExistsException.class)
-    public ResponseEntity<String> handleNoSuchEntityExists(NoSuchEntityExistsException ex) {
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<String> handleNoSuchEntityExists(ProductNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
     @ExceptionHandler(NoOrderForSessionException.class)
@@ -63,5 +64,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleWrongOperationException(WrongOperationException ex) {
         log.error("WrongOperationException: {}", ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+    @ExceptionHandler(OwnershipMismatchException.class)
+    public ResponseEntity<String> handleOwnershipMismatchException(OwnershipMismatchException ex) {
+        log.error("OwnershipMismatchException: {}", ex);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<String> handleNotFoundException(NotFoundException ex) {
+        log.error("NotFoundException: {}", ex);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

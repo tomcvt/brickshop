@@ -15,14 +15,7 @@ public class SuperuserInitializer {
     private final String username;
     private final String password;
     private final String email;
-    /*
-    public SuperuserInitializer() {
-        // Load from environment variables or configuration
-        this.username = System.getenv("SUPERUSER_USERNAME");
-        this.password = System.getenv("SUPERUSER_PASSWORD");
-        this.email = System.getenv("SUPERUSER_EMAIL");
-    }
-    */
+    
     public SuperuserInitializer(UserRepository userRepository,
         @Value("${com.tomcvt.superuser.username}") String username,
         @Value("${com.tomcvt.superuser.password}") String password,

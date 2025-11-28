@@ -226,7 +226,7 @@ p {
 }
 
 .wide {
-    width: 100%;
+    width: 100% !important;
 }
 
 /* Utility classes */
@@ -387,6 +387,11 @@ form {
 .panelOption:hover {
     box-shadow: var(--shadow-md);
 }
+
+
+
+
+
 
 
 

@@ -35,7 +35,7 @@ function renderOrder(order) {
     const container = document.getElementById('order-container');
     container.innerHTML = '';
 
-    container.appendChild(makeField('Order ID', order.id));
+    container.appendChild(makeField('Order ID', order.orderId));
     container.appendChild(makeField('User', order.username));
     container.appendChild(makeField('Cart ID', order.cartId));
     container.appendChild(makeField('Shipping Address', order.shippingAddressString));

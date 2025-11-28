@@ -12,6 +12,7 @@ import com.tomcvt.brickshop.dto.CheckoutDataDto;
 import com.tomcvt.brickshop.model.*;
 import com.tomcvt.brickshop.service.CheckoutSessionService;
 import com.tomcvt.brickshop.service.OrderService;
+import com.tomcvt.brickshop.service.ShipmentAddressService;
 import com.tomcvt.brickshop.session.CartModifiedFlag;
 
 @RestController
@@ -22,11 +23,14 @@ public class CheckoutApiController {
     private final CheckoutSessionService checkoutSessionService;
     private final OrderService orderService;
     private final CartModifiedFlag cartModifiedFlag;
+    private final ShipmentAddressService shipmentAddressService;
 
-    public CheckoutApiController(CheckoutSessionService checkoutSessionService, OrderService orderService, CartModifiedFlag cartModifiedFlag) {
+    public CheckoutApiController(CheckoutSessionService checkoutSessionService, OrderService orderService, 
+        CartModifiedFlag cartModifiedFlag, ShipmentAddressService shipmentAddressService) {
         this.checkoutSessionService = checkoutSessionService;
         this.orderService = orderService;
         this.cartModifiedFlag = cartModifiedFlag;
+        this.shipmentAddressService = shipmentAddressService;
     }
 
     @GetMapping("/create")
@@ -66,6 +70,16 @@ public class CheckoutApiController {
         }
         Order order = checkoutSessionService.closeSessionAndCreateOrderForUser(userDetails.getUser(), checkoutData);
         return ResponseEntity.status(HttpStatus.CREATED).body(order.getOrderId());
+    }
+    @GetMapping("/address/all")
+    public ResponseEntity<?> getAllShipmentAddresses(@AuthenticationPrincipal WrapUserDetails wrapUserDetails) {
+        if (wrapUserDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        var addresses = shipmentAddressService.getAllShipmentAddressesForUser(wrapUserDetails.getUser())
+                .stream()
+                .map(ShipmentAddress::toDto);
+        return ResponseEntity.ok().body(addresses);
     }
 
 }

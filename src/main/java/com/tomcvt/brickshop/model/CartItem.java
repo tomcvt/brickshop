@@ -7,7 +7,9 @@ import com.tomcvt.brickshop.dto.FlatCartRowDto;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "cart_items")
+@Table(name = "cart_items", indexes = {
+        @Index(name = "idx_cart_items_cart_id_product_id", columnList = "cart_id, product_id", unique = true)
+})
 @BatchSize(size = 20)
 public class CartItem {
     @Id

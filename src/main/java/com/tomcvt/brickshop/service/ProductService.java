@@ -18,7 +18,7 @@ import com.tomcvt.brickshop.dto.ProductDto;
 import com.tomcvt.brickshop.dto.ProductInput;
 import com.tomcvt.brickshop.dto.ProductSummaryDto;
 import com.tomcvt.brickshop.exception.EntityAlreadyExists;
-import com.tomcvt.brickshop.exception.NoSuchEntityExistsException;
+import com.tomcvt.brickshop.exception.ProductNotFoundException;
 import com.tomcvt.brickshop.model.Category;
 import com.tomcvt.brickshop.model.Product;
 import com.tomcvt.brickshop.pagination.SimplePage;
@@ -65,7 +65,7 @@ public class ProductService {
     }
 
     public Product getProductById(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> new NoSuchEntityExistsException("Product not found"));
+        return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found"));
     }
 
     public List<ProductSummaryDto> getAllProductSummaries() {
@@ -111,7 +111,7 @@ public class ProductService {
     }
     public Product getProductHydratedByPublicId(UUID publicId) {
         return productRepository.findByPublicIdHydrated(publicId)
-                .orElseThrow(() -> new NoSuchEntityExistsException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
     }
 
     @Transactional

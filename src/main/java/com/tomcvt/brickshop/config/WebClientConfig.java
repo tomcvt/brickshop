@@ -15,6 +15,11 @@ public class WebClientConfig {
                       .build();
     }
     //TDO what ip does docker need here? 
+    @Bean
+    public WebClient webClientCvtCaptcha(WebClient.Builder builder) {
+        return builder.baseUrl("http://146.59.92.118:8000") // base URL for CVT Captcha service
+                      .build();
+    }
 }
 
     

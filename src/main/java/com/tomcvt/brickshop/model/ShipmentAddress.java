@@ -116,4 +116,12 @@ public class ShipmentAddress {
             this.phoneNumber
         );
     }
+    public void loadFromDto(ShipmentAddressDto shipmentAddressDto) {
+        this.fullName = shipmentAddressDto.fullName();
+        this.street = shipmentAddressDto.street();
+        this.zipCode = shipmentAddressDto.zipCode();
+        this.city = shipmentAddressDto.city();
+        this.country = shipmentAddressDto.country();
+        this.phoneNumber = shipmentAddressDto.phoneNumber();
+    }
 }

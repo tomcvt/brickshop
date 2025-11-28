@@ -67,27 +67,28 @@ public class CartService {
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
         return addProductToActiveUserCart(userId, product, quantity);
     }
+    @Transactional 
+    public FlatCartRowDto addProductToCart(Cart cart, UUID productPublicId, int quantity) {
+        Product product = productRepository.findByPublicId(productPublicId)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+        return addProductToCart(cart, product, quantity);
+    }
 
     //TODO refactor to not fetch every time???? why not? how else to check stock?
     @Transactional
     public FlatCartRowDto addProductToActiveUserCart(Long userId, Product product, int quantity) {
         Cart cart = getActiveCartByUserId(userId);
+        return addProductToCart(cart, product, quantity);
+    }
+
+    public FlatCartRowDto addProductToCart(Cart cart, Product product, int quantity) {
         Optional<CartItem> optCartItem = cartItemRepository.findByCartAndProduct(cart, product);
         CartItem cartItem = null;
         if (optCartItem.isPresent()) {
             cartItem = optCartItem.get();
-            if (product.getStock() < cartItem.getQuantity() + quantity) {
-                throw new NotInStockException("Not enough stock for product: " + product.getName()
-                        + ", available: " + product.getStock() + ", requested: "
-                        + (cartItem.getQuantity() + quantity));
-            }
             cartItem.setQuantity(cartItem.getQuantity() + quantity);
             cartItemRepository.save(cartItem);
         } else {
-            if (product.getStock() < quantity) {
-                throw new NotInStockException("Not enough stock for product: " + product.getName()
-                        + ", available: " + product.getStock() + ", requested: " + quantity);
-            }
             cartItem = new CartItem();
             cartItem.setCart(cart);
             cartItem.setProduct(product);
@@ -174,8 +175,9 @@ public class CartService {
     //TODO optimize to batch process, not fetch cart every time
     @Transactional
     public void cartTempCartItemsToUserActiveCart(Long userId, TempCart tempCart) {
+        Cart activeCart = getActiveCartByUserId(userId);
         for (TempCartItem item : tempCart.getTempCartItems()) {
-            addProductToActiveUserCart(userId, item.getProductPublicId(), item.getQuantity());
+            addProductToCart(activeCart, item.getProductPublicId(), item.getQuantity());
         }
         tempCart.clear();
     }

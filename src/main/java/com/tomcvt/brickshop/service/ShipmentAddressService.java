@@ -1,10 +1,15 @@
 package com.tomcvt.brickshop.service;
 
 import java.util.List;
+import java.util.UUID;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tomcvt.brickshop.dto.ShipmentAddressDto;
+import com.tomcvt.brickshop.exception.NotFoundException;
+import com.tomcvt.brickshop.exception.OwnershipMismatchException;
 import com.tomcvt.brickshop.model.ShipmentAddress;
 import com.tomcvt.brickshop.model.User;
 import com.tomcvt.brickshop.repository.ShipmentAddressRepository;
@@ -25,12 +30,35 @@ public class ShipmentAddressService {
 
     public List<ShipmentAddress> getAllShipmentAddressesForUser(User user) {
         //User user = userRepository.getReferenceById(userId);
-        return shipmentAddressRepository.findByUser(user);
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        return shipmentAddressRepository.findByUser(user, sort);
     }
     @Transactional
-    public ShipmentAddress addShipmentAddressForUser(ShipmentAddress shipmentAddress, User user) {
-        //User user = userRepository.getReferenceById(userId);
+    public ShipmentAddress addShipmentAddressForUser(ShipmentAddressDto shipmentAddressDto, User user) {
+        var shipmentAddress = new ShipmentAddress();
+        shipmentAddress.loadFromDto(shipmentAddressDto);
         shipmentAddress.setUser(user);
         return shipmentAddressRepository.save(shipmentAddress);
+    }
+
+    @Transactional
+    public ShipmentAddress updateShipmentAddressForUser(ShipmentAddressDto shipmentAddressDto, User user) {
+        //TODO custom exception
+        ShipmentAddress shipmentAddress = shipmentAddressRepository.findByPublicId(shipmentAddressDto.publicId())
+                .orElseThrow(() -> new NotFoundException("Shipment address not found"));
+        if (!shipmentAddress.getUser().getId().equals(user.getId())) {
+            throw new OwnershipMismatchException("Unauthorized to update this shipment address");
+        }
+        shipmentAddress.loadFromDto(shipmentAddressDto);
+        return shipmentAddressRepository.save(shipmentAddress);
+    }
+    @Transactional
+    public void deleteShipmentAddressForUser(UUID publicId, User user) {
+        ShipmentAddress shipmentAddress = shipmentAddressRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new NotFoundException("Shipment address not found"));
+        if (!shipmentAddress.getUser().getId().equals(user.getId())) {
+            throw new OwnershipMismatchException("Unauthorized to delete this shipment address");
+        }
+        shipmentAddressRepository.delete(shipmentAddress);
     }
 }

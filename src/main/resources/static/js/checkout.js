@@ -113,7 +113,7 @@ function renderCart(cart) {
 // Load user addresses
 async function loadAddresses() {
     try {
-        const res = await fetch('/api/shipment-address/all', {
+        const res = await fetch('/api/checkout/address/all', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -126,7 +126,7 @@ async function loadAddresses() {
         select.innerHTML = ''; // Clear old options
         addresses.forEach(addr => {
             const option = document.createElement('option');
-            option.value = addr.id;
+            option.value = addr.publicId;
             option.textContent = `${addr.fullName}, ${addr.street}, ${addr.city}, ${addr.country}`;
             select.appendChild(option);
         });
@@ -152,7 +152,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', async () => {
     const selectedAddressId = document.getElementById('addressSelect').value;
     const checkoutData = {
         uuidData: checkoutSession.uuidData, // from session
-        shipmentAddressId: parseInt(selectedAddressId),
+        shipmentAddressId: selectedAddressId,
         paymentMethodId: parseInt(selectedPaymentId), // not used for now
         cartFlag: checkoutSession.cartFlag
     };

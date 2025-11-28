@@ -10,7 +10,7 @@ import org.springframework.web.context.annotation.SessionScope;
 
 import com.tomcvt.brickshop.dto.CartDto;
 import com.tomcvt.brickshop.dto.FlatCartRowDto;
-import com.tomcvt.brickshop.exception.NoSuchEntityExistsException;
+import com.tomcvt.brickshop.exception.ProductNotFoundException;
 import com.tomcvt.brickshop.model.Product;
 import com.tomcvt.brickshop.repository.ProductRepository;
 
@@ -47,7 +47,7 @@ public class TempCart {
             if (items.get(i).getProductPublicId().equals(productPublicId)) {
                 items.get(i).setQuantity(items.get(i).getQuantity() + quantity);
                 Product product = productRepository.findByPublicId(productPublicId)
-                        .orElseThrow(() -> new NoSuchEntityExistsException(
+                        .orElseThrow(() -> new ProductNotFoundException(
                                 "Product not found with publicId: " + productPublicId));
                 return new FlatCartRowDto(
                         null,

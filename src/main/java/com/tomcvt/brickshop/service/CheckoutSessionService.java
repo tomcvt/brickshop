@@ -76,9 +76,9 @@ public class CheckoutSessionService {
     public Order closeSessionAndCreateOrderForUser(User user, CheckoutDataDto checkoutData) {
         //TODO implement Payment Method
         
-        Long addressId = checkoutData.getShipmentAddressId();
-        if (addressId == null) throw new IllegalArgumentException("No address selected");
-        ShipmentAddress address = shipmentAddressRepository.findById(addressId).orElseThrow(() -> new RuntimeException("No such address"));
+        UUID addresspublicId = checkoutData.getShipmentAddressId();
+        if (addresspublicId == null) throw new IllegalArgumentException("No address selected");
+        ShipmentAddress address = shipmentAddressRepository.findByPublicId(addresspublicId).orElseThrow(() -> new RuntimeException("No such address"));
         String addressString = address.addressToString();
 
         PaymentMethod paymentMethod = PaymentMethod.fromCode(checkoutData.getPaymentMethodId());

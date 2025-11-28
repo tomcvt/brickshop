@@ -49,3 +49,5 @@ com:
       username: ${SUPERUSER_USERNAME}
       password: ${SUPERUSER_PASSWORD}
       email: ${SUPERUSER_EMAIL}
+    cvtcaptcha:
+      key: ${CVTCAPTCHA_KEY}

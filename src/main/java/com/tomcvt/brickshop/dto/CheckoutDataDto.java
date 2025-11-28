@@ -4,10 +4,10 @@ import java.util.UUID;
 
 public class CheckoutDataDto {
     private String uuidData;
-    private Long shipmentAddressId;
+    private UUID shipmentAddressId;
     private Integer paymentMethodId;
     private UUID cartFlag;
-    public CheckoutDataDto(String uuidData, Long shipmentAddressId, Integer paymentMethodId) {
+    public CheckoutDataDto(String uuidData, UUID shipmentAddressId, Integer paymentMethodId) {
         this.uuidData = uuidData;
         this.shipmentAddressId = shipmentAddressId;
         this.paymentMethodId = paymentMethodId;
@@ -18,10 +18,10 @@ public class CheckoutDataDto {
     public void setUuidData(String uuidData) {
         this.uuidData = uuidData;
     }
-    public Long getShipmentAddressId() {
+    public UUID getShipmentAddressId() {
         return shipmentAddressId;
     }
-    public void setShipmentAddressId(Long shipmentAddressId) {
+    public void setShipmentAddressId(UUID shipmentAddressId) {
         this.shipmentAddressId = shipmentAddressId;
     }
     public Integer getPaymentMethodId() {
