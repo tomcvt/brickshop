@@ -1,36 +1,85 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Register</title>
+    <title>Register with Captcha</title>
     <link rel="stylesheet" href="/css/main.css" />
 </head>
-
 <body>
     <div class="content">
-        <form id="registerForm" class="register-form" action="/user/register" method="post">
+        <form id="registerForm" class="register-form">
             <h2>Register</h2>
             <p>
                 <label for="username" class="screenreader">Username</label>
-                <input type="text" id="username" placeholder="Username" required />
+                <input type="text" id="username" name="username" placeholder="Username" required />
             </p>
             <p>
                 <label for="email" class="screenreader">Email</label>
-                <input type="email" id="email" placeholder="Email" required />
+                <input type="email" id="email" name="email" placeholder="Email" required />
             </p>
             <p>
                 <label for="password" class="screenreader">Password</label>
-                <input type="password" id="password" placeholder="Password" required />
+                <input type="password" id="password" name="password" placeholder="Password" required />
             </p>
+            <div id="captchaContainer" style="margin: 20px 0;"></div>
             <div id="result" class="alert alert-danger" role="alert" style="display: none;">Invalid password</div>
             <div id="result-redirect" class="alert alert-success" role="alert" style="display: none;">Success</div>
             <button id="submit-button" type="submit" class="primary">Register</button>
         </form>
-
     </div>
-    <script src="/js/registration.js"></script>
-</body>
+    <script type="module">
+        import CaptchaModule from '/js/captchaModule.js';
+        let cvtCaptchaToken = null;
+        // Render captcha
+        CaptchaModule.Captcha({
+            type: 'CLICK_IN_ORDER',
+            createEndpoint: '/api/captcha/create',
+            solveEndpoint: '/api/captcha/solve',
+            onSuccess: (data, token) => {
+                cvtCaptchaToken = token;
+            }
+        }).renderInto('#captchaContainer');
 
+        document.getElementById('registerForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+            const resultRedirectDiv = document.getElementById('result-redirect');
+            resultDiv.style.display = 'none';
+            resultRedirectDiv.style.display = 'none';
+            if (!cvtCaptchaToken) {
+                resultDiv.textContent = 'Please solve the captcha first.';
+                resultDiv.style.display = 'block';
+                return;
+            }
+            try {
+                const response = await fetch('/user/register-w-captcha', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username,
+                        email,
+                        password,
+                        cvtCaptchaToken
+                    })
+                });
+                if (response.ok) {
+                    resultRedirectDiv.textContent = 'Registration successful! Redirecting...';
+                    resultRedirectDiv.style.display = 'block';
+                    setTimeout(() => window.location.href = '/', 1500);
+                } else {
+                    const error = await response.text();
+                    resultDiv.textContent = error || 'Registration failed.';
+                    resultDiv.style.display = 'block';
+                }
+            } catch (err) {
+                resultDiv.textContent = 'Network error: ' + err.message;
+                resultDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
 </html>

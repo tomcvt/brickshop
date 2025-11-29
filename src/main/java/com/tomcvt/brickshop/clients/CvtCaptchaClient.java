@@ -7,12 +7,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.tomcvt.brickshop.cvtcaptcha.CaptchaRequest;
 import com.tomcvt.brickshop.cvtcaptcha.CaptchaResponse;
+import com.tomcvt.brickshop.dto.CaptchaTokenResponse;
+import com.tomcvt.brickshop.dto.CaptchaVerificationResponse;
 
 import reactor.core.publisher.Mono;
 
 @Service
 public class CvtCaptchaClient {
-    private final String cvtCaptchaKey;
+    private volatile String cvtCaptchaKey;
     private final WebClient captchaWebClient;
 
     public CvtCaptchaClient(@Value("${com.tomcvt.cvtcaptcha.key}") String cvtCaptchaKey,
@@ -21,12 +23,16 @@ public class CvtCaptchaClient {
         this.captchaWebClient = captchaWebClient;
     }
 
-    public Mono<String> verifyCaptcha(String token) {
+    public void setCaptchaKey(String key) {
+        this.cvtCaptchaKey = key;
+    }
+
+    public Mono<CaptchaVerificationResponse> verifyCaptcha(String token) {
         return captchaWebClient.post()
                 .uri("/verify?token=" + token)
                 .header("X-API-KEY", cvtCaptchaKey)
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(CaptchaVerificationResponse.class);
     }
 
     public Mono<CaptchaResponse> getCaptcha(CaptchaRequest request) {
@@ -37,4 +43,14 @@ public class CvtCaptchaClient {
                 .retrieve()
                 .bodyToMono(CaptchaResponse.class);
     }
+
+    public Mono<CaptchaTokenResponse> getCaptchaToken() {
+        return captchaWebClient.post()
+                .uri("/token")
+                .header("X-API-KEY", cvtCaptchaKey)
+                .retrieve()
+                .bodyToMono(CaptchaTokenResponse.class);
+    }
+
+
 }
