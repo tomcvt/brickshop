@@ -19,15 +19,14 @@ public class SecurityConfig {
     private final AuthenticationManager authenticationManager;
     private final UserLoginSuccessHandler userLoginSuccessHandler;
     private final String[] WHITELIST = {
-        "/**",
         "/js/**",
         "/css/**",
         "/images/**",
         "/products", "/api/products",
         "/products/**", "/api/products/**",
         "/cart/**", "/api/cart/**",
-        "/login",
-        "/registration",
+        "/api/auth/**",
+        "/login", "/logout",
         "/api/public/**"
     };
     private final String[] PACKER_WHITELIST = {
@@ -35,6 +34,18 @@ public class SecurityConfig {
         "/api/packer/**",
         "/packer",
         "/api/packer"
+    };
+    private final String[] ADMIN_WHITELIST = {
+        "/admin/**",
+        "/api/admin/**",
+        "/admin",
+        "/api/admin"
+    };
+    private final String[] USER_WHITELIST = {
+        "/user/**",
+        "/api/user/**",
+        "/user",
+        "/api/user"
     };
     
     //TODO refactor for config properties later
@@ -52,9 +63,9 @@ public class SecurityConfig {
             .httpBasic(httpBasic -> httpBasic.disable())
             //.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/admin/**","/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/user/**","/api/user/**").hasAnyRole("ADMIN", "USER", "PACKER")
-                .requestMatchers(PACKER_WHITELIST).hasAnyRole("ADMIN", "PACKER")
+                .requestMatchers(ADMIN_WHITELIST).hasRole("ADMIN")
+                .requestMatchers(PACKER_WHITELIST).hasAnyRole("PACKER", "ADMIN")
+                .requestMatchers(USER_WHITELIST).hasAnyRole("ADMIN", "USER", "PACKER")
                 .requestMatchers(WHITELIST).permitAll()
                 .anyRequest().authenticated()
             )

@@ -13,6 +13,7 @@ import com.tomcvt.brickshop.exception.*;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private final static Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    //TODO refactor to reuturn standard error response body
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<String> handleResponseStatusException(ResponseStatusException ex) {
         log.error("ResponseStatusException: {}", ex);

@@ -4,6 +4,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tomcvt.brickshop.clients.CvtCaptchaClient;
+import com.tomcvt.brickshop.dto.CaptchaVerificationResponse;
 import com.tomcvt.brickshop.dto.PassPayload;
 import com.tomcvt.brickshop.exception.UserAlreadyExistsException;
 import com.tomcvt.brickshop.model.User;
@@ -11,11 +13,14 @@ import com.tomcvt.brickshop.repository.UserRepository;
 
 @Service
 public class AuthService {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AuthService.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private final CvtCaptchaClient cvtCaptchaClient;
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, CvtCaptchaClient cvtCaptchaClient) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.cvtCaptchaClient = cvtCaptchaClient;
     }
 
     @Transactional
@@ -31,6 +36,22 @@ public class AuthService {
         newUser.setEmail(email);
         newUser.setEnabled(true);
         return userRepository.save(newUser);
+    }
+    @Transactional
+    public User registerUserWithCaptcha(String username, String rawPassword, String email, String captchaToken, String role) {
+        validateCaptcha(captchaToken);
+        if (userRepository.findByUsername(username).isPresent()) {
+            throw new UserAlreadyExistsException("Username already exists");
+        }
+        validatePassword(rawPassword);
+        User newUser = new User();
+        newUser.setUsername(username);
+        newUser.setPassword(passwordEncoder.encode(rawPassword));
+        newUser.setRole(role);
+        newUser.setEmail(email);
+        newUser.setEnabled(false); // User is not activated by default
+        return userRepository.save(newUser);
+        //emailService.sendActivationEmail(newUser);
     }
 
     public User registerUser(String username, String rawPassword, String email, String role) {
@@ -57,7 +78,7 @@ public class AuthService {
         String pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         if (!password.matches(pattern)) {
             throw new IllegalArgumentException("Password must be at least 8 characters long and include " +
-                    "at least one uppercase letter, one lowercase letter, one digit, and one special character.");
+                    "at least one uppercase letter, one lowercase letter, one digit, and one special character (@$!%*?&).");
         }
     }
 
@@ -76,5 +97,19 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(newRawPassword));
         userRepository.save(user);
         return true;
+    }
+
+    public void validateCaptcha(String captchaToken) {
+        CaptchaVerificationResponse res = null;
+        try {
+            res = cvtCaptchaClient.verifyCaptcha(captchaToken)
+                .block();
+        } catch (Exception e) {
+            log.error("Captcha verification failed", e);
+            throw new IllegalArgumentException("Captcha verification failed");
+        }
+        if (res == null || !res.success()) {
+            throw new IllegalArgumentException("Invalid captcha token");
+        }
     }
 }

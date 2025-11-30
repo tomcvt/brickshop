@@ -8,9 +8,9 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import com.tomcvt.brickshop.clients.CvtCaptchaClient;
 import com.tomcvt.brickshop.cvtcaptcha.CaptchaRequest;
 import com.tomcvt.brickshop.cvtcaptcha.CaptchaResponse;
+import com.tomcvt.brickshop.dto.CaptchaSolution;
 import com.tomcvt.brickshop.dto.CaptchaTokenResponse;
 
-import io.micrometer.core.ipc.http.HttpSender.Response;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -41,10 +41,10 @@ public class CaptchaApiController {
     }
 
     @PostMapping("/solve")
-    public ResponseEntity<CaptchaTokenResponse> getCaptchaToken() {
+    public ResponseEntity<CaptchaTokenResponse> getCaptchaToken(@RequestBody CaptchaSolution solution) {
         CaptchaTokenResponse token = null;
         try {
-            token = cvtCaptchaClient.getCaptchaToken().block();
+            token = cvtCaptchaClient.getCaptchaToken(solution).block();
         } catch (WebClientResponseException e) {
             log.error("Error getting captcha token: " + e.getResponseBodyAsString(), e);
             return ResponseEntity.status(e.getStatusCode()).build();

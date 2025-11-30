@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.tomcvt.brickshop.dto.CartDto;
 import com.tomcvt.brickshop.dto.CustomerOrderDto;
+import com.tomcvt.brickshop.dto.ExtendedRegistrationRequest;
 import com.tomcvt.brickshop.dto.OrderSummaryDto;
 import com.tomcvt.brickshop.dto.PassPayload;
 import com.tomcvt.brickshop.dto.PublicIdDto;
@@ -42,13 +43,6 @@ public class UserApiController {
         this.orderService = orderService;
         this.cartService = cartService;
         this.shipmentAddressService = shipmentAddressService;
-    }
-
-    //TODO register user with email and role USER
-    @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody RegistrationRequest request) {
-        authService.registerUser(request.username(), request.rawPassword(), request.email(), "USER");
-        return ResponseEntity.ok("User " + request.username() + " registered successfully");
     }
 
     @PostMapping("/change-password")
