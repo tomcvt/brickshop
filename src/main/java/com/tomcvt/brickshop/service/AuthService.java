@@ -49,7 +49,7 @@ public class AuthService {
         newUser.setPassword(passwordEncoder.encode(rawPassword));
         newUser.setRole(role);
         newUser.setEmail(email);
-        newUser.setEnabled(false); // User is not activated by default
+        newUser.setEnabled(true); // User is not activated by default
         return userRepository.save(newUser);
         //emailService.sendActivationEmail(newUser);
     }

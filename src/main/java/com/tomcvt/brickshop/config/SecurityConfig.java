@@ -8,7 +8,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 
+import com.tomcvt.brickshop.auth.RateLimitingFilter;
 import com.tomcvt.brickshop.security.UserLoginSuccessHandler;
 
 @Configuration
@@ -18,16 +20,24 @@ public class SecurityConfig {
 
     private final AuthenticationManager authenticationManager;
     private final UserLoginSuccessHandler userLoginSuccessHandler;
+    private final RateLimitingFilter rateLimitingFilter;
     private final String[] WHITELIST = {
+        "/",
         "/js/**",
         "/css/**",
         "/images/**",
+        "/outsideimages/**",
         "/products", "/api/products",
         "/products/**", "/api/products/**",
         "/cart/**", "/api/cart/**",
         "/api/auth/**",
         "/login", "/logout",
-        "/api/public/**"
+        "/login.html", "/registration",
+        "/api/public/**",
+        "/mock-payment/**",
+        "/api/captcha/**",
+        "/.well-known/**",
+        "/error"
     };
     private final String[] PACKER_WHITELIST = {
         "/packer/**",
@@ -50,9 +60,12 @@ public class SecurityConfig {
     
     //TODO refactor for config properties later
 
-    SecurityConfig(AuthenticationManager authenticationManager, UserLoginSuccessHandler userLoginSuccessHandler) {
+    SecurityConfig(AuthenticationManager authenticationManager, UserLoginSuccessHandler userLoginSuccessHandler, 
+    RateLimitingFilter rateLimitingFilter
+    ) {
         this.authenticationManager = authenticationManager;
         this.userLoginSuccessHandler = userLoginSuccessHandler;
+        this.rateLimitingFilter = rateLimitingFilter;
     }
     
     @Bean
@@ -82,7 +95,8 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIONID")
                 .permitAll()
             )
-            .anonymous(Customizer.withDefaults());
+            .anonymous(Customizer.withDefaults())
+            .addFilterAfter(rateLimitingFilter, AnonymousAuthenticationFilter.class);
         return http.build();
     }
 }

@@ -26,9 +26,13 @@ public class TransactionCreator {
         transaction.setAmount(order.getTotalAmount());
         transaction.setStatus(PaymentStatus.PENDING);
         transaction.setPaymentMethod(order.getPaymentMethod());
+        /*
         String paymentToken = paymentHandler.getNewToken(
                 order.getPaymentMethod(), order.getTotalAmount()
         );
+        */
+        //TODO: in mock payment we just generate a dummy token, later integrate real payment gateway
+        String paymentToken = "PAYMENT-TOKEN-" + order.getOrderId();
         transaction.setPaymentToken(paymentToken);
         transaction = transactionRepository.save(transaction);
         // Additional transaction setup can be done here

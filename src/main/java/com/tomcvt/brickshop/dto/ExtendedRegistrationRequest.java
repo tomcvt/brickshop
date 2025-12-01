@@ -2,7 +2,7 @@ package com.tomcvt.brickshop.dto;
 
 public record ExtendedRegistrationRequest(
     String username,
-    String rawPassword,
+    String password,
     String email,
     String captchaToken,
     String role

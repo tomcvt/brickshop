@@ -28,7 +28,7 @@ public class AuthApiController {
     @PostMapping("/register-w-captcha")
     public ResponseEntity<String> registerUserWithCaptcha(@RequestBody ExtendedRegistrationRequest request) {
         String role = validateRoleForRegistration(request.role());
-        authService.registerUserWithCaptcha(request.username(), request.rawPassword(), request.email(), request.captchaToken(), role);
+        authService.registerUserWithCaptcha(request.username(), request.password(), request.email(), request.captchaToken(), role);
         return ResponseEntity.ok("User " + request.username() + " registered successfully");
     }
 
@@ -36,7 +36,7 @@ public class AuthApiController {
         if (role == null || role.isBlank()) {
             return "USER";
         }
-        if (role.equals("USER") || role.equals("ADMIN")) {
+        if (role.equals("USER") || role.equals("PACKER")) {
             return role;
         }
         throw new IllegalArgumentException("Invalid role for registration: " + role);

@@ -29,7 +29,7 @@ public class CvtCaptchaClient {
     }
 
     public Mono<CaptchaVerificationResponse> verifyCaptcha(String token) {
-        return captchaWebClient.post()
+        return captchaWebClient.get()
                 .uri("/api/captcha/verify?token=" + token)
                 .header("X-API-KEY", cvtCaptchaKey)
                 .retrieve()

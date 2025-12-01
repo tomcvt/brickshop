@@ -51,3 +51,6 @@ com:
       email: ${SUPERUSER_EMAIL}
     cvtcaptcha:
       key: ${CVTCAPTCHA_KEY}
+    rate-limiter:
+      max-requests: 120
+      time-window-seconds: 60
