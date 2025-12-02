@@ -3,10 +3,11 @@ package com.tomcvt.brickshop.enums;
 public enum OrderStatus {
     PENDING(0, "Pending"),
     PROCESSING(1, "Processing"),
-    SHIPPED(2, "Shipped"),
-    DELIVERED(3, "Delivered"),
-    CANCELLED(4, "Cancelled"),
-    PACKED(5, "Packed");
+    PACKED(2, "Packed"),
+    SHIPPED(3, "Shipped"),
+    DELIVERED(4, "Delivered"),
+    CANCELLED(5, "Cancelled");
+    
 
     private final int code;
     private final String label;

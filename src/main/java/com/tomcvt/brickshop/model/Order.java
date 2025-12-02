@@ -1,6 +1,7 @@
 package com.tomcvt.brickshop.model;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +15,8 @@ import jakarta.persistence.*;
     @Index(name = "idx_order_order_id", columnList = "order_id"),
     @Index(name = "idx_order_user_id", columnList = "user_id"),
     @Index(name = "idx_order_checkout_session_id", columnList = "checkout_session_id"),
-    @Index(name = "idx_order_status", columnList = "status")
+    @Index(name = "idx_order_status_created_at", columnList = "status, created_at"),
+    @Index(name = "idx_order_created_at", columnList = "created_at")
 })
 public class Order {
     @Id
@@ -31,6 +33,8 @@ public class Order {
     private String shippingAddressString;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt = Instant.now();
     private BigDecimal totalAmount;
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
@@ -78,6 +82,12 @@ public class Order {
     public void setStatus(OrderStatus status) {
         this.status = status;
     }
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
     public BigDecimal getTotalAmount() {
         return totalAmount;
     }
@@ -116,6 +126,7 @@ public class Order {
             this.cart.getId(),
             this.shippingAddressString,
             this.status,
+            this.createdAt,
             this.totalAmount,
             this.paymentMethod,
             this.currentTransaction != null ? this.currentTransaction.getStatus() : null,

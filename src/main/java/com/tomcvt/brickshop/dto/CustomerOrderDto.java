@@ -1,6 +1,7 @@
 package com.tomcvt.brickshop.dto;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 
 import com.tomcvt.brickshop.enums.OrderStatus;
@@ -13,12 +14,14 @@ public class CustomerOrderDto {
     private Long cartId;
     private String shippingAddressString;
     private OrderStatus status;
+    private Instant createdAt;
     private BigDecimal totalAmount;
     private PaymentMethod paymentMethod;
     private PaymentStatus paymentStatus;
     private UUID checkoutSessionId;
 
-    public CustomerOrderDto(Long orderId, String username, Long cartId, String shippingAddressString, OrderStatus status,
+    public CustomerOrderDto(Long orderId, String username, Long cartId, String shippingAddressString, OrderStatus status, 
+            Instant createdAt,
             BigDecimal totalAmount, PaymentMethod paymentMethod, PaymentStatus paymentStatus,
             UUID checkoutSessionId) {
         this.orderId = orderId;
@@ -60,6 +63,12 @@ public class CustomerOrderDto {
     }
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
     public BigDecimal getTotalAmount() {
         return totalAmount;
