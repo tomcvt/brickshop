@@ -3,6 +3,7 @@ package com.tomcvt.brickshop.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import com.tomcvt.brickshop.dto.CustomerOrderDto;
@@ -17,7 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
     List<Order> findAllByUser(User user);
     Optional<Order> findByCheckoutSessionId(UUID uuid);
     @Query("""
@@ -107,16 +108,22 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
         WHERE o.orderId = :orderId AND o.user = :user
     """)
     Optional<String> findPaymentTokenByOrderIdAndUser(Long orderId, User user);
+    //METHODS FOR FLEXIBLE QUERYING OF ORDERS
     @Query("""
         SELECT o.id
         FROM Order o
         WHERE o.status = :status AND o.createdAt < :createdAt
     """)
     Page<Long> findOrderIdsByStatusAndCreatedAtBefore(OrderStatus status, Instant createdAt, Pageable pageable);
+
     @Query("""
         SELECT o
         FROM Order o
         JOIN FETCH o.user
-        JOIN FETCH o.
-            """)
+        JOIN FETCH o.cart
+        LEFT JOIN FETCH o.currentTransaction
+        WHERE o.id IN :ids
+    """)
+    List<Order> findAllByIdInWithUserCartAndTransaction(List<Long> ids);
+
 }

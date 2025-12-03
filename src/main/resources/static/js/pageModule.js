@@ -12,7 +12,7 @@
     *   currentSize = opts.size;
     *   currentQuery = opts.query;
     *   currentState = opts.state;
-    *   // opts: { page, query, state }
+    *   // opts: { page, query, state, size }
     * }, {
     * navBarIds: ['topNavBar', 'bottomNavBar'], // IDs of navigation bars (for now empty div to render data in)
     * getCurrentPage: () => currentPage,

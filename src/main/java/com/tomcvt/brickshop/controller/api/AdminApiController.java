@@ -3,16 +3,23 @@ package com.tomcvt.brickshop.controller.api;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import com.tomcvt.brickshop.dto.CustomerOrderDto;
 import com.tomcvt.brickshop.dto.ProductDto;
 import com.tomcvt.brickshop.dto.ProductInput;
+import com.tomcvt.brickshop.model.Order;
 import com.tomcvt.brickshop.model.Product;
 import com.tomcvt.brickshop.model.WrapUserDetails;
+import com.tomcvt.brickshop.pagination.SimplePage;
 import com.tomcvt.brickshop.service.CategoryService;
+import com.tomcvt.brickshop.service.OrderService;
 import com.tomcvt.brickshop.service.ProductService;
 import com.tomcvt.brickshop.session.ImageOrderValidator;
 
@@ -28,14 +35,17 @@ public class AdminApiController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private final ImageOrderValidator imageOrderValidator;
+    private final OrderService orderService;
 
     public AdminApiController(
             ProductService productService,
             ImageOrderValidator imageOrderValidator,
-            CategoryService categoryService) {
+            CategoryService categoryService,
+            OrderService orderService) {
         this.productService = productService;
         this.imageOrderValidator = imageOrderValidator;
         this.categoryService = categoryService;
+        this.orderService = orderService;
     }
 
     @GetMapping("/info")
@@ -89,5 +99,19 @@ public class AdminApiController {
                 ResponseEntity.status(400).body("Category removal failed");
     }
     //TODO add more admin endpoints for order management, user management, etc.
-
+    @GetMapping("/orders/search")
+    public ResponseEntity<SimplePage<CustomerOrderDto>> searchOrders(
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String paymentMethod,
+            @RequestParam(required = false) String createdBefore,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Order> orderPage = orderService.searchOrdersByCriteria(username, status, paymentMethod, createdBefore, pageable);
+        SimplePage<CustomerOrderDto> simpleOrderPage = SimplePage.fromPage(
+                orderPage.map(Order::toCustomerOrderDto)
+        );
+        return ResponseEntity.ok().body(simpleOrderPage);
+    }
 }

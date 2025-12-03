@@ -1,8 +1,14 @@
 package com.tomcvt.brickshop.service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -20,8 +26,11 @@ import com.tomcvt.brickshop.exception.NotAuthorizedException;
 import com.tomcvt.brickshop.model.Cart;
 import com.tomcvt.brickshop.model.Order;
 import com.tomcvt.brickshop.model.User;
+import com.tomcvt.brickshop.pagination.SimplePage;
 import com.tomcvt.brickshop.repository.OrderRepository;
 import com.tomcvt.brickshop.repository.UserRepository;
+import com.tomcvt.brickshop.searching.OrderSearchCriteria;
+import com.tomcvt.brickshop.searching.OrderSpecifications;
 import com.tomcvt.brickshop.utility.mockpayment.PaymentToken;
 
 @Service
@@ -93,6 +102,41 @@ public class OrderService {
         order.getCurrentTransaction().setStatus(PaymentStatus.COMPLETED);
         orderRepository.save(order);
         return true;
+    }
+
+    public Page<Order> searchOrdersByCriteria(
+            String username, String status, String paymentMethod, String createdBefore, Pageable pageable) {
+        Sort sort = Sort.by("createdAt").descending();
+        if (username.isEmpty()) username = null;
+        OrderStatus orderStatus = status != null ? parseOrderStatus(status) : null;
+        PaymentMethod paymentMethodEnum = paymentMethod != null ? parsePaymentMethod(paymentMethod) : null;
+        Instant createdBeforeInstant = Instant.parse(createdBefore);
+        OrderSearchCriteria criteria = new OrderSearchCriteria(
+            username,
+            orderStatus,
+            paymentMethodEnum,
+            createdBeforeInstant
+        );
+        Specification<Order> spec = OrderSpecifications.withFilters(criteria);
+        Pageable pageSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        Page<Order> orderPage = orderRepository.findAll(spec, pageSort);
+        return orderPage;
+    }
+
+    private PaymentMethod parsePaymentMethod(String paymentMethodStr) {
+        try {
+            return PaymentMethod.valueOf(paymentMethodStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    private OrderStatus parseOrderStatus(String statusStr) {
+        try {
+            return OrderStatus.valueOf(statusStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
 }
