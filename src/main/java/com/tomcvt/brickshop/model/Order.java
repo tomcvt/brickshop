@@ -5,6 +5,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.tomcvt.brickshop.dto.CustomerOrderDto;
 import com.tomcvt.brickshop.enums.*;
 
@@ -39,8 +42,10 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OrderBy("createdAt DESC")
+    @Fetch(FetchMode.SUBSELECT)
     private List<TransactionEntity> transactions;
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "current_transaction_id")
     private TransactionEntity currentTransaction;
     @Column(name = "checkout_session_id", columnDefinition = "uuid", nullable = false)

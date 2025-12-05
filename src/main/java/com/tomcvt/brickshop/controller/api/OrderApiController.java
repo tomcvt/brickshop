@@ -65,6 +65,10 @@ public class OrderApiController {
             return ResponseEntity.status(403).build();
         }
         User user = userDetails.getUser();
+
+        //TODO handle different behaviours based on result
+        //TODO return json with status, new transaction id etc.
+        // acutally just return 200 and for failure make frontend call api to create new transaction
         if(orderService.verifyPaymentAndUpdateOrderStatus(orderId, user)) {
             return ResponseEntity.ok().body("Payment verified and order updated");
         } else {

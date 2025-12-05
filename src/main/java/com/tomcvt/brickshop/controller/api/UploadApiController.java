@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.tomcvt.brickshop.service.ProductImageService;
 
 @RestController
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN','SUPERUSER')")
 @RequestMapping("/api/upload")
 public class UploadApiController {
 

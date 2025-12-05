@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users", indexes = {
-    @Index(name = "idx_user_username", columnList = "username")
+    @Index(name = "idx_user_username", columnList = "username"),
+    @Index(name = "idx_user_email", columnList = "email"),
+    @Index(name = "idx_user_role", columnList = "role")
 })
 public class User {
     @Id

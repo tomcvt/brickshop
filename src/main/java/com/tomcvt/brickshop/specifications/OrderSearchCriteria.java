@@ -1,4 +1,4 @@
-package com.tomcvt.brickshop.searching;
+package com.tomcvt.brickshop.specifications;
 
 import java.time.Instant;
 

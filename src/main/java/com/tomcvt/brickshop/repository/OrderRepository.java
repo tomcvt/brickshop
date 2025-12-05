@@ -28,6 +28,14 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
     Optional<Order> findByCheckoutSessionIdWithTransaction(UUID uuid);
     Optional<Order> findByOrderId(Long orderId);
     Optional<Order> findByOrderIdAndUser(Long orderId, User user);
+    @Query("""
+        SELECT DISTINCT o FROM Order o
+        LEFT JOIN FETCH o.user
+        LEFT JOIN FETCH o.currentTransaction
+        LEFT JOIN FETCH o.transactions
+        WHERE o.orderId = :orderId
+    """)
+    Optional<Order> findByOrderIdWithTransactionsAndUser(Long orderId);
     @Query("SELECT MAX(o.orderId) FROM Order o")
     Long findMaxOrderId();
     @Query("""

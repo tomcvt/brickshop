@@ -1,8 +1,10 @@
 package com.tomcvt.brickshop.model;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 
+import com.tomcvt.brickshop.dto.TransactionDto;
 import com.tomcvt.brickshop.enums.PaymentMethod;
 import com.tomcvt.brickshop.enums.PaymentStatus;
 
@@ -19,6 +21,8 @@ public class TransactionEntity {
     private Long id;
     @Column(name="transaction_id", nullable = false, unique = true, columnDefinition = "uuid")
     private UUID transactionId = UUID.randomUUID();
+    private Instant createdAt = Instant.now();
+    private Instant updatedAt = Instant.now();
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="order_id", nullable = false)
     private Order order;
@@ -38,6 +42,18 @@ public class TransactionEntity {
     }
     public void setTransactionId(UUID transactionId) {
         this.transactionId = transactionId;
+    }
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
     }
     public Order getOrder() {
         return order;
@@ -68,5 +84,17 @@ public class TransactionEntity {
     }
     public void setPaymentToken(String paymentToken) {
         this.paymentToken = paymentToken;
+    }
+
+    public TransactionDto toTransactionDto() {
+        return new TransactionDto(
+            this.transactionId,
+            this.createdAt.toString(),
+            this.updatedAt.toString(),
+            this.status,
+            this.paymentMethod,
+            this.amount,
+            this.paymentToken
+        );
     }
 }

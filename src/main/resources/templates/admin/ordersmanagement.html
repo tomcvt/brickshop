@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Admin Panel - Orders Management</title>
+	<link rel="stylesheet" href="/css/main.css" />
+	<link rel="stylesheet" href="/css/ordersmanagement.css" />
+</head>
+<body>
+	<div class="content-wide">
+		<h2>Orders Management</h2>
+		<div class="orders-header">
+			<div class="order-header-cell order-id">
+				<span class="order-header-label">Order ID</span>
+				<div class="order-header-input" style="height:32px;"></div>
+			</div>
+			<div class="order-header-cell username">
+				<span class="order-header-label">Username</span>
+				<input id="filter-username" class="order-header-input" type="text" placeholder="Username" autocomplete="off" />
+			</div>
+			<div class="order-header-cell cart-id">
+				<span class="order-header-label">Cart ID</span>
+				<div class="order-header-input" style="height:32px;"></div>
+			</div>
+			<div class="order-header-cell status">
+				<span class="order-header-label">Order Status</span>
+				<select id="filter-orderStatus" class="order-header-select">
+					<option value="">All</option>
+                    <option value="PENDING">PENDING</option>
+                    <option value="PROCESSING">PROCESSING</option>
+                    <option value="PACKED">PACKED</option>
+                    <option value="SHIPPED">SHIPPED</option>
+                    <option value="DELIVERED">DELIVERED</option>
+                    <option value="CANCELLED">CANCELLED</option>
+				</select>
+			</div>
+			<div class="order-header-cell payment-method">
+				<span class="order-header-label">Payment Method</span>
+				<select id="filter-paymentMethod" class="order-header-select">
+					<option value="">All</option>
+					<option value="CREDIT_CARD">CREDIT_CARD</option>
+                    <option value="PAYPAL">PAYPAL</option>
+                    <option value="BANK_TRANSFER">BANK_TRANSFER</option>
+				</select>
+			</div>
+			<div class="order-header-cell created-at">
+				<span class="order-header-label">Created Before</span>
+				<input id="filter-createdBefore" class="order-header-input" type="text" placeholder="YYYY-MM-DDTHH:MM:SS" />
+			</div>
+			<div class="order-header-cell total-amount">
+				<span class="order-header-label">Total Amount</span>
+				<div class="order-header-input" style="height:32px;"></div>
+			</div>
+			<div class="order-header-btn-cell">
+				<button id="searchBtn" class="btn btn-primary btn-small" style="width:100%;">Search</button>
+			</div>
+		</div>
+		<div id="ordersNavBar"></div>
+		<div id="ordersList"></div>
+		<div class="message" id="ordersMessage"></div>
+	</div>
+	<script type="module" src="/js/ordersmanagement.js"></script>
+</body>
+</html>

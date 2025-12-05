@@ -49,6 +49,12 @@ body {
     line-height: 1.5;
 }
 
+.content-wide {
+    max-width: 1600px;
+    margin: var(--space-xl) auto;
+    padding: var(--space-md);
+}
+
 .content {
     max-width: 1200px;
     margin: var(--space-xl) auto;

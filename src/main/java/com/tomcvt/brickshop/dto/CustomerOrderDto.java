@@ -14,7 +14,7 @@ public class CustomerOrderDto {
     private Long cartId;
     private String shippingAddressString;
     private OrderStatus status;
-    private Instant createdAt;
+    private String createdAt;
     private BigDecimal totalAmount;
     private PaymentMethod paymentMethod;
     private PaymentStatus paymentStatus;
@@ -29,6 +29,7 @@ public class CustomerOrderDto {
         this.cartId = cartId;
         this.shippingAddressString = shippingAddressString;
         this.status = status;
+        this.createdAt = createdAt.toString();
         this.totalAmount = totalAmount;
         this.paymentMethod = paymentMethod;
         this.paymentStatus = paymentStatus;
@@ -64,11 +65,14 @@ public class CustomerOrderDto {
     public void setStatus(OrderStatus status) {
         this.status = status;
     }
-    public Instant getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
-    public void setCreatedAt(Instant createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt.toString();
     }
     public BigDecimal getTotalAmount() {
         return totalAmount;

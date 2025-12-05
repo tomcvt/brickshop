@@ -31,4 +31,13 @@ public class AdminController {
         model.addAttribute("publicId", publicId);
         return "editproduct";
     }
+    @GetMapping("/admin/manage-orders")
+    public String getOrdersManagementPage() {
+        return "admin/ordersmanagement";
+    }
+    @GetMapping("/admin/manage-orders/{orderId}")
+    public String getOrderDetailsPage(@PathVariable Long orderId, Model model) {
+        model.addAttribute("orderId", orderId);
+        return "admin/order-full-details";
+    }
 }

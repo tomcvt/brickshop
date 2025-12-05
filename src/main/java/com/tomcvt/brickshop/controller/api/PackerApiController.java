@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/packer")
-@PreAuthorize("hasAnyRole('ADMIN','PACKER')")
+@PreAuthorize("hasAnyRole('ADMIN','PACKER','MODERATOR','SUPERUSER')")
 public class PackerApiController {
     private final PackingService packingService;
 

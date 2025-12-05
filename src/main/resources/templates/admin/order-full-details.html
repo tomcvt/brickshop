@@ -1,0 +1,16 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Order Details</title>
+	<link rel="stylesheet" href="/css/main.css" />
+	<link rel="stylesheet" href="/css/order-full-details.css" />
+</head>
+<body th:attr="data-order-id=${orderId}">
+	<div class="order-details-panel" id="order-details-panel">
+		<!-- Populated by JS -->
+	</div>
+	<script type="module" src="/js/order-full-details.js"></script>
+</body>
+</html>

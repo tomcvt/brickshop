@@ -1,0 +1,101 @@
+/* Orders Full Details Page Custom Styles 
+@import url('/css/main.css');
+*/
+.order-details-panel {
+    background: #fff;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-lg);
+    max-width: 900px;
+    margin: var(--space-xl) auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.order-details-title {
+    text-align: center;
+    color: var(--color-heading);
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+}
+
+.field-label {
+    font-size: 1.05rem;
+    color: var(--color-subheading);
+    font-weight: 500;
+    margin-bottom: 2px;
+    min-width: 120px;
+}
+
+.field-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 0;
+}
+
+.cell {
+    font-size: 1.18rem;
+    font-weight: 500;
+    color: var(--color-heading);
+    background: #f5f6fa;
+    border-radius: var(--radius-sm);
+    padding: 8px 16px;
+    min-width: 120px;
+    text-align: left;
+    box-shadow: var(--shadow-sm);
+    transition: background 0.2s;
+}
+
+.cell.highlight {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.transactions-toggle {
+    cursor: pointer;
+    color: var(--color-primary);
+    font-weight: 600;
+    user-select: none;
+    transition: color 0.2s;
+}
+.transactions-toggle:hover {
+    color: var(--color-primary-hover);
+}
+
+.transactions-list {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+    margin-left: 24px;
+}
+.transactions-list.open {
+    display: flex;
+}
+.transaction-row {
+    display: flex;
+    gap: 16px;
+    background: #f9fafb;
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    box-shadow: var(--shadow-sm);
+    align-items: center;
+}
+.transaction-label {
+    font-size: 0.98rem;
+    color: var(--color-subheading);
+    min-width: 90px;
+}
+
+#cart-section-placeholder {
+    margin-top: var(--space-lg);
+    padding: var(--space-md);
+    background: #f5f6fa;
+    border-radius: var(--radius-md);
+    text-align: center;
+    color: var(--color-subheading);
+    font-style: italic;
+}
