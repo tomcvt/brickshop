@@ -1,5 +1,7 @@
 package com.tomcvt.brickshop.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,7 @@ import com.tomcvt.brickshop.specifications.UserSpecifications;
 public class UserService {
     
     private final UserRepository userRepository;
+    private static final List<String> VALID_ROLES = List.of("USER", "ADMIN", "SUPERUSER", "PACKER", "MODRATOR");
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -26,8 +29,13 @@ public class UserService {
         return userRepository.findByUsername(username).orElse(null);
     }
 
-    public Page<User> searchUsersByCriteria(String username, String email, String role, Pageable pageable) {
-        var criteria = new UserSearchCriteria(username, email, role);
+    public Page<User> searchUsersByCriteria(String username, String email, String role, Boolean enabled, Pageable pageable) {
+        if (role != null && VALID_ROLES.contains(role.toUpperCase())) {
+            role = role.toUpperCase();
+        } else if (role != null) {
+            role = null; // Invalid role, ignore the filter
+        }
+        var criteria = new UserSearchCriteria(username, email, role, enabled);
         Specification<User> spec = UserSpecifications.withFilters(criteria);
         Sort sort = Sort.by("id").ascending();
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);

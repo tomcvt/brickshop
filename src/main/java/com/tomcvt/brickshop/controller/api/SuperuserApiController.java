@@ -30,11 +30,12 @@ public class SuperuserApiController {
             @RequestParam(name = "username", required = false) String username,
             @RequestParam(name = "email", required = false) String email,
             @RequestParam(name = "role", required = false) String role,
+            @RequestParam(name = "enabled", required = false) Boolean enabled,
             @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
             @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
         // Implementation goes here
         Pageable pageable = PageRequest.of(page, size);
-        Page<User> usersPage = userService.searchUsersByCriteria(username, email, role, pageable);
+        Page<User> usersPage = userService.searchUsersByCriteria(username, email, role, enabled, pageable);
         SimplePage<UserDto> userDtos = SimplePage.from(usersPage, mapper::toUserDto);
         return ResponseEntity.ok().body(userDtos);
     }

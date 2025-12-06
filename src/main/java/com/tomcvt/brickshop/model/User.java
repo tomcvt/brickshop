@@ -6,7 +6,8 @@ import jakarta.persistence.*;
 @Table(name = "users", indexes = {
     @Index(name = "idx_user_username", columnList = "username"),
     @Index(name = "idx_user_email", columnList = "email"),
-    @Index(name = "idx_user_role", columnList = "role")
+    @Index(name = "idx_user_role", columnList = "role"),
+    @Index(name = "idx_user_enabled", columnList = "enabled")
 })
 public class User {
     @Id
@@ -77,6 +78,6 @@ public class User {
     }
 
     public boolean isStaff() {
-        return "STAFF".equals(this.role) || "ADMIN".equals(this.role);
+        return "STAFF".equals(this.role) || "ADMIN".equals(this.role) || "SUPERUSER".equals(this.role);
     }
 }

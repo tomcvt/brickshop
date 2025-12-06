@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Superuser Panel - Users Management</title>
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/users-management.css" />
+</head>
+<body>
+    <div class="content-wide">
+        <h2>Users Management</h2>
+        <div class="users-header">
+            <div class="user-header-cell username">
+                <span class="user-header-label">Username</span>
+                <input id="filter-username" class="user-header-input" type="text" placeholder="Username" autocomplete="off" />
+            </div>
+            <div class="user-header-cell email">
+                <span class="user-header-label">Email</span>
+                <input id="filter-email" class="user-header-input" type="text" placeholder="Email" autocomplete="off" />
+            </div>
+            <div class="user-header-cell role">
+                <span class="user-header-label">Role</span>
+                <select id="filter-role" class="user-header-select">
+                    <option value="">All</option>
+                    <option value="ADMIN">ADMIN</option>
+                    <option value="PACKER">PACKER</option>
+                    <option value="MODERATOR">MODERATOR</option>
+                    <option value="USER">USER</option>
+                    <option value="SUPERUSER">SUPERUSER</option>
+                </select>
+            </div>
+            <div class="user-header-cell enabled">
+                <span class="user-header-label">Enabled</span>
+                <select id="filter-enabled" class="user-header-select">
+                    <option value="">All</option>
+                    <option value="true">Enabled</option>
+                    <option value="false">Disabled</option>
+                </select>
+            </div>
+            <div class="user-header-btn-cell">
+                <button id="searchBtn" class="btn btn-primary btn-small" style="width:100%;">Search</button>
+            </div>
+        </div>
+        <div id="usersNavBar"></div>
+        <div id="usersList"></div>
+        <div class="message" id="usersMessage"></div>
+    </div>
+    <script type="module" src="/js/users-management.js"></script>
+</body>
+</html>

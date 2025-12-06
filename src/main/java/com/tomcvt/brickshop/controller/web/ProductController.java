@@ -1,4 +1,4 @@
-package com.tomcvt.brickshop.controller;
+package com.tomcvt.brickshop.controller.web;
 
 import java.util.UUID;
 

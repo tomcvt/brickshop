@@ -10,10 +10,11 @@ public class UserMapper {
 
     public UserDto toUserDto(User user) {
         return new UserDto(
-            user.getId(),
+            null,
             user.getUsername(),
             user.getEmail(),
-            user.getRole()
+            user.getRole(),
+            user.isEnabled()
         );
     }
 }

@@ -1,4 +1,4 @@
-package com.tomcvt.brickshop.controller;
+package com.tomcvt.brickshop.controller.web;
 
 import java.util.UUID;
 
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN','SUPERUSER', 'MODERATOR')")
 public class AdminController {
     @GetMapping("/admin")
     public String getAdminpanel() {
@@ -31,11 +31,11 @@ public class AdminController {
         model.addAttribute("publicId", publicId);
         return "editproduct";
     }
-    @GetMapping("/admin/manage-orders")
+    @GetMapping("/admin/orders")
     public String getOrdersManagementPage() {
         return "admin/ordersmanagement";
     }
-    @GetMapping("/admin/manage-orders/{orderId}")
+    @GetMapping("/admin/orders/{orderId}")
     public String getOrderDetailsPage(@PathVariable Long orderId, Model model) {
         model.addAttribute("orderId", orderId);
         return "admin/order-full-details";

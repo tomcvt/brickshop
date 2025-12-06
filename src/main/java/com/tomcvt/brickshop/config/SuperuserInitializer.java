@@ -34,7 +34,7 @@ public class SuperuserInitializer {
             superuser.setUsername(username);
             superuser.setPassword(password); // In a real application, ensure this is hashed
             superuser.setEmail(email);
-            superuser.setRole("ADMIN");
+            superuser.setRole("SUPERUSER");
             superuser.setEnabled(true);
             userRepository.save(superuser);
             log.info("Superuser created with username: {}", username);

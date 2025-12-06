@@ -39,6 +39,12 @@ public class SecurityConfig {
         "/.well-known/**",
         "/error"
     };
+    private final String[] SUPERUSER_WHITELIST = {
+        "/superuser/**",
+        "/api/superuser/**",
+        "/superuser",
+        "/api/superuser"
+    };
     private final String[] PACKER_WHITELIST = {
         "/packer/**",
         "/api/packer/**",
@@ -76,9 +82,10 @@ public class SecurityConfig {
             .httpBasic(httpBasic -> httpBasic.disable())
             //.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(ADMIN_WHITELIST).hasRole("ADMIN")
-                .requestMatchers(PACKER_WHITELIST).hasAnyRole("PACKER", "ADMIN")
-                .requestMatchers(USER_WHITELIST).hasAnyRole("ADMIN", "USER", "PACKER")
+                .requestMatchers(SUPERUSER_WHITELIST).hasRole("SUPERUSER")
+                .requestMatchers(ADMIN_WHITELIST).hasAnyRole("ADMIN", "SUPERUSER", "MODERATOR")
+                .requestMatchers(PACKER_WHITELIST).hasAnyRole("PACKER", "ADMIN", "SUPERUSER", "MODERATOR")
+                .requestMatchers(USER_WHITELIST).hasAnyRole("ADMIN", "USER", "PACKER", "SUPERUSER", "MODERATOR")
                 .requestMatchers(WHITELIST).permitAll()
                 .anyRequest().authenticated()
             )

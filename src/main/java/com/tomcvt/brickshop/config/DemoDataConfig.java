@@ -1,5 +1,7 @@
 package com.tomcvt.brickshop.config;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -41,13 +43,16 @@ public class DemoDataConfig implements ApplicationListener<ApplicationReadyEvent
         }
         if (env.acceptsProfiles(Profiles.of("dev"))) {
             log.info("Application is running with 'dev' profile. Demo data is available.");
-            User adminUser = userRepository.findByUsername("superuser").orElse(null);
-            if (adminUser != null) {
-                adminUser.setPassword(passwordEncoder.encode("123")); // In a real application, ensure passwords are hashed
-                userRepository.save(adminUser);
-            } else {
-                log.warn("Admin user not found in the database.");
-            }
+            makeDevPasswordsSimple();
+            log.info("All user passwords have been set to '123' for development purposes.");
+        }
+    }
+
+    private void makeDevPasswordsSimple() {
+        List<User> users = userRepository.findAll();
+        for (User user : users) {
+            user.setPassword(passwordEncoder.encode("123"));
+            userRepository.save(user);
         }
     }
 }

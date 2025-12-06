@@ -29,7 +29,7 @@ function renderOrders(simplePage) {
             <div class="order-cell created-at">${order.createdAt ? order.createdAt.replace('T', ' ').slice(0, 19) : ''}</div>
             <div class="order-cell total-amount">${order.totalAmount ?? ''}</div>
             <div class="order-cell details-btn-cell">
-                <button class="btn btn-primary btn-small" onclick="window.location.href='/admin/manage-orders/${order.orderId}'">Details</button>
+                <button class="btn btn-primary btn-small" onclick="window.location.href='/admin/orders/${order.orderId}'">Details</button>
             </div>
         `;
         listDiv.appendChild(row);

@@ -19,6 +19,13 @@ import jakarta.servlet.http.HttpServletResponse;
 public class RateLimitingFilter extends OncePerRequestFilter {
     private final RateLimiterService rateLimiterService;
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
+    private static final String[] EXCLUDE_URLS = {
+        "/js/**",
+        "/css/**",
+        "/images/**",
+        "/outsideimages/**",
+        "/.well-known/**"
+    };
 
     public RateLimitingFilter(RateLimiterService rateLimiterService) {
         this.rateLimiterService = rateLimiterService;
@@ -37,16 +44,19 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         }
 
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+        //For now, rate limit everyone except static resources
+        /*
         if (principal instanceof WrapUserDetails) {
             // Authenticated users are not rate-limited
             filterChain.doFilter(request, response);
             return;
         }
-
-        if (pathMatcher.match("/outsideimages/**", request.getRequestURI())) {
-            filterChain.doFilter(request, response);
-            return;
+            */
+        for (String url : EXCLUDE_URLS) {
+            if (pathMatcher.match(url, request.getRequestURI())) {
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
 
         boolean allowed = rateLimiterService.checkAndIncrement(clientIp);

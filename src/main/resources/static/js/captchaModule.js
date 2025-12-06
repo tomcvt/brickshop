@@ -108,7 +108,7 @@ const CaptchaModule = {
             });
         }
 
-        async function verifyCaptchaAndGetToken(solution) {
+        async function verifyCaptchaAndGetToken(userSolution) {
             const isSolved = await verifyCaptcha(userSolution);
             if (isSolved) {
                 alert('Captcha solved successfully!');
@@ -155,12 +155,9 @@ const CaptchaModule = {
                 }
                 //Render captcha based on type
                 if (config.type === 'CLICK_IN_ORDER') {
-                    //For now log the solution
-                    console.log('Captcha Solution (for testing):', captchaData.imageUrl);
                     img.src = captchaData.imageUrl;
                     imgWrapper.appendChild(img);
                     moduleBox.appendChild(imgWrapper);
-                    //Additional logic to handle click in order can be added here
                 }
                 const submitButton = document.createElement('button');
                 submitButton.textContent = 'Submit Captcha';
@@ -196,15 +193,6 @@ function createMarker(x, y, index) {
     marker.textContent = index;
     return marker;
 }
-
-//Example usage:
-//const captcha = CaptchaModule.Captcha({ type: 'CLICK_IN_ORDER' });
-//captcha.render('#captchaDiv'); // Renders when ready
-// Later, check if solved:
-
-//if (captcha.isSolved()) {
-//    // proceed
-//}
 
 if (typeof window !== 'undefined') {
     window.CaptchaModule = CaptchaModule;

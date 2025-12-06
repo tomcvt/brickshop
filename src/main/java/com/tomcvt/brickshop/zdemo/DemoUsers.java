@@ -18,5 +18,7 @@ public class DemoUsers {
     public void createDemoUsers() {
         demoCache.demoUsersIds.add(authService.registerActivatedUser("packer", "123", "abe@mail.com", "PACKER").getId());
         demoCache.demoUsersIds.add(authService.registerActivatedUser("user", "123", "sdf@mail.com", "USER").getId());
+        demoCache.demoUsersIds.add(authService.registerActivatedUser("moderator", "123", "mail@com", "MODERATOR").getId());
+        demoCache.demoUsersIds.add(authService.registerActivatedUser("admin", "123", "genericmail@com", "ADMIN").getId());
     }
 }

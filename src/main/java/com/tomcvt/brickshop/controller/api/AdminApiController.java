@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RestController
-@PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+@PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'SUPERUSER')")
 @RequestMapping("/api/admin")
 public class AdminApiController {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AdminApiController.class);
@@ -61,13 +61,13 @@ public class AdminApiController {
                 .ok("Name: " + userDetails.getUser().getUsername() + ", role: " + userDetails.getUser().getRole());
     }
     //TODO refactor to dto
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
     @PostMapping("/newproduct")
     public ResponseEntity<?> addProduct(@RequestBody ProductInput input) {
         Product newProduct = productService.addProduct(input);
         return ResponseEntity.ok().body(newProduct);
     }
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
     @GetMapping("/edit-product/{publicId}")
     public ResponseEntity<ProductDto> getProductEditRequest(@PathVariable UUID publicId) {
         ProductDto dto = productService.getProductHydratedByPublicId(publicId).toDto();
@@ -79,7 +79,7 @@ public class AdminApiController {
         return ResponseEntity.ok().body(dto);
     }
     //TODO add productId validation in path variable
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN', 'SUPERUSER')")
     @PatchMapping("/edit-product")
     public ResponseEntity<String> postEditProduct(@RequestBody ProductDto productDto) {
         if (!imageOrderValidator.validateImageOrder(productDto.publicId(), productDto.imageUrls())) {
@@ -89,7 +89,7 @@ public class AdminApiController {
         imageOrderValidator.clearImageOrder(productDto.publicId());
         return ResponseEntity.ok().body("Product edited");
     }
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN', 'SUPERUSER')")
     @PostMapping("/add-category")
     public ResponseEntity<String> addCategory(@RequestBody String categoryName) {
         String response = categoryService.addCategory(categoryName);
@@ -98,7 +98,7 @@ public class AdminApiController {
                 ResponseEntity.status(400).body("Category creation failed");
     }
     //TODO refactor sql error exception handling and response (inform about products with this category)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN', 'SUPERUSER')")
     @DeleteMapping("/delete-category")
     public ResponseEntity<String> removeCategory(@RequestBody String categoryName) {
         String response = categoryService.deleteCategory(categoryName);
@@ -106,7 +106,7 @@ public class AdminApiController {
                 ResponseEntity.ok().body(response) :
                 ResponseEntity.status(400).body("Category removal failed");
     }
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'SUPERUSER')")
     //TODO add more admin endpoints for order management, user management, etc.
     @GetMapping("/orders/search")
     public ResponseEntity<SimplePage<CustomerOrderDto>> searchOrders(
@@ -123,7 +123,7 @@ public class AdminApiController {
         );
         return ResponseEntity.ok().body(simpleOrderPage);
     }
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'SUPERUSER')")
     @GetMapping("/orders/{orderId}")
     public ResponseEntity<OrderFullDto> getOrderFullDtoById(@PathVariable Long orderId) {
         Order order = orderService.getFullOrderDetailsByOrderId(orderId);

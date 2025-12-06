@@ -10,8 +10,15 @@
     <h1 th:text="'Welcome ' + ${username}">Placeholder</h1>
     <div class="content">
         <div th:if="${username} == 'Guest'" class="menu-div rows">
-            <a th:href="@{/login}"><button class="btn btn-primary">Login</button></a>
-            <a th:href="@{/registration}"><button class="btn btn-primary">Register</button></a>
+            <a class="wide" th:href="@{/login}"><button class="btn btn-secondary wide">Login</button></a>
+            <a class="wide" th:href="@{/registration}"><button class="btn btn-secondary wide">Register</button></a>
+        </div>
+        <div th:if="${isSuperuser}" class="superuser-section">
+            <h2>Superuser Menu</h2>
+            <div class="menu-div rows">
+                <a class="wide" th:href="@{/superuser}"><button class="btn btn-primary wide">Superuser Dashboard</button></a>
+                <a class="wide" th:href="@{/superuser/manage-users}"><button class="btn btn-primary wide">Manage Users</button></a>
+            </div>
         </div>
         <div th:if="${isAdmin}" class="admin-section">
             <h2>Admin Menu</h2>
@@ -21,10 +28,17 @@
                         Products</button></a>
                 <a class="wide" th:href="@{/admin/orders}"><button class="btn btn-primary wide">Manage
                         Orders</button></a>
-                <a class="wide" th:href="@{/admin/users}"><button class="btn btn-primary wide">Manage Users</button></a>
+            </div>
+        </div>
+        <div th:if="${isPacker}" class="packer-section">
+            <h2>Packer Menu</h2>
+            <div class="menu-div rows">
+                <a class="wide" th:href="@{/packer}"><button class="btn btn-primary wide">Packer Dashboard</button></a>
+                <a class="wide" th:href="@{/packer/orders}"><button class="btn btn-primary wide">View Orders to Pack</button></a>
             </div>
         </div>
         <div class="menu-div rows">
+            <h2>Menu</h2>
             <a class="wide" th:href="@{/products}"><button class="btn btn-primary wide">View Products</button></a>
             <a class="wide" th:href="@{/cart}"><button class="btn btn-primary wide">View Cart</button></a>
             <a class="wide" th:href="@{/user/orders}"><button class="btn btn-primary wide">View Orders</button></a>

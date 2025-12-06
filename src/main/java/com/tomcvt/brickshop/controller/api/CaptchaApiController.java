@@ -1,5 +1,6 @@
 package com.tomcvt.brickshop.controller.api;
 
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties.Http;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,8 @@ import com.tomcvt.brickshop.cvtcaptcha.CaptchaRequest;
 import com.tomcvt.brickshop.cvtcaptcha.CaptchaResponse;
 import com.tomcvt.brickshop.dto.CaptchaSolution;
 import com.tomcvt.brickshop.dto.CaptchaTokenResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +29,7 @@ public class CaptchaApiController {
     }
     //TODO add rate limiting to prevent abuse and origin validation
     @PostMapping("/create")
-    public ResponseEntity<CaptchaResponse> createCaptcha(@RequestBody CaptchaRequest request) {
+    public ResponseEntity<CaptchaResponse> createCaptcha(@RequestBody CaptchaRequest request, HttpServletRequest httpRequest) {
         CaptchaResponse captchaResponse = null;
         try {
             captchaResponse = cvtCaptchaClient.getCaptcha(request).block();
@@ -41,7 +44,7 @@ public class CaptchaApiController {
     }
 
     @PostMapping("/solve")
-    public ResponseEntity<CaptchaTokenResponse> getCaptchaToken(@RequestBody CaptchaSolution solution) {
+    public ResponseEntity<CaptchaTokenResponse> getCaptchaToken(@RequestBody CaptchaSolution solution, HttpServletRequest httpRequest) {
         CaptchaTokenResponse token = null;
         try {
             token = cvtCaptchaClient.getCaptchaToken(solution).block();

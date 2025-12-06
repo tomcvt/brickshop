@@ -25,6 +25,7 @@ export async function initUserSearchModule(onResults, config) {
     let lastUsername = config.getUsername ? config.getUsername() : '';
     let lastEmail = config.getEmail ? config.getEmail() : '';
     let lastRole = config.getRole ? config.getRole() : '';
+    let lastEnabled = config.getEnabled ? config.getEnabled() : '';
     let lastSize = config.getSize ? config.getSize() : 10;
     let endpoint = config.getEndpoint ? config.getEndpoint() : console.log('getEndpoint function is required in config');
     navBarIds.forEach(id => {
@@ -55,6 +56,7 @@ export async function initUserSearchModule(onResults, config) {
                         username: lastUsername,
                         email: lastEmail,
                         role: lastRole,
+                        enabled: lastEnabled,
                         size: lastSize
                     };
                     const results = await fetchUserPage(endpoint, opts);
@@ -70,6 +72,7 @@ export async function initUserSearchModule(onResults, config) {
                     username: lastUsername,
                     email: lastEmail,
                     role: lastRole,
+                    enabled: lastEnabled,
                     size: lastSize
                 };
                 const results = await fetchUserPage(endpoint, opts);
@@ -101,18 +104,21 @@ export async function initUserSearchModule(onResults, config) {
             const username = config.getUsername ? config.getUsername() : '';
             const email = config.getEmail ? config.getEmail() : '';
             const role = config.getRole ? config.getRole() : '';
+            const enabled = config.getEnabled ? config.getEnabled() : '';
             const size = config.getSize ? config.getSize() : lastSize;
             const opts = {
                 page: 0,
                 username: username,
                 email: email,
                 role: role,
+                enabled: enabled,
                 size: size
             };
             currentPage = 0;
             lastUsername = username;
             lastEmail = email;
             lastRole = role;
+            lastEnabled = enabled;
             lastSize = size;
             const results = await fetchUserPage(endpoint, opts);
             onResults(results, opts);
@@ -127,6 +133,7 @@ export async function fetchUserPage(endpoint = '', opts = {}) {
     const username = opts.username || '';
     const email = opts.email || '';
     const role = opts.role || '';
+    const enabled = opts.enabled;
     const size = opts.size || 10;
     const params = [];
     params.push(`page=${page}`);
@@ -139,6 +146,9 @@ export async function fetchUserPage(endpoint = '', opts = {}) {
     }
     if (role.trim() !== '') {
         params.push(`role=${encodeURIComponent(role)}`);
+    }
+    if (enabled !== '' && enabled !== undefined && enabled !== null) {
+        params.push(`enabled=${enabled}`);
     }
     if (params.length > 0) {
         url += '?' + params.join('&');
