@@ -26,6 +26,10 @@ public class AdminController {
     public String getProductsManagementPage() {
         return "admin/productsmanagement";
     }
+    @GetMapping("/admin/add-product")
+    public String getAddProductPage() {
+        return "admin/add-product";
+    }
     @GetMapping("/admin/edit-product/{publicId}")
     public String getEditProductPage(@PathVariable UUID publicId, Model model) {
         model.addAttribute("publicId", publicId);

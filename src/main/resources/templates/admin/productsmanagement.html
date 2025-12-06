@@ -24,6 +24,12 @@
         <span id="pageNumBottom" style="margin: 0 10px;"> Page 1 </span>
         <button id="nextPageBtnBottom" class="btn btn-small">→</button>
     </div>
-    <script type="module" src="/js/productsmanagment.js"></script>
+    <button id="addProductBtn" class="btn btn-secondary add-product-fab">Add Product</button>
+    <script type="module" src="/js/productsmanagement.js"></script>
+    <script>
+    document.getElementById('addProductBtn').onclick = function() {
+        window.location.href = '/admin/add-product';
+    };
+    </script>
 </body>
 </html>

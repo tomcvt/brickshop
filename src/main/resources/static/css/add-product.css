@@ -1,0 +1,110 @@
+@import url('/css/main.css');
+
+/* Layout for three sections with smooth vertical line */
+.add-product-content {
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+#add-product-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+
+.add-product-sections {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0;
+    position: relative;
+}
+
+.add-product-sections > * {
+    flex: 1;
+    margin: 0 0 0 0;
+    position: relative;
+    background: #fff;
+}
+
+.add-product-sections > *:not(:last-child)::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 2px;
+    margin: 32px 0 0 0;
+    background: linear-gradient(to right, #e0e0e0 0%, #bdbdbd 100%);
+    border-radius: 2px;
+}
+
+.product-info-section, .categories-section, .images-section {
+    min-width: 0;
+}
+
+.input-edit, textarea.input-edit {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.add-category {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+
+#categories-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+#categories-list label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #f9fafb;
+    border-radius: 5px;
+    padding: 4px 10px;
+    margin-bottom: 0;
+}
+
+.delete-category-btn {
+    margin-left: 8px;
+    background: var(--color-danger);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.delete-category-btn:hover {
+    background: #e74c3c;
+}
+
+.gallery-horizontal {
+    margin-top: 16px;
+    min-height: 120px;
+}
+
+.gallery-image {
+    width: 120px !important;
+    height: 120px !important;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 10px;
+    border: 2px solid #ccc;
+}
+
+.wide {
+    width: 100%;
+    margin-top: 30px;
+}

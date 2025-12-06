@@ -1,8 +1,10 @@
 package com.tomcvt.brickshop.controller.api;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,10 +14,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.tomcvt.brickshop.dto.CustomerOrderDto;
+import com.tomcvt.brickshop.dto.NewProductInput;
 import com.tomcvt.brickshop.dto.OrderFullDto;
 import com.tomcvt.brickshop.dto.ProductDto;
 import com.tomcvt.brickshop.dto.ProductInput;
 import com.tomcvt.brickshop.mappers.OrderMapper;
+import com.tomcvt.brickshop.mappers.ProductMapper;
 import com.tomcvt.brickshop.model.Order;
 import com.tomcvt.brickshop.model.Product;
 import com.tomcvt.brickshop.model.WrapUserDetails;
@@ -27,6 +31,7 @@ import com.tomcvt.brickshop.session.ImageOrderValidator;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
@@ -39,7 +44,8 @@ public class AdminApiController {
     private final CategoryService categoryService;
     private final ImageOrderValidator imageOrderValidator;
     private final OrderService orderService;
-    private final OrderMapper orderMapper = new OrderMapper();
+    private final OrderMapper orderMapper = OrderMapper.INSTANCE;
+    private final ProductMapper productMapper = ProductMapper.INSTANCE;
 
     public AdminApiController(
             ProductService productService,
@@ -51,31 +57,21 @@ public class AdminApiController {
         this.categoryService = categoryService;
         this.orderService = orderService;
     }
-
-    @GetMapping("/info")
-    public ResponseEntity<String> getInfo(@AuthenticationPrincipal WrapUserDetails userDetails) {
-        if (userDetails == null) {
-            return ResponseEntity.ok("Guest");
-        }
-        return ResponseEntity
-                .ok("Name: " + userDetails.getUser().getUsername() + ", role: " + userDetails.getUser().getRole());
-    }
-    //TODO refactor to dto
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
-    @PostMapping("/newproduct")
-    public ResponseEntity<?> addProduct(@RequestBody ProductInput input) {
-        Product newProduct = productService.addProduct(input);
-        return ResponseEntity.ok().body(newProduct);
+    @PostMapping("/add-product")
+    public ResponseEntity<ProductDto> addProduct(@ModelAttribute NewProductInput productInput,
+            @RequestParam("images") List<MultipartFile> images
+    ) {
+        Product product = productService.addProductWithImages(productInput, images);
+        var dto = productMapper.toProductDto(product);
+        return ResponseEntity.ok().body(dto);
     }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
     @GetMapping("/edit-product/{publicId}")
     public ResponseEntity<ProductDto> getProductEditRequest(@PathVariable UUID publicId) {
         ProductDto dto = productService.getProductHydratedByPublicId(publicId).toDto();
         imageOrderValidator.storeImageOrder(publicId, Set.copyOf(dto.imageUrls()));
-        System.out.println("Stored image order for product " + publicId);
-        for (String url : dto.imageUrls()) {
-            System.out.println(" - " + url);
-        }
         return ResponseEntity.ok().body(dto);
     }
     //TODO add productId validation in path variable

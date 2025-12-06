@@ -1,6 +1,7 @@
 package com.tomcvt.brickshop.model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -30,7 +31,7 @@ public class Product {
     private String description;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("imgOrder ASC")
-    private List<ProductImage> productImages;
+    private List<ProductImage> productImages = new ArrayList<>();
     private BigDecimal price;
     private int stock;
     private UUID thumbnailUuid;

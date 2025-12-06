@@ -12,8 +12,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.tomcvt.brickshop.dto.ImageOrderDto;
+import com.tomcvt.brickshop.dto.NewProductInput;
 import com.tomcvt.brickshop.dto.ProductDto;
 import com.tomcvt.brickshop.dto.ProductInput;
 import com.tomcvt.brickshop.dto.ProductSummaryDto;
@@ -30,6 +32,7 @@ import com.tomcvt.brickshop.utility.CategoryReferenceMap;
 
 @Service
 public class ProductService {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ProductService.class);
     private final ProductRepository productRepository;
     private final ProductImageService productImageService;
     private final CategoryRepository categoryRepository;
@@ -52,6 +55,23 @@ public class ProductService {
         product.setDescription(input.description());
         product.setPrice(input.price());
         product.setStock(input.stock());
+        return productRepository.save(product);
+    }
+    @Transactional
+    public Product addProductWithImages(NewProductInput input, List<MultipartFile> images) {
+        Optional<Product> existing = productRepository.findByName(input.name());
+        if (existing.isPresent())
+            log.warn("Product with name {} already exists", input.name());
+        Product product = new Product();
+        product.setName(input.name());
+        product.setDescription(input.description());
+        product.setPrice(input.price());
+        product.setStock(input.stock());
+        Set<Category> categories = categoryReferenceMap.getIds(input.categories()).stream()
+                .map(id -> categoryRepository.getReferenceById(id)).collect(Collectors.toSet());
+        product.setCategories(categories);
+        product = productRepository.save(product);
+        productImageService.saveProductImages(images, product);
         return productRepository.save(product);
     }
 

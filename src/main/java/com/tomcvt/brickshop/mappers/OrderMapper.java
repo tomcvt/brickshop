@@ -8,6 +8,7 @@ import com.tomcvt.brickshop.dto.TransactionDto;
 import com.tomcvt.brickshop.model.Order;
 
 public class OrderMapper {
+    public static final OrderMapper INSTANCE = new OrderMapper();
     private final CartMapper cartMapper = new CartMapper();
     public OrderMapper() {
     }
