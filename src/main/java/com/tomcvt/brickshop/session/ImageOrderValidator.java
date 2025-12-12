@@ -13,7 +13,7 @@ import org.springframework.web.context.annotation.SessionScope;
 @SessionScope
 public class ImageOrderValidator {
     private Map<UUID, Set<String>> map;
-
+    //TODO expire entries after some time
     public ImageOrderValidator() {
         this.map = new ConcurrentHashMap<>();
     }

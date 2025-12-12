@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.tomcvt.brickshop.model.WrapUserDetails;
+import com.tomcvt.brickshop.exception.IllegalUsageException;
+import com.tomcvt.brickshop.network.BanRegistry;
 import com.tomcvt.brickshop.service.RateLimiterService;
 
 import jakarta.servlet.FilterChain;
@@ -17,18 +18,26 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class RateLimitingFilter extends OncePerRequestFilter {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RateLimitingFilter.class);
     private final RateLimiterService rateLimiterService;
+    private final BanRegistry banRegistry;
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
     private static final String[] EXCLUDE_URLS = {
         "/js/**",
         "/css/**",
         "/images/**",
         "/outsideimages/**",
-        "/.well-known/**"
+        "/.well-known/**",
+        "/api/**"
+    };
+    //TODO make configurable
+    private static final String[] EXCLUDE_IP = {
+        "0.0.0.0.0.0.0.1"
     };
 
-    public RateLimitingFilter(RateLimiterService rateLimiterService) {
+    public RateLimitingFilter(RateLimiterService rateLimiterService, BanRegistry banRegistry) {
         this.rateLimiterService = rateLimiterService;
+        this.banRegistry = banRegistry;
     }
 
 
@@ -42,7 +51,19 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         if (xff != null && !xff.isBlank()) {
             clientIp = xff.split(",")[0].trim();
         }
+        for (String ip : EXCLUDE_IP) {
+            if (ip.equals(clientIp)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
 
+        if(banRegistry.isIpBanned(clientIp)) {
+            response.setStatus(429);
+            response.getWriter().write("Your IP has been temporarily banned due to excessive requests.");
+            response.getWriter().flush();
+            return;
+        }
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         //For now, rate limit everyone except static resources
         /*
@@ -58,8 +79,20 @@ public class RateLimitingFilter extends OncePerRequestFilter {
                 return;
             }
         }
-
-        boolean allowed = rateLimiterService.checkAndIncrement(clientIp);
+        //TODO later add ban on forbidden url access attempts
+        boolean allowed = true;
+        //TODO make custom anonymous authentication token with IP
+        //TODO make responses in json format
+        //TODO so make static util method for writing json response
+        try {
+            allowed = rateLimiterService.checkAndIncrement(clientIp);
+        } catch (IllegalUsageException e) {
+            banRegistry.banIp(clientIp);
+            response.setStatus(429);
+            response.getWriter().write("Your IP has been temporarily banned due to excessive requests.");
+            response.getWriter().flush();
+            return;
+        }
 
         if (!allowed) {
             response.setStatus(429);

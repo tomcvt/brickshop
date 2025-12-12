@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+  brickshop:
+    container_name: brickshop
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION}
+    image: brickshop:${APP_VERSION}
+    ports:
+      - "8082:8082"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - logs:/app/logs
+      - storage:/app/product-images
+    networks:
+      - brickshop-network
+    restart: unless-stopped
+
+  db:
+    image: postgres:17
+    env_file:
+      - .env.db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - brickshop-network
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  logs:
+  storage:
+
+networks:
+  cvtcaptcha-network:

@@ -7,39 +7,31 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/admin")
 @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER', 'MODERATOR')")
 public class AdminController {
-    @GetMapping("/admin")
-    public String getAdminpanel() {
-        return "adminpanel";
-    }
-    //TODO depracate or change id to publicId
-    /*
-    @GetMapping("/adminpanel/reorder/{productId}")
-    public String getImageReorderingPage(@PathVariable Long productId, Model model) {
-        model.addAttribute("publicId", productId);
-        return "image-reordering";
-    }*/
-    @GetMapping("/admin/manage-products")
+    
+    @GetMapping("/manage-products")
     public String getProductsManagementPage() {
         return "admin/productsmanagement";
     }
-    @GetMapping("/admin/add-product")
+    @GetMapping("/add-product")
     public String getAddProductPage() {
         return "admin/add-product";
     }
-    @GetMapping("/admin/edit-product/{publicId}")
+    @GetMapping("/edit-product/{publicId}")
     public String getEditProductPage(@PathVariable UUID publicId, Model model) {
         model.addAttribute("publicId", publicId);
         return "editproduct";
     }
-    @GetMapping("/admin/orders")
+    @GetMapping("/orders")
     public String getOrdersManagementPage() {
         return "admin/ordersmanagement";
     }
-    @GetMapping("/admin/orders/{orderId}")
+    @GetMapping("/orders/{orderId}")
     public String getOrderDetailsPage(@PathVariable Long orderId, Model model) {
         model.addAttribute("orderId", orderId);
         return "admin/order-full-details";

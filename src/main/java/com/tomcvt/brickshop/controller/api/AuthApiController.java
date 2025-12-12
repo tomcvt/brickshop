@@ -20,7 +20,7 @@ public class AuthApiController {
     }
 
     //TODO register user with email and role USER
-    @PostMapping("/register")
+    @PostMapping("/register-w-email")
     public ResponseEntity<String> registerUser(@RequestBody RegistrationRequest request) {
         authService.registerUser(request.username(), request.rawPassword(), request.email(), "USER");
         return ResponseEntity.ok("User " + request.username() + " registered successfully");

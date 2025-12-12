@@ -56,7 +56,7 @@ public class PackerApiController {
         ShipmentDto dto = packingService.packAllItemsInShipment(orderId);
         return ResponseEntity.ok().body(dto);
     }
-
+    //TODO packing state machine, all packed -> order packed
     @PostMapping("/pack")
     public ResponseEntity<?> packItemInOrder(
             @RequestParam(name = "orderId") Long orderId,

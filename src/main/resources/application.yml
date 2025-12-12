@@ -4,12 +4,14 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: none   # overridden in dev
+      ddl-auto: validate   # overridden in dev
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-
+  flyway:
+    locations: classpath:db/migration
+    detect-encoding: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
@@ -62,3 +64,8 @@ com:
     rate-limiter:
       max-requests: 120
       time-window-seconds: 60
+      ban-threshold-per-minute: 120
+      ban-duration-minutes: 60
+    demo:
+      password: ${DEMO_PASSWORD}
+      email: ${MAIL_USERNAME}

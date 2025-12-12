@@ -17,6 +17,7 @@ import java.util.Iterator;
 public class ImageConverter {
     //TODO make static methods
     public void convertToJpg(InputStream inputStream, File output, float quality) throws IOException {
+        // add try catch and logginf=g
         BufferedImage source = ImageIO.read(inputStream);
 
         BufferedImage converted = new BufferedImage(

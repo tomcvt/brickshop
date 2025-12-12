@@ -75,7 +75,7 @@ public class AdminApiController {
         return ResponseEntity.ok().body(dto);
     }
     //TODO add productId validation in path variable
-    @PreAuthorize("hasRole('ADMIN', 'SUPERUSER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
     @PatchMapping("/edit-product")
     public ResponseEntity<String> postEditProduct(@RequestBody ProductDto productDto) {
         if (!imageOrderValidator.validateImageOrder(productDto.publicId(), productDto.imageUrls())) {
@@ -85,7 +85,7 @@ public class AdminApiController {
         imageOrderValidator.clearImageOrder(productDto.publicId());
         return ResponseEntity.ok().body("Product edited");
     }
-    @PreAuthorize("hasRole('ADMIN', 'SUPERUSER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
     @PostMapping("/add-category")
     public ResponseEntity<String> addCategory(@RequestBody String categoryName) {
         String response = categoryService.addCategory(categoryName);
@@ -94,7 +94,7 @@ public class AdminApiController {
                 ResponseEntity.status(400).body("Category creation failed");
     }
     //TODO refactor sql error exception handling and response (inform about products with this category)
-    @PreAuthorize("hasRole('ADMIN', 'SUPERUSER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
     @DeleteMapping("/delete-category")
     public ResponseEntity<String> removeCategory(@RequestBody String categoryName) {
         String response = categoryService.deleteCategory(categoryName);

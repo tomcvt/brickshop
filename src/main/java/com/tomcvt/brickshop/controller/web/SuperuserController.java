@@ -12,4 +12,12 @@ public class SuperuserController {
     public String getUserManagement() {
         return "superuser/users-management";
     }
+    @GetMapping("/logging")
+    public String getLoggingManagementPage() {
+        return "superuser/logging-dashboard";
+    }
+    @GetMapping("/banning")
+    public String getBanningManagementPage() {
+        return "superuser/banning-dashboard";
+    }
 }

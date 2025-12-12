@@ -39,4 +39,5 @@ public class SuperuserApiController {
         SimplePage<UserDto> userDtos = SimplePage.from(usersPage, mapper::toUserDto);
         return ResponseEntity.ok().body(userDtos);
     }
+    //TODO role management endpoints
 }

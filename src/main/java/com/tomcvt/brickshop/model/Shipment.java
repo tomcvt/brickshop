@@ -14,7 +14,7 @@ import jakarta.persistence.*;
 @Entity
 @BatchSize(size = 20)
 @Table(name = "shipments", indexes = {
-    @Index(name = "idx_shipment_order_id", columnList = "order_id"),
+    @Index(name = "idx_shipment_order_id", columnList = "order_order_id"),
     @Index(name = "idx_shipment_status", columnList = "status")
 })
 public class Shipment {
