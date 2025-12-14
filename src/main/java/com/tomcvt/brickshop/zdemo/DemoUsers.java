@@ -31,9 +31,9 @@ public class DemoUsers {
 
     public void createDemoUsers() {
         String password = env.acceptsProfiles(Profiles.of("dev")) ? DEV_PASSWORD : DEMO_PASSWORD;
-        demoCache.demoUsersIds.add(authService.registerActivatedUser("packer", password, demoEmail, "PACKER").getId());
-        demoCache.demoUsersIds.add(authService.registerActivatedUser("user", password, demoEmail, "USER").getId());
-        demoCache.demoUsersIds.add(authService.registerActivatedUser("moderator", password, demoEmail, "MODERATOR").getId());
+        demoCache.demoUsersIds.add(authService.registerActivatedUser("packer", password, "a@gmail.com", "PACKER").getId());
+        demoCache.demoUsersIds.add(authService.registerActivatedUser("user", password, "b@gmail.com", "USER").getId());
+        demoCache.demoUsersIds.add(authService.registerActivatedUser("moderator", password, "c@gmail.com", "MODERATOR").getId());
         demoCache.demoUsersIds.add(authService.registerActivatedUser("admin", password, demoEmail, "ADMIN").getId());
     }
 }

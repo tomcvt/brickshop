@@ -8,19 +8,26 @@ import com.tomcvt.brickshop.clients.CvtCaptchaClient;
 import com.tomcvt.brickshop.dto.CaptchaVerificationResponse;
 import com.tomcvt.brickshop.dto.PassPayload;
 import com.tomcvt.brickshop.exception.UserAlreadyExistsException;
+import com.tomcvt.brickshop.model.PassRecoveryToken;
 import com.tomcvt.brickshop.model.User;
+import com.tomcvt.brickshop.repository.PassRecoveryTokenRepository;
 import com.tomcvt.brickshop.repository.UserRepository;
 
 @Service
 public class AuthService {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AuthService.class);
     private final UserRepository userRepository;
+    private final EmailService emailService;
+    private final PassRecoveryTokenRepository passRecoveryTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final CvtCaptchaClient cvtCaptchaClient;
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, CvtCaptchaClient cvtCaptchaClient) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, CvtCaptchaClient cvtCaptchaClient,
+            EmailService emailService, PassRecoveryTokenRepository passRecoveryTokenRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.cvtCaptchaClient = cvtCaptchaClient;
+        this.emailService = emailService;
+        this.passRecoveryTokenRepository = passRecoveryTokenRepository;
     }
 
     @Transactional
@@ -42,6 +49,9 @@ public class AuthService {
         validateCaptcha(captchaToken);
         if (userRepository.findByUsername(username).isPresent()) {
             throw new UserAlreadyExistsException("Username already exists");
+        }
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new UserAlreadyExistsException("Email already registered");
         }
         validatePassword(rawPassword);
         User newUser = new User();
@@ -86,6 +96,7 @@ public class AuthService {
         changePassword(userId, passPayload.oldPassword(), passPayload.newPassword());
     }
 
+    @Transactional
     public boolean changePassword(Long userId, String oldRawPassword, String newRawPassword) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -111,5 +122,40 @@ public class AuthService {
         if (res == null || !res.success()) {
             throw new IllegalArgumentException("Invalid captcha token");
         }
+    }
+    @Transactional
+    public void initiatePasswordRecovery(String email) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException("User with email not found"));
+        if (user.getRole().equals("SUPERUSER")) {
+            return; //Only way db admin can reset superuser password
+        }
+        passRecoveryTokenRepository.deleteByUser(user);
+        PassRecoveryToken token = new PassRecoveryToken(user);
+        passRecoveryTokenRepository.save(token);
+        try {
+            emailService.sendRecoveryEmail(user.getEmail(), token.getToken());
+        } catch (Exception e) {
+            log.error("Failed to send recovery email to " + email, e);
+            throw new RuntimeException("Failed to send recovery email");
+        }
+    }
+
+    @Transactional
+    public void resetPasswordWithToken(String tokenStr, String newPassword, String confirmPassword) {
+        PassRecoveryToken token = passRecoveryTokenRepository.findByToken(tokenStr)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid or expired password reset token"));
+        if (token.isExpired()) {
+            passRecoveryTokenRepository.delete(token);
+            throw new IllegalArgumentException("Password reset token has expired");
+        }
+        if (!newPassword.equals(confirmPassword)) {
+            throw new IllegalArgumentException("New password and confirmation do not match");
+        }
+        validatePassword(newPassword);
+        User user = token.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        passRecoveryTokenRepository.delete(token);
     }
 }

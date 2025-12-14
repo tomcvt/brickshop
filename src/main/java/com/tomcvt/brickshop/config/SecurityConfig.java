@@ -37,7 +37,8 @@ public class SecurityConfig {
         "/mock-payment/**",
         "/api/captcha/**",
         "/.well-known/**",
-        "/error"
+        "/error",
+        "/public/**",
     };
     private final String[] SUPERUSER_WHITELIST = {
         "/superuser/**",

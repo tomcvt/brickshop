@@ -15,6 +15,7 @@ dummydata/
 .VSCodeCounter/
 product-images/
 product-images
+clean_local_db.sql
 
 ### STS ###
 .apt_generated
