@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tomcvt.brickshop.clients.CvtCaptchaClient;
 import com.tomcvt.brickshop.dto.CaptchaVerificationResponse;
 import com.tomcvt.brickshop.dto.PassPayload;
+import com.tomcvt.brickshop.events.EventProvider;
+import com.tomcvt.brickshop.events.NotificationEvent;
 import com.tomcvt.brickshop.exception.UserAlreadyExistsException;
 import com.tomcvt.brickshop.model.PassRecoveryToken;
 import com.tomcvt.brickshop.model.User;
@@ -21,13 +23,15 @@ public class AuthService {
     private final PassRecoveryTokenRepository passRecoveryTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final CvtCaptchaClient cvtCaptchaClient;
+    private final EventProvider eventProvider;
     public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, CvtCaptchaClient cvtCaptchaClient,
-            EmailService emailService, PassRecoveryTokenRepository passRecoveryTokenRepository) {
+            EmailService emailService, PassRecoveryTokenRepository passRecoveryTokenRepository, EventProvider eventProvider) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.cvtCaptchaClient = cvtCaptchaClient;
         this.emailService = emailService;
         this.passRecoveryTokenRepository = passRecoveryTokenRepository;
+        this.eventProvider = eventProvider;
     }
 
     @Transactional
@@ -60,8 +64,13 @@ public class AuthService {
         newUser.setRole(role);
         newUser.setEmail(email);
         newUser.setEnabled(true); // User is not activated by default
-        return userRepository.save(newUser);
-        //emailService.sendActivationEmail(newUser);
+        newUser = userRepository.save(newUser);
+        eventProvider.publishEvent(new NotificationEvent(
+            "New User Registration",
+            "A new user has registered with username: " + username + " and email: " + email,
+            3
+        ));
+        return newUser;
     }
 
     public User registerUser(String username, String rawPassword, String email, String role) {

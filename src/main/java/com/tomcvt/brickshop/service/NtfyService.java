@@ -1,9 +1,11 @@
 package com.tomcvt.brickshop.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import com.tomcvt.brickshop.clients.NtfyClient;
+import com.tomcvt.brickshop.events.NotificationEvent;
 
 @Service
 public class NtfyService {
@@ -61,6 +63,15 @@ public class NtfyService {
                 );
         } else {
             log.info("Ntfy notifications are disabled. Skipping URGENT notification: {} - {}", title, message);
+        }
+    }
+
+    @EventListener
+    public void handleNotificationEvent(NotificationEvent event) {
+        if (event.getPriority() >= 2) {
+            sendNotificationUrgent(event.getTitle(), event.getMessage());
+        } else {
+            sendNotification(event.getTitle(), event.getMessage());
         }
     }
 }
