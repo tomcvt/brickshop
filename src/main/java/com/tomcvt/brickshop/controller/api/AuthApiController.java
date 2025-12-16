@@ -11,6 +11,7 @@ import com.tomcvt.brickshop.dto.EmailInput;
 import com.tomcvt.brickshop.dto.ExtendedRegistrationRequest;
 import com.tomcvt.brickshop.dto.PasswordChangeInput;
 import com.tomcvt.brickshop.dto.RegistrationRequest;
+import com.tomcvt.brickshop.dto.TextResponse;
 import com.tomcvt.brickshop.service.AuthService;
 
 @RestController
@@ -22,29 +23,29 @@ public class AuthApiController {
         this.authService = authService;
     }
     @PostMapping("/recover-password")
-    public ResponseEntity<String> recoverPassword(@RequestBody EmailInput emailInput) {
+    public ResponseEntity<?> recoverPassword(@RequestBody EmailInput emailInput) {
         authService.initiatePasswordRecovery(emailInput.email());
-        return ResponseEntity.ok("If email is registered, we sent you a password reset link");
+        return ResponseEntity.ok(new TextResponse("If the email exists in our system, a password recovery link has been sent."));
     }
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestBody PasswordChangeInput input) {
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordChangeInput input) {
         authService.resetPasswordWithToken(input.token(), input.newPassword(), input.confirmPassword());
-        return ResponseEntity.ok("Password has been reset successfully");
+        return ResponseEntity.ok(new TextResponse("Password has been reset successfully"));
     }
 
     //TODO register user with email and role USER
     //temporarily protected with SUPERUSER role
     @PreAuthorize("hasRole('SUPERUSER')")
     @PostMapping("/register-w-email")
-    public ResponseEntity<String> registerUser(@RequestBody RegistrationRequest request) {
+    public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest request) {
         authService.registerUser(request.username(), request.rawPassword(), request.email(), "USER");
-        return ResponseEntity.ok("User " + request.username() + " registered successfully");
+        return ResponseEntity.ok(new TextResponse("User " + request.username() + " registered successfully"));
     }
     @PostMapping("/register-w-captcha")
-    public ResponseEntity<String> registerUserWithCaptcha(@RequestBody ExtendedRegistrationRequest request) {
+    public ResponseEntity<?> registerUserWithCaptcha(@RequestBody ExtendedRegistrationRequest request) {
         String role = validateRoleForRegistration(request.role());
         authService.registerUserWithCaptcha(request.username(), request.password(), request.email(), request.captchaToken(), role);
-        return ResponseEntity.ok("User " + request.username() + " registered successfully");
+        return ResponseEntity.ok(new TextResponse("User " + request.username() + " registered successfully"));
     }
 
     private String validateRoleForRegistration(String role) {

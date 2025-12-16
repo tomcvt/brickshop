@@ -17,6 +17,7 @@ import com.tomcvt.brickshop.dto.PassPayload;
 import com.tomcvt.brickshop.dto.PublicIdDto;
 import com.tomcvt.brickshop.dto.RegistrationRequest;
 import com.tomcvt.brickshop.dto.ShipmentAddressDto;
+import com.tomcvt.brickshop.dto.TextResponse;
 import com.tomcvt.brickshop.model.ShipmentAddress;
 import com.tomcvt.brickshop.model.WrapUserDetails;
 import com.tomcvt.brickshop.service.CartService;
@@ -46,19 +47,19 @@ public class UserApiController {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(@AuthenticationPrincipal WrapUserDetails userDetails,
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal WrapUserDetails userDetails,
                                                  @RequestBody PassPayload passPayload) {
         if (userDetails == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
         authService.changePassword(userDetails.getId(), passPayload);
-        return ResponseEntity.status(500).body("Failed to change password");
+        return ResponseEntity.ok().body(new TextResponse("Password changed successfully"));
     }
     //TODO additional endpoint
     @GetMapping("/orders")
     public ResponseEntity<?> getUserOrders(@AuthenticationPrincipal WrapUserDetails userDetails) {
         if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
         List<CustomerOrderDto> ordersDto = orderService.getAllCustomerOrderDtoForUserId(userDetails.getUser());
         return ResponseEntity.ok(ordersDto);
@@ -67,7 +68,7 @@ public class UserApiController {
     @GetMapping("/orders/summaries")
     public ResponseEntity<?> getUserOrdersSummary(@AuthenticationPrincipal WrapUserDetails userDetails) {
         if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
         List<OrderSummaryDto> osDto = orderService.getAllOrderSummariesForUser(userDetails.getUser());
         return ResponseEntity.ok().body(osDto);
@@ -78,7 +79,7 @@ public class UserApiController {
     public ResponseEntity<?> getUserOrderById(@AuthenticationPrincipal WrapUserDetails userDetails,
                                               @PathVariable Long orderId) {
         if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
         CustomerOrderDto orderDto = orderService.getOrderByOrderIdAndUser(orderId, userDetails.getUser()).toCustomerOrderDto();
         return ResponseEntity.ok(orderDto);
@@ -88,7 +89,7 @@ public class UserApiController {
     public ResponseEntity<?> getUserCartById(@AuthenticationPrincipal WrapUserDetails userDetails,
                                              @PathVariable Long cartId) {
         if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
         CartDto cartDto = cartService.getCartDtoByIdAndUserId(cartId, userDetails.getId());
         return ResponseEntity.ok().body(cartDto);
@@ -96,7 +97,7 @@ public class UserApiController {
     @GetMapping("/address/all")
     public ResponseEntity<?> getAllShipmentAddresses(@AuthenticationPrincipal WrapUserDetails wrapUserDetails) {
         if (wrapUserDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
         var addresses = shipmentAddressService.getAllShipmentAddressesForUser(wrapUserDetails.getUser())
                 .stream().map(ShipmentAddress::toDto).toList();
@@ -106,7 +107,7 @@ public class UserApiController {
     public ResponseEntity<?> addShipmentAddress(@AuthenticationPrincipal WrapUserDetails wrapUserDetails,
             @RequestBody ShipmentAddressDto shipmentAddressDto) {
         if (wrapUserDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
         var saDto = shipmentAddressService.addShipmentAddressForUser(shipmentAddressDto, wrapUserDetails.getUser()).toDto();
         return ResponseEntity.ok().body(saDto);
@@ -115,7 +116,7 @@ public class UserApiController {
     public ResponseEntity<?> updateShipmentAddress(@AuthenticationPrincipal WrapUserDetails wrapUserDetails,
             @RequestBody ShipmentAddressDto shipmentAddressDto) {
         if (wrapUserDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
         ShipmentAddress sa = shipmentAddressService.updateShipmentAddressForUser(shipmentAddressDto, wrapUserDetails.getUser());
         return ResponseEntity.ok().body(sa.toDto());
@@ -124,7 +125,7 @@ public class UserApiController {
     public ResponseEntity<?> deleteShipmentAddress(@AuthenticationPrincipal WrapUserDetails wrapUserDetails,
             @RequestBody PublicIdDto publicIdDto) {
         if (wrapUserDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
         shipmentAddressService.deleteShipmentAddressForUser(publicIdDto.publicId(), wrapUserDetails.getUser());
         return ResponseEntity.ok().build();

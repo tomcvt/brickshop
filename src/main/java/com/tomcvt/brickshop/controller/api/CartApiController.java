@@ -14,6 +14,8 @@ import com.tomcvt.brickshop.service.CartService;
 import com.tomcvt.brickshop.session.CartModifiedFlag;
 import com.tomcvt.brickshop.session.TempCart;
 
+import io.micrometer.core.ipc.http.HttpSender.Response;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -31,41 +33,41 @@ public class CartApiController {
         this.cartModifiedFlag = cartModifiedFlag;
     }
     @GetMapping("/cartwithtotal")
-    public CartDto getActiveCartWithTotalDto(@AuthenticationPrincipal WrapUserDetails userDetails) {
+    public ResponseEntity<CartDto> getActiveCartWithTotalDto(@AuthenticationPrincipal WrapUserDetails userDetails) {
         if (userDetails == null) {
-            return tempCart.getTempCartWithTotal();
+            return ResponseEntity.ok(tempCart.getTempCartWithTotal());
         }
-        return cartService.getActiveCartDtoByUserId(userDetails.getUser().getId());
+        return ResponseEntity.ok(cartService.getActiveCartDtoByUserId(userDetails.getUser().getId()));
     }
 
     @GetMapping("/wopictures")
-    public List<FlatCartRowDto> getActiveCart(@AuthenticationPrincipal WrapUserDetails userDetails) {
+    public ResponseEntity<List<FlatCartRowDto>> getActiveCart(@AuthenticationPrincipal WrapUserDetails userDetails) {
         if (userDetails == null) {
-            return tempCart.getActiveTempFlatCartRowDto();
+            return ResponseEntity.ok(tempCart.getActiveTempFlatCartRowDto());
         }
         Long userId = userDetails.getUser().getId();
-        return cartService.getActiveFlatCartDtoByUserId(userId);
+        return ResponseEntity.ok(cartService.getActiveFlatCartDtoByUserId(userId));
     }
     @GetMapping("/total")
-    public BigDecimal getTotalAmount(@AuthenticationPrincipal WrapUserDetails userDetails) {
+    public ResponseEntity<BigDecimal> getTotalAmount(@AuthenticationPrincipal WrapUserDetails userDetails) {
         if (userDetails == null) {
-            return tempCart.getTotal();
+            return ResponseEntity.ok(tempCart.getTotal());
         }
         Long userId = userDetails.getUser().getId();
-        return cartService.getTotalAmount(userId);
+        return ResponseEntity.ok(cartService.getTotalAmount(userId));
     }
 
     @PostMapping("/remove/{cartItemId}")
-    public List<FlatCartRowDto> removeCartItemById(@AuthenticationPrincipal WrapUserDetails userDetails,
+    public ResponseEntity<List<FlatCartRowDto>> removeCartItemById(@AuthenticationPrincipal WrapUserDetails userDetails,
             @PathVariable Long cartItemId) {
         if (userDetails == null) {
             tempCart.removeTempCartItem(cartItemId);
-            return tempCart.getActiveTempFlatCartRowDto();
+            return ResponseEntity.ok(tempCart.getActiveTempFlatCartRowDto());
         }
         Long userId = userDetails.getUser().getId();
         cartService.removeCartItemByIdAndUserId(cartItemId, userDetails.getUser().getId());
         cartModifiedFlag.modifiedCart();
-        return cartService.getActiveFlatCartDtoByUserId(userId);
+        return ResponseEntity.ok(cartService.getActiveFlatCartDtoByUserId(userId));
     }
 
     @PostMapping("/add")

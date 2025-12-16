@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.tomcvt.brickshop.dto.AdminDashboardInfoDto;
 import com.tomcvt.brickshop.dto.CustomerOrderDto;
+import com.tomcvt.brickshop.dto.ErrorResponse;
 import com.tomcvt.brickshop.dto.NewProductInput;
 import com.tomcvt.brickshop.dto.OrderFullDto;
 import com.tomcvt.brickshop.dto.ProductDto;
@@ -78,30 +79,31 @@ public class AdminApiController {
     //TODO add productId validation in path variable
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
     @PatchMapping("/edit-product")
-    public ResponseEntity<String> postEditProduct(@RequestBody ProductDto productDto) {
+    public ResponseEntity<?> postEditProduct(@RequestBody ProductDto productDto) {
         if (!imageOrderValidator.validateImageOrder(productDto.publicId(), productDto.imageUrls())) {
-            return ResponseEntity.status(400).body("Produce edit request validation failed, reload the page and try again");
+            return ResponseEntity.status(400).body(new ErrorResponse("INVALIDATION_ERROR",
+                    "Image order is invalid or has been tampered with"));
         }
         productService.editProductFromDto(productDto);
         imageOrderValidator.clearImageOrder(productDto.publicId());
-        return ResponseEntity.ok().body("Product edited");
+        return ResponseEntity.ok().build();
     }
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
     @PostMapping("/add-category")
-    public ResponseEntity<String> addCategory(@RequestBody String categoryName) {
+    public ResponseEntity<?> addCategory(@RequestBody String categoryName) {
         String response = categoryService.addCategory(categoryName);
         return response != null ?
-                ResponseEntity.ok().body(response) :
-                ResponseEntity.status(400).body("Category creation failed");
+                ResponseEntity.ok().build():
+                ResponseEntity.status(400).body(new ErrorResponse("FAILED", "Category addition failed"));
     }
     //TODO refactor sql error exception handling and response (inform about products with this category)
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
     @DeleteMapping("/delete-category")
-    public ResponseEntity<String> removeCategory(@RequestBody String categoryName) {
+    public ResponseEntity<?> removeCategory(@RequestBody String categoryName) {
         String response = categoryService.deleteCategory(categoryName);
         return response != null ?
-                ResponseEntity.ok().body(response) :
-                ResponseEntity.status(400).body("Category removal failed");
+                ResponseEntity.ok().build():
+                ResponseEntity.status(400).body(new ErrorResponse("FAILED", "Category removal failed"));
     }
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'SUPERUSER')")
     //TODO add more admin endpoints for order management, user management, etc.

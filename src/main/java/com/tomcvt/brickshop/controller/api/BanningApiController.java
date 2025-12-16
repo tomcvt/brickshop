@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import com.tomcvt.brickshop.dto.TextResponse;
 import com.tomcvt.brickshop.network.BanRegistry;
 
 @RestController
@@ -32,13 +33,13 @@ public class BanningApiController {
     }
     //TODO add frontend page to manage banned IPs
     @PostMapping("/ban-ip")
-    public ResponseEntity<String> banIP(@RequestParam String ipAddress, @RequestParam Long durationMinutes) {
+    public ResponseEntity<?> banIP(@RequestParam String ipAddress, @RequestParam Long durationMinutes) {
         banRegistry.banIp(ipAddress, durationMinutes);
-        return ResponseEntity.ok("IP " + ipAddress + " has been banned for " + durationMinutes + " minutes.");
+        return ResponseEntity.ok(new TextResponse("IP " + ipAddress + " has been banned for " + durationMinutes + " minutes."));
     }
     @PostMapping("/unban-ip")
-    public ResponseEntity<String> unbanIP(@RequestParam String ipAddress) {
+    public ResponseEntity<?> unbanIP(@RequestParam String ipAddress) {
         banRegistry.unbanIp(ipAddress);
-        return ResponseEntity.ok("IP " + ipAddress + " has been unbanned.");
+        return ResponseEntity.ok(new TextResponse("IP " + ipAddress + " has been unbanned."));
     }
 }

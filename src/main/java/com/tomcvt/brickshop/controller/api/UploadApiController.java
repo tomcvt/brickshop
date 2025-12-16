@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.tomcvt.brickshop.dto.ErrorResponse;
 import com.tomcvt.brickshop.service.ProductImageService;
 
 @RestController
@@ -24,11 +25,11 @@ public class UploadApiController {
     String uploadDir;
 
     @PostMapping("/product")
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file,
             @RequestParam("publicId") UUID publicId,
             @RequestParam("imageOrder") Integer imageOrder) {
         if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body("No file selected");
+            return ResponseEntity.status(400).body(new ErrorResponse("BAD_REQUEST", "Uploaded file is empty"));
         }
         String filename = productImageService.saveProductImage(file, publicId, imageOrder);
         return ResponseEntity.ok(filename);

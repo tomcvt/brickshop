@@ -3,6 +3,8 @@ package com.tomcvt.brickshop.controller.api;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tomcvt.brickshop.dto.CustomerOrderDto;
+import com.tomcvt.brickshop.dto.ErrorResponse;
+import com.tomcvt.brickshop.dto.TextResponse;
 import com.tomcvt.brickshop.model.User;
 import com.tomcvt.brickshop.model.WrapUserDetails;
 import com.tomcvt.brickshop.service.OrderService;
@@ -59,7 +61,7 @@ public class OrderApiController {
         return ResponseEntity.ok().body(token);
     }
     @GetMapping("/payment/verify")
-    public ResponseEntity<String> payForOrder(
+    public ResponseEntity<?> payForOrder(
             @AuthenticationPrincipal WrapUserDetails userDetails, @RequestParam Long orderId) {
         if (userDetails == null) {
             return ResponseEntity.status(403).build();
@@ -70,9 +72,13 @@ public class OrderApiController {
         //TODO return json with status, new transaction id etc.
         // acutally just return 200 and for failure make frontend call api to create new transaction
         if(orderService.verifyPaymentAndUpdateOrderStatus(orderId, user)) {
-            return ResponseEntity.ok().body("Payment verified and order updated");
+            return ResponseEntity.ok().body(
+                new TextResponse("Payment verified and order updated successfully")
+            );
         } else {
-            return ResponseEntity.status(500).body("Failed to verify payment and update order");
+            return ResponseEntity.status(500).body(
+                new ErrorResponse("INTERNAL_SERVER_ERROR", "Payment verification failed")
+            );
             //TODO make a new transaction
         }
     }

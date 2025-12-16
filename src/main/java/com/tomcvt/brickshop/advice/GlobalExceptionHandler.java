@@ -5,9 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -73,6 +75,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(NotInStockException.class)
     public ResponseEntity<ErrorResponse> handleNotInStockException(NotInStockException ex) {
+        log.error("NotInStockException: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             new ErrorResponse("BAD_REQUEST", ex.getMessage())
         );
@@ -138,6 +141,20 @@ public class GlobalExceptionHandler {
         log.error("NoResourceFoundException: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
             new ErrorResponse("NOT_FOUND", ex.getMessage())
+        );
+    }
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<ErrorResponse> handleMultipartException(MultipartException ex) {
+        log.error("MultipartException: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            new ErrorResponse("BAD_REQUEST", ex.getMessage())
+        );
+    }
+    @ExceptionHandler(RequestRejectedException.class)
+    public ResponseEntity<ErrorResponse> handleRequestRejectedException(RequestRejectedException ex) {
+        log.error("RequestRejectedException: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            new ErrorResponse("BAD_REQUEST", ex.getMessage())
         );
     }
 }

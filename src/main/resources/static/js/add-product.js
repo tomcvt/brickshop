@@ -82,8 +82,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 				method: 'POST',
 				body: formData
 			});
+			const messageDiv = document.getElementById('add-product-message');
 			if (response.ok) {
-				document.getElementById('add-product-message').textContent = 'Product added successfully!';
+				// Expecting a ProductDto object in response
+				const data = await response.json();
+				messageDiv.textContent = 'Product added successfully!';
+				// Optionally, show product info: messageDiv.textContent += ` (ID: ${data.publicId})`;
 				document.getElementById('add-product-form').reset();
 				gallery.innerHTML = '';
 				images = [];
@@ -91,8 +95,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 				selectedCategories = [];
 				renderCategories(categories, selectedCategories);
 			} else {
-				const errorText = await response.text();
-				document.getElementById('add-product-message').textContent = 'Failed to add product: ' + errorText;
+				// Expecting an error object { error, message }
+				let errorMsg = 'Failed to add product.';
+				try {
+					const errObj = await response.json();
+					if (errObj && errObj.message) {
+						errorMsg = errObj.message;
+					}
+				} catch (e) {
+					// fallback to text if not JSON
+					errorMsg = await response.text();
+				}
+				messageDiv.textContent = 'Failed to add product: ' + errorMsg;
 			}
 		} catch (error) {
 			document.getElementById('add-product-message').textContent = 'Error: ' + error;
