@@ -16,7 +16,7 @@ services:
       - db
     volumes:
       - logs:/app/logs
-      - storage:/app/product-images
+      - storage_images:/app/product-images
     networks:
       - brickshop-network
     restart: unless-stopped
@@ -34,7 +34,7 @@ services:
 volumes:
   db_data:
   logs:
-  storage:
+  storage_images:
 
 networks:
-  cvtcaptcha-network:
+  brickshop-network:

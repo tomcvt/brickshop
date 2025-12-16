@@ -1,10 +1,30 @@
 import * as SidebarCart from './sidebar-cart.js';
 
-const productId = document.getElementById('productPublicId').getAttribute('data-product-public-id')
+
+function getProductId() {
+    const el = document.getElementById('productPublicId');
+    if (el && el.getAttribute('data-product-public-id')) {
+        return el.getAttribute('data-product-public-id');
+    }
+    // Fallback: try to get from URL (e.g. /products/{publicId} or ?id=...)
+    const urlMatch = window.location.pathname.match(/([0-9a-fA-F\-]{36})/);
+    if (urlMatch) {
+        return urlMatch[1];
+    }
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('id')) {
+        return params.get('id');
+    }
+    return null;
+}
+
+const productId = getProductId();
+
 
 async function loadProduct(productId) {
     const response = await fetch(`/api/products/${productId}`);
     const product = await response.json();
+    console.log('Loaded product:', product);
 
     document.getElementById('productName').innerText = product.name;
     document.getElementById('productDescription').innerText = product.description;
@@ -15,16 +35,22 @@ async function loadProduct(productId) {
     document.getElementById('addToCartBtn').disabled = product.stock === 0;
 
     const mainImage = document.getElementById('mainImage');
-    mainImage.src = '/outsideimages/' + product.imageUrls[0];
+    if (product.imageUrls && product.imageUrls.length > 0) {
+        mainImage.src = '/outsideimages/' + product.imageUrls[0];
+    } else {
+        mainImage.src = '/images/placeholder.jpg';
+    }
 
     const thumbnailContainer = document.getElementById('thumbnailContainer');
     thumbnailContainer.innerHTML = '';
-    product.imageUrls.forEach(url => {
-        const img = document.createElement('img');
-        img.src = '/outsideimages/' + url;
-        img.addEventListener('click', () => mainImage.src = img.src);
-        thumbnailContainer.appendChild(img);
-    });
+    if (product.imageUrls && product.imageUrls.length > 0) {
+        product.imageUrls.forEach(url => {
+            const img = document.createElement('img');
+            img.src = '/outsideimages/' + url;
+            img.addEventListener('click', () => mainImage.src = img.src);
+            thumbnailContainer.appendChild(img);
+        });
+    }
 
     mainImage.addEventListener('click', () => {
         const lightbox = document.getElementById('lightbox');

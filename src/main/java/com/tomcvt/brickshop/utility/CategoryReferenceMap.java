@@ -1,9 +1,9 @@
 package com.tomcvt.brickshop.utility;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class CategoryReferenceMap {
 
     public CategoryReferenceMap(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
-        this.map = new HashMap<>();
+        this.map = new ConcurrentHashMap<>();
     }
 
     public Long put(String name, Long id) {

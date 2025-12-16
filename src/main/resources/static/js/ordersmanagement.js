@@ -1,7 +1,9 @@
 import { initOrderSearchModule } from '/js/pageOrdersModule.js';
 
+
 let currentPage = 0;
 let pageSize = 10;
+let orderId = '';
 let username = '';
 let orderStatus = '';
 let paymentMethod = '';
@@ -38,21 +40,40 @@ function renderOrders(simplePage) {
 
 document.addEventListener('DOMContentLoaded', () => {
     // Header filter logic
+    const orderIdInput = document.getElementById('filter-orderId');
     const usernameInput = document.getElementById('filter-username');
     const orderStatusSelect = document.getElementById('filter-orderStatus');
     const paymentMethodSelect = document.getElementById('filter-paymentMethod');
     const createdBeforeInput = document.getElementById('filter-createdBefore');
     const searchBtn = document.getElementById('searchBtn');
+    const resetBtn = document.getElementById('resetBtn');
 
+    orderIdInput.addEventListener('input', e => { orderId = e.target.value; });
     usernameInput.addEventListener('input', e => { username = e.target.value; });
     orderStatusSelect.addEventListener('change', e => { orderStatus = e.target.value; });
     paymentMethodSelect.addEventListener('change', e => { paymentMethod = e.target.value; });
     createdBeforeInput.addEventListener('input', e => { createdBefore = e.target.value; });
 
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            orderId = '';
+            username = '';
+            orderStatus = '';
+            paymentMethod = '';
+            createdBefore = new Date().toISOString().slice(0, 19);
+            orderIdInput.value = '';
+            usernameInput.value = '';
+            orderStatusSelect.value = '';
+            paymentMethodSelect.value = '';
+            createdBeforeInput.value = createdBefore;
+        });
+    }
+
     initOrderSearchModule(
         (results, opts) => {
             currentPage = opts.page;
             pageSize = opts.size;
+            orderId = opts.orderId;
             username = opts.username;
             orderStatus = opts.orderStatus;
             paymentMethod = opts.paymentMethod;
@@ -62,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         {
             navBarIds: ['ordersNavBar'],
             getCurrentPage: () => currentPage,
+            getOrderId: () => orderId,
             getUsername: () => username,
             getOrderStatus: () => orderStatus,
             getPaymentMethod: () => paymentMethod,
@@ -74,4 +96,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Set default date to now
     createdBeforeInput.value = createdBefore;
+    searchBtn.click();
 });

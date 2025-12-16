@@ -69,6 +69,10 @@ public class OrderService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Not found"));
     }
 
+    public Optional<Order> findOrderByOrderId(Long orderId) {
+        return orderRepository.findByOrderId(orderId);
+    }
+
     public Order getOrderByOrderIdAndUser(Long orderId, User user) {
         // TODO custom exception and handler
         Order order = orderRepository.findByOrderIdAndUser(orderId, user)
@@ -178,6 +182,10 @@ public class OrderService {
         Pageable pageSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
         Page<Order> orderPage = orderRepository.findAll(spec, pageSort);
         return orderPage;
+    }
+
+    public long getTotalOrderCount() {
+        return orderRepository.count();
     }
 
     private PaymentMethod parsePaymentMethod(String paymentMethodStr) {

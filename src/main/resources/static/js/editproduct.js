@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const editBtn = document.getElementById('edit-product-btn');
     const newCategoryInput = document.getElementById('new-category');
     const categoriesListDiv = document.getElementById('categories-list');
+    const saveOrderBtn = document.getElementById('save-order');
     const productCategories = product.categoriesNames; // categories that should be pre-checked
     renderCategories(categories, productCategories, categoriesListDiv);
 
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setProductEdit(product);
     detailsDiv.style.display = '';
     editBox.style.display = 'none';
+    saveOrderBtn.disabled = true;
 
     let inEditMode = false;
     editBtn.addEventListener('click', () => {
@@ -37,14 +39,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             detailsDiv.style.display = 'none';
             editBox.style.display = '';
             editBtn.textContent = 'View';
+            saveOrderBtn.disabled = false;
         } else {
             setProductView(product);
             detailsDiv.style.display = '';
             editBox.style.display = 'none';
             editBtn.textContent = 'Edit';
+            saveOrderBtn.disabled = true;
         }
     });
-
 
     // ---- Part 2: Render images ----
     const gallery = document.getElementById('image-gallery');
@@ -52,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     enableDragAndDrop(gallery);
 
     // Save Order button logic
-    document.getElementById('save-order').addEventListener('click', async () => {
+    saveOrderBtn.addEventListener('click', async () => {
         const newOrder = [...gallery.querySelectorAll('img')].map(img => img.dataset.uri);
         const checkedCategories = [];
         const checkboxes = categoriesListDiv.querySelectorAll('input[type="checkbox"]');
@@ -99,8 +102,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             editBox.style.display = 'none';
             editBtn.textContent = 'Edit';
             inEditMode = false;
+            saveOrderBtn.disabled = true;
         } else {
-            alert('Failed to save product info.');
+            const errorResponse = await r.json();
+            alert('Error saving product: ' + errorResponse.message);
         }
     });
     // Image upload logic
@@ -235,7 +240,7 @@ function renderCategories(categories, productCategories, categoriesListDiv) {
 function setProductView(product) {
     document.getElementById('product-name').textContent = product.name;
     document.getElementById('product-description').textContent = product.description;
-    document.getElementById('product-price').textContent = `$${product.price}`;
+    document.getElementById('product-price').textContent = `${product.price} zł`;
     document.getElementById('product-stock').textContent = product.stock;
 }
 

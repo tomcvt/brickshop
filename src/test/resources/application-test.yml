@@ -1,10 +1,10 @@
 spring:
   application:
-    name: brickshop
+    name: brickshop-test
   jpa:
-    show-sql: false
+    show-sql: true
     hibernate:
-      ddl-auto: validate   # overridden in dev
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -14,58 +14,57 @@ spring:
     detect-encoding: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/brickshopdb_test
+    username: brickshop_app
+    password: testpassword
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    username: test@example.com
+    password: testpassword
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
-    test-connection: true
+    test-connection: false
 
 server:
-  port: ${APP_PORT:8082}
-  address:
-    ${APP_HOST:0.0.0.0}
+  port: 18082
+  address: 127.0.0.1
   servlet:
     session:
       timeout: 15m
 
 cors:
-  allowed-origins: ${CORS_ALLOWED_ORIGINS}
+  allowed-origins: http://localhost:18082
 
 product:
   images:
     upload:
-      dir: ${PRODUCT_IMAGES_DIR}
+      dir: target/test-uploads
 
 com:
   tomcvt:
     domain:
-      name: ${APP_DOMAIN_NAME}
+      name: http://localhost:18082
     brickshop:
       pagination:
         default-page-size: 20
         max-page-size: 100
     superuser:
-      username: ${SUPERUSER_USERNAME}
-      password: ${SUPERUSER_PASSWORD}
-      email: ${SUPERUSER_EMAIL}
+      username: test_superuser
+      password: test_superuser_password
+      email: test@example.com
     cvtcaptcha:
-      key: ${CVTCAPTCHA_KEY}
+      key: test-captcha-key
     rate-limiter:
       max-requests: 1000
       time-window-seconds: 3600
       ban-threshold-per-minute: 120
       ban-duration-minutes: 60
     demo:
-      password: ${DEMO_PASSWORD}
-      email: ${MAIL_USERNAME}
+      password: test_demo_password
+      email: test@example.com

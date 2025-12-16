@@ -4,14 +4,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tomcvt.brickshop.dto.ProductDto;
 import com.tomcvt.brickshop.dto.ProductSummaryDto;
+import com.tomcvt.brickshop.mappers.ProductMapper;
 import com.tomcvt.brickshop.model.Product;
 import com.tomcvt.brickshop.pagination.SimplePage;
 import com.tomcvt.brickshop.service.CategoryService;
 import com.tomcvt.brickshop.service.ProductService;
 
+import io.micrometer.core.ipc.http.HttpSender.Response;
+
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductApiController {
     private final ProductService productService;
     private final CategoryService categoryService;
+    private final ProductMapper productMapper = ProductMapper.INSTANCE;
 
     public ProductApiController(ProductService productService, CategoryService categoryService) {
         this.productService = productService;
@@ -51,8 +56,9 @@ public class ProductApiController {
     }
 
     @GetMapping("/{publicId}")
-    public ProductDto getProductHydratedByPublicId(@PathVariable UUID publicId) {
-        return productService.getProductHydratedByPublicId(publicId).toDto();
+    public ResponseEntity<ProductDto> getProductHydratedByPublicId(@PathVariable UUID publicId) {
+        var dto = productService.getProductDtoByPublicId(publicId);
+        return ResponseEntity.ok(dto);
     }
     @GetMapping("/categories")
     public List<String> getCategoriesNames() {

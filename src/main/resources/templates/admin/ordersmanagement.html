@@ -13,7 +13,7 @@
 		<div class="orders-header">
 			<div class="order-header-cell order-id">
 				<span class="order-header-label">Order ID</span>
-				<div class="order-header-input" style="height:32px;"></div>
+				<input id="filter-orderId" class="order-header-input" type="text" placeholder="Order ID" autocomplete="off" />
 			</div>
 			<div class="order-header-cell username">
 				<span class="order-header-label">Username</span>
@@ -21,7 +21,7 @@
 			</div>
 			<div class="order-header-cell cart-id">
 				<span class="order-header-label">Cart ID</span>
-				<div class="order-header-input" style="height:32px;"></div>
+				<div class="order-header-input" style="height:28px;"></div>
 			</div>
 			<div class="order-header-cell status">
 				<span class="order-header-label">Order Status</span>
@@ -52,7 +52,8 @@
 				<span class="order-header-label">Total Amount</span>
 				<div class="order-header-input" style="height:32px;"></div>
 			</div>
-			<div class="order-header-btn-cell">
+			<div class="order-header-btn-cell" style="display: flex; flex-direction: column; gap: 4px; align-items: stretch;">
+				<button id="resetBtn" class="btn btn-small" style="width:100%; background:#eee; color:#333; border:1px solid #bbb;">Reset</button>
 				<button id="searchBtn" class="btn btn-primary btn-small" style="width:100%;">Search</button>
 			</div>
 		</div>

@@ -88,6 +88,17 @@ public class ProductService {
         return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found"));
     }
 
+    public Product getProductByPublicId(UUID publicId) {
+        return productRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+    }
+
+    @Transactional(readOnly = true)
+    public ProductDto getProductDtoByPublicId(UUID publicId) {
+        Product product = getProductByPublicId(publicId);
+        return product.toDto();
+    }
+
     public List<ProductSummaryDto> getAllProductSummaries() {
         return productRepository.findAll().stream()
                 .map(Product::toSummaryDto).toList();
@@ -154,4 +165,7 @@ public class ProductService {
                 new ImageOrderDto(product.getId(), productDto.imageUrls()));
     }
     //TODO validate categories
+    public long getTotalProductCount() {
+        return productRepository.count();
+    }
 }

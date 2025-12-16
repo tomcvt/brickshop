@@ -7,10 +7,12 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 
 import com.tomcvt.brickshop.auth.RateLimitingFilter;
+import com.tomcvt.brickshop.auth.UserLoginFailureHandler;
 import com.tomcvt.brickshop.security.UserLoginSuccessHandler;
 
 @Configuration
@@ -21,6 +23,8 @@ public class SecurityConfig {
     private final AuthenticationManager authenticationManager;
     private final UserLoginSuccessHandler userLoginSuccessHandler;
     private final RateLimitingFilter rateLimitingFilter;
+    private final SessionRegistry sessionRegistry;
+    private final UserLoginFailureHandler userLoginFailureHandler;
     private final String[] WHITELIST = {
         "/",
         "/js/**",
@@ -39,6 +43,7 @@ public class SecurityConfig {
         "/.well-known/**",
         "/error",
         "/public/**",
+        "/no-image.jpg"
     };
     private final String[] SUPERUSER_WHITELIST = {
         "/superuser/**",
@@ -68,11 +73,13 @@ public class SecurityConfig {
     //TODO refactor for config properties later
 
     SecurityConfig(AuthenticationManager authenticationManager, UserLoginSuccessHandler userLoginSuccessHandler, 
-    RateLimitingFilter rateLimitingFilter
+    RateLimitingFilter rateLimitingFilter, SessionRegistry sessionRegistry, UserLoginFailureHandler userLoginFailureHandler
     ) {
         this.authenticationManager = authenticationManager;
         this.userLoginSuccessHandler = userLoginSuccessHandler;
         this.rateLimitingFilter = rateLimitingFilter;
+        this.sessionRegistry = sessionRegistry;
+        this.userLoginFailureHandler = userLoginFailureHandler;
     }
     
     @Bean
@@ -94,6 +101,7 @@ public class SecurityConfig {
                 .loginPage("/login.html")
                 .loginProcessingUrl("/login")
                 .successHandler(userLoginSuccessHandler)
+                .failureHandler(userLoginFailureHandler)
                 .permitAll()
             )
             .logout(logout -> logout
@@ -104,7 +112,11 @@ public class SecurityConfig {
                 .permitAll()
             )
             .anonymous(Customizer.withDefaults())
-            .addFilterAfter(rateLimitingFilter, AnonymousAuthenticationFilter.class);
+            .addFilterAfter(rateLimitingFilter, AnonymousAuthenticationFilter.class)
+            .sessionManagement(session -> session
+                .maximumSessions(20)
+                .sessionRegistry(sessionRegistry)
+            );
         return http.build();
     }
 }

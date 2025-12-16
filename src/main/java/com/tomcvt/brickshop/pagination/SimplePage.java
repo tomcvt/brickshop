@@ -33,6 +33,16 @@ public class SimplePage<T> {
         );
     }
 
+    public static <T> SimplePage<T> onePage(List<T> content) {
+        return new SimplePage<>(
+                content,
+                (long) content.size(),
+                0,
+                true,
+                true
+        );
+    }
+
     public static <T> SimplePage<T> of(List<T> content, Page<?> page) {
         return new SimplePage<>(
                 content,

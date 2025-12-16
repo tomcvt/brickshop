@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
@@ -13,15 +14,20 @@ import org.springframework.web.context.annotation.SessionScope;
 @SessionScope
 public class ImageOrderValidator {
     private Map<UUID, Set<String>> map;
+    private Map<UUID, Long> expiryMap;
+    private final long EXPIRY_DURATION_MS = 15 * 60 * 1000; // 15 minutes
     //TODO expire entries after some time
     public ImageOrderValidator() {
         this.map = new ConcurrentHashMap<>();
+        this.expiryMap = new ConcurrentHashMap<>();
     }
     public void storeImageOrder(UUID publicId, Set<String> imageUrls) {
         map.put(publicId, imageUrls);
+        expiryMap.put(publicId, System.currentTimeMillis() + EXPIRY_DURATION_MS);
     }
     public void clearImageOrder(UUID publicId) {
         map.remove(publicId);
+        expiryMap.remove(publicId);
     }
     public boolean validateImageOrder(UUID publicId, List<String> imageUrlsList) {
         for (String url : imageUrlsList) {
@@ -37,5 +43,16 @@ public class ImageOrderValidator {
             if (!storedUrls.contains(url)) return false;
         }
         return true;
+    }
+
+    @Scheduled(fixedRate = 30 * 60 * 1000) // every 30 minutes
+    public void cleanupExpiredEntries() {
+        long currentTime = System.currentTimeMillis();
+        for (UUID publicId : expiryMap.keySet()) {
+            if (expiryMap.get(publicId) < currentTime) {
+                map.remove(publicId);
+                expiryMap.remove(publicId);
+            }
+        }
     }
 }

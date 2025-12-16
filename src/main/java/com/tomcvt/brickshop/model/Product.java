@@ -29,6 +29,7 @@ public class Product {
     private String name;
     @Column(length = MAX_DESCRIPTION_LENGTH)
     private String description;
+    @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("imgOrder ASC")
     private List<ProductImage> productImages = new ArrayList<>();
@@ -132,7 +133,7 @@ public class Product {
         List<String> imageUrls = this.productImages.stream()
                 //.sorted((img1, img2) -> img1.getImgOrder().compareTo(img2.getImgOrder()))
                 .map(productimage -> productimage.getImageUuid() + ".jpg").toList();
-        Set<String> categoryNames = this.categories.stream()
+        Set<String> categoryNames = this.getCategories().stream()
                 .map(Category::getName)
                 .collect(Collectors.toSet());
         return new ProductDto(this.publicId, this.name, this.description, imageUrls, this.price, this.stock, categoryNames);
@@ -142,4 +143,8 @@ public class Product {
     //cache thumbnail when adding image with order 1 DONE or when deleting image with order 1
     //if no image with order 1, set to null DONE
 
+    public String toString() {
+        return "Product{id=" + id + ", publicId=" + publicId + ", name='" + name + "', description='" + description +
+                "', price=" + price + ", stock=" + stock + ",categories=" + getCategories().stream().map(Category::getName).collect(Collectors.toSet()) + "}";
+    }
 }

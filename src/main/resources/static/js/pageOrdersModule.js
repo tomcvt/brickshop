@@ -24,6 +24,7 @@
 export async function initOrderSearchModule(onResults, config) {
     const navBarIds = config.navBarIds || [];
     let currentPage = 0;
+    let lastOrderId = config.getOrderId ? config.getOrderId() : '';
     let lastUsername = config.getUsername ? config.getUsername() : '';
     let lastOrderStatus = config.getOrderStatus ? config.getOrderStatus() : '';
     let lastPaymentMethod = config.getPaymentMethod ? config.getPaymentMethod() : '';
@@ -55,6 +56,7 @@ export async function initOrderSearchModule(onResults, config) {
                     lastSize = config.getSize ? config.getSize() : lastSize;
                     const opts = {
                         page: currentPage,
+                        orderId: lastOrderId,
                         username: lastUsername,
                         orderStatus: lastOrderStatus,
                         paymentMethod: lastPaymentMethod,
@@ -71,6 +73,7 @@ export async function initOrderSearchModule(onResults, config) {
                 lastSize = config.getSize ? config.getSize() : lastSize;
                 const opts = {
                     page: currentPage,
+                    orderId: lastOrderId,
                     username: lastUsername,
                     orderStatus: lastOrderStatus,
                     paymentMethod: lastPaymentMethod,
@@ -103,6 +106,7 @@ export async function initOrderSearchModule(onResults, config) {
     const searchButton = document.getElementById(config.searchButtonId);
     if (searchButton) {
         searchButton.onclick = async () => {
+            const orderId = config.getOrderId ? config.getOrderId() : '';
             const username = config.getUsername ? config.getUsername() : '';
             const orderStatus = config.getOrderStatus ? config.getOrderStatus() : '';
             const paymentMethod = config.getPaymentMethod ? config.getPaymentMethod() : '';
@@ -110,6 +114,7 @@ export async function initOrderSearchModule(onResults, config) {
             const size = config.getSize ? config.getSize() : lastSize;
             const opts = {
                 page: 0,
+                orderId: orderId,
                 username: username,
                 orderStatus: orderStatus,
                 paymentMethod: paymentMethod,
@@ -117,6 +122,7 @@ export async function initOrderSearchModule(onResults, config) {
                 size: size
             };
             currentPage = 0;
+            lastOrderId = orderId;
             lastUsername = username;
             lastOrderStatus = orderStatus;
             lastPaymentMethod = paymentMethod;
@@ -132,6 +138,7 @@ export async function initOrderSearchModule(onResults, config) {
 export async function fetchOrderPage(endpoint = '', opts = {}) {
     let url = endpoint;
     const page = opts.page || 0;
+    const orderId = opts.orderId || '';
     const username = opts.username || '';
     const orderStatus = opts.orderStatus || '';
     const paymentMethod = opts.paymentMethod || '';
@@ -140,6 +147,9 @@ export async function fetchOrderPage(endpoint = '', opts = {}) {
     const params = [];
     params.push(`page=${page}`);
     params.push(`size=${size}`);
+    if (orderId.trim() !== '') {
+        params.push(`orderId=${encodeURIComponent(orderId)}`);
+    }
     if (username.trim() !== '') {
         params.push(`username=${encodeURIComponent(username)}`);
     }

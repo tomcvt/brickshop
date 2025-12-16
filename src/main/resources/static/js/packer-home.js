@@ -10,7 +10,7 @@ function renderShipmentsToPack(simplePage) {
     const shipmentListDiv = document.getElementById('shipmentList');
     shipmentListDiv.innerHTML = '';
     if (!simplePage || !simplePage.content || simplePage.content.length === 0) {
-        shipmentListDiv.innerHTML = '<div class="alert alert-error">No shipments to pack.</div>';
+        shipmentListDiv.innerHTML = '<div class="alert alert-error">No shipments in this category.</div>';
         return;
     }
     simplePage.content.forEach(shipment => {
@@ -77,4 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
             searchButtonId: 'searchButtonStatus'
         }
     );
+
+    document.getElementById('searchButtonStatus').click();
 });

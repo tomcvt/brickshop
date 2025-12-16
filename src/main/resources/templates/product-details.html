@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title th:text="${product != null} ? ${product.name} : 'Product Page'">Product Page</title>
+    <title>Product Page</title>
     <link rel="stylesheet" href="/css/product-details.css">
 </head>
 
@@ -20,29 +20,25 @@
     <div class="product-container">
         <div class="gallery">
             <div class="main-image-box">
-            <img id="mainImage" class="main-image"
-                th:src="${product != null and !product.imageUrls.isEmpty()} ? '/outsideimages/' + ${product.imageUrls[0]} : '/images/placeholder.jpg'"
-                alt="Product image">
+                <img id="mainImage" class="main-image" src="/images/placeholder.jpg" alt="Product image">
             </div>
             <div class="thumbnails" id="thumbnailContainer">
             </div>
         </div>
 
         <div class="product-info">
-            <h1 id="productName" th:text="${product?.name}">Product Name</h1>
-            <p id="productDescription" th:text="${product?.description}">Product description goes here...</p>
+            <h1 id="productName">Product Name</h1>
+            <p id="productDescription">Product description goes here...</p>
 
-            <div class="price" id="productPrice"
-                th:text="${product != null} ? ${#numbers.formatDecimal(product.price, 1, 'COMMA', 2, 'POINT')} + ' $' : ''">
+            <div class="price" id="productPrice">
                 $0.00
             </div>
 
-            <div class="stock" id="productStock"
-                th:text="${product != null and product.stock > 0} ? ${product.stock} + ' in stock' : 'Out of stock'">
+            <div class="stock" id="productStock">
                 In Stock
             </div>
 
-            <button class="btn-primary btn-add-cart" id="addToCartBtn" th:disabled="${product != null and product.stock == 0}">
+            <button class="btn-primary btn-add-cart" id="addToCartBtn">
                 Add to Cart
             </button>
         </div>

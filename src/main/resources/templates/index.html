@@ -18,6 +18,8 @@
             <div class="menu-div rows">
                 <a class="wide" th:href="@{/superuser}"><button class="btn btn-primary wide">Superuser Dashboard</button></a>
                 <a class="wide" th:href="@{/superuser/manage-users}"><button class="btn btn-primary wide">Manage Users</button></a>
+                <a class="wide" th:href="@{/superuser/logging}"><button class="btn btn-primary wide">Logging info</button></a>
+                <a class="wide" th:href="@{/superuser/banning}"><button class="btn btn-primary wide">Banning</button></a>
             </div>
         </div>
         <div th:if="${isAdmin}" class="admin-section">
@@ -39,7 +41,7 @@
         </div>
         <div class="menu-div rows">
             <h2>Menu</h2>
-            <a class="wide" th:href="@{/products}"><button class="btn btn-primary wide">View Products</button></a>
+            <a class="wide" th:href="@{/products}"><button class="btn btn-secondary wide">View Products</button></a>
             <a class="wide" th:href="@{/cart}"><button class="btn btn-primary wide">View Cart</button></a>
             <a class="wide" th:href="@{/user/orders}"><button class="btn btn-primary wide">View Orders</button></a>
             <a class="wide" th:href="@{/user}"><button class="btn btn-primary wide">Profile</button></a>

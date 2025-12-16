@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tomcvt.brickshop.enums.OrderStatus;
 import com.tomcvt.brickshop.enums.PaymentMethod;
 import com.tomcvt.brickshop.model.Cart;
 import com.tomcvt.brickshop.model.Order;
@@ -41,6 +42,7 @@ public class DemoPersistenceLayer {
         this.shipmentCreator = shipmentCreator;
     }
 
+    @SuppressWarnings("null")
     @Transactional
     public Order createDemoOrder(User user, Long cartId) {
         ShipmentAddress address = shipmentAddressRepository.findByUser(user).stream().findFirst()
@@ -70,6 +72,8 @@ public class DemoPersistenceLayer {
             }
         }
         shipmentCreator.createShipmentForOrder(newOrder);
+        newOrder.setStatus(OrderStatus.PROCESSING);
+        newOrder = orderRepository.save(newOrder);
         return newOrder;
     }
 }

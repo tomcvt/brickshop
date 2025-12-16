@@ -7,8 +7,6 @@ target/
 .env
 .env.local
 .env.db
-application-dev.yml
-application-demo.yml
 application-prod.yml
 logs/
 dummydata/

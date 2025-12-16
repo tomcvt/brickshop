@@ -114,7 +114,8 @@ public class ProductImageService {
             try {
                 saveImage(file, uuidData);
             } catch (Exception e) {
-                throw new FileUploadException("Failed to save image: " + file.getOriginalFilename());
+                e.printStackTrace();
+                throw e;
             }
         }
     }
@@ -190,8 +191,8 @@ public class ProductImageService {
             try {
                 Files.createDirectories(uploadPath);
             } catch (IOException e) {
-                e.printStackTrace();
-                return null;
+                log.error("Could not create directory", e);
+                throw new FileUploadException("Could not save file", e);
             }
         }
         try {
@@ -203,8 +204,8 @@ public class ProductImageService {
             imageConverter.convertToJpg(file, outputFile, 0.8f);
             return filename;
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            log.error("Could not save file", e);
+            throw new FileUploadException("Could not save file", e);
         }
     }
     private String saveImage(File file, String filename) {
@@ -213,8 +214,7 @@ public class ProductImageService {
             try {
                 Files.createDirectories(uploadPath);
             } catch (IOException e) {
-                e.printStackTrace();
-                return null;
+                throw new FileUploadException("Could not save file", e);
             }
         }
         try {
@@ -226,8 +226,7 @@ public class ProductImageService {
             imageConverter.convertToJpg(file, outputFile, 0.8f);
             return filename;
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            throw new FileUploadException("Could not save file", e);
         }
     }
 

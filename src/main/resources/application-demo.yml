@@ -1,0 +1,10 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+csvloader:
+  filepath: ${CSVLOADER_FILEPATH:dummydata/sets.csv}
+
+dummyimageloader:
+  path: ${DUMMYIMAGELOADER_PATH:dummydata/images}

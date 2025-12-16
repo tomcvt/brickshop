@@ -26,6 +26,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         "/js/**",
         "/css/**",
         "/images/**",
+        "/no-image.jpg",
         "/outsideimages/**",
         "/.well-known/**",
         "/api/**"
@@ -33,6 +34,9 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     //TODO make configurable
     private static final String[] EXCLUDE_IP = {
         "0.0.0.0.0.0.0.1"
+    };
+    private static final String[] BLOCKED_STRINGS = {
+        ".env", "git", "ssh", "config"
     };
 
     public RateLimitingFilter(RateLimiterService rateLimiterService, BanRegistry banRegistry) {
@@ -54,6 +58,16 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         for (String ip : EXCLUDE_IP) {
             if (ip.equals(clientIp)) {
                 filterChain.doFilter(request, response);
+                return;
+            }
+        }
+        for (String blocked : BLOCKED_STRINGS) {
+            if (request.getRequestURI().toLowerCase().contains(blocked)) {
+                response.setStatus(403);
+                response.getWriter().write("Bye bye.");
+                response.getWriter().flush();
+                banRegistry.banIp(clientIp);
+                log.warn("Blocked request to {} from IP {}", request.getRequestURI(), clientIp);
                 return;
             }
         }

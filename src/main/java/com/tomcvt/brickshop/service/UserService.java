@@ -42,4 +42,8 @@ public class UserService {
         return userRepository.findAll(spec, pageable);
     }
 
+    public long getTotalUserCount() {
+        return userRepository.count();
+    }
+
 }

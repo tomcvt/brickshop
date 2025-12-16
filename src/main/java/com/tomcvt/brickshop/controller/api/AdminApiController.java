@@ -4,26 +4,24 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import com.tomcvt.brickshop.dto.AdminDashboardInfoDto;
 import com.tomcvt.brickshop.dto.CustomerOrderDto;
 import com.tomcvt.brickshop.dto.NewProductInput;
 import com.tomcvt.brickshop.dto.OrderFullDto;
 import com.tomcvt.brickshop.dto.ProductDto;
-import com.tomcvt.brickshop.dto.ProductInput;
 import com.tomcvt.brickshop.mappers.OrderMapper;
 import com.tomcvt.brickshop.mappers.ProductMapper;
 import com.tomcvt.brickshop.model.Order;
 import com.tomcvt.brickshop.model.Product;
-import com.tomcvt.brickshop.model.WrapUserDetails;
 import com.tomcvt.brickshop.pagination.SimplePage;
+import com.tomcvt.brickshop.service.AdminOrchestrator;
 import com.tomcvt.brickshop.service.CategoryService;
 import com.tomcvt.brickshop.service.OrderService;
 import com.tomcvt.brickshop.service.ProductService;
@@ -40,6 +38,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequestMapping("/api/admin")
 public class AdminApiController {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AdminApiController.class);
+    private final AdminOrchestrator adminOrchestrator;
     private final ProductService productService;
     private final CategoryService categoryService;
     private final ImageOrderValidator imageOrderValidator;
@@ -51,11 +50,13 @@ public class AdminApiController {
             ProductService productService,
             ImageOrderValidator imageOrderValidator,
             CategoryService categoryService,
-            OrderService orderService) {
+            OrderService orderService, 
+            AdminOrchestrator adminOrchestrator) {
         this.productService = productService;
         this.imageOrderValidator = imageOrderValidator;
         this.categoryService = categoryService;
         this.orderService = orderService;
+        this.adminOrchestrator = adminOrchestrator;
     }
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
     @PostMapping("/add-product")
@@ -67,10 +68,10 @@ public class AdminApiController {
         return ResponseEntity.ok().body(dto);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER','MODERATOR')")
     @GetMapping("/edit-product/{publicId}")
     public ResponseEntity<ProductDto> getProductEditRequest(@PathVariable UUID publicId) {
-        ProductDto dto = productService.getProductHydratedByPublicId(publicId).toDto();
+        ProductDto dto = productMapper.toProductDto(productService.getProductByPublicId(publicId));
         imageOrderValidator.storeImageOrder(publicId, Set.copyOf(dto.imageUrls()));
         return ResponseEntity.ok().body(dto);
     }
@@ -106,12 +107,20 @@ public class AdminApiController {
     //TODO add more admin endpoints for order management, user management, etc.
     @GetMapping("/orders/search")
     public ResponseEntity<SimplePage<CustomerOrderDto>> searchOrders(
+            @RequestParam(required = false) String orderId,
             @RequestParam(required = false) String username,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String paymentMethod,
             @RequestParam(required = false) String createdBefore,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
+        if (orderId != null && !orderId.isEmpty()) {
+            var order = orderService.findOrderByOrderId(Long.parseLong(orderId));
+            if (order.isPresent()) {
+                SimplePage<CustomerOrderDto> singleOrderPage = SimplePage.onePage(List.of(order.get().toCustomerOrderDto()));
+                return ResponseEntity.ok().body(singleOrderPage);
+            }
+        }
         Pageable pageable = PageRequest.of(page, size);
         Page<Order> orderPage = orderService.searchOrdersByCriteria(username, status, paymentMethod, createdBefore, pageable);
         SimplePage<CustomerOrderDto> simpleOrderPage = SimplePage.fromPage(
@@ -125,5 +134,11 @@ public class AdminApiController {
         Order order = orderService.getFullOrderDetailsByOrderId(orderId);
         OrderFullDto orderFullDto = orderMapper.toOrderFullDto(order);
         return ResponseEntity.ok().body(orderFullDto);
+    }
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'SUPERUSER')")
+    @GetMapping("/dashboard-info")
+    public ResponseEntity<AdminDashboardInfoDto> getAdminDashboardInfo() {
+        var dto = adminOrchestrator.getAdminDashboardInfo();
+        return ResponseEntity.ok().body(dto);
     }
 }

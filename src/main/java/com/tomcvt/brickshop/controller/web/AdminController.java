@@ -8,11 +8,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
 @RequestMapping("/admin")
 @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER', 'MODERATOR')")
 public class AdminController {
+    @GetMapping({"/dashboard", "", "/"})
+    public String getAdminDashboard() {
+        return "admin/admin-dashboard";
+    }
     
     @GetMapping("/manage-products")
     public String getProductsManagementPage() {

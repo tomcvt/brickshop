@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+    <div class="content-wide">
+        <h2>Admin Dashboard</h2>
+        <div id="dashboardInfo" class="card" style="max-width: 500px; margin: 0 auto 30px auto;">
+            <h3>Statistics</h3>
+            <div class="field"><strong>Total Users:</strong> <span id="totalUsers">...</span></div>
+            <div class="field"><strong>Active Users:</strong> <span id="activeUsers">...</span></div>
+            <div class="field"><strong>Total Sessions:</strong> <span id="totalSessions">...</span></div>
+            <div class="field"><strong>Total Products:</strong> <span id="totalProducts">...</span></div>
+            <div class="field"><strong>Total Orders:</strong> <span id="totalOrders">...</span></div>
+            <div class="field"><strong>Total Revenue:</strong> <span id="totalRevenue">...</span></div>
+        </div>
+        <div class="menu-div rows">
+            <a class="wide" href="/admin/manage-products"><button class="btn btn-primary wide">Manage Products</button></a>
+            <a class="wide" href="/admin/orders"><button class="btn btn-primary wide">Manage Orders</button></a>
+        </div>
+    </div>
+    <script type="module">
+        async function loadDashboardInfo() {
+            try {
+                const resp = await fetch('/api/admin/dashboard-info');
+                if (!resp.ok) throw new Error('Failed to fetch dashboard info');
+                const info = await resp.json();
+                document.getElementById('totalUsers').innerText = info.totalUsers;
+                document.getElementById('activeUsers').innerText = info.activeUsers;
+                document.getElementById('totalSessions').innerText = info.totalSessions;
+                document.getElementById('totalProducts').innerText = info.totalProducts;
+                document.getElementById('totalOrders').innerText = info.totalOrders;
+                document.getElementById('totalRevenue').innerText = info.totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' $';
+            } catch (e) {
+                document.getElementById('dashboardInfo').innerHTML = '<div class="alert alert-error">Failed to load dashboard info.</div>';
+            }
+        }
+        loadDashboardInfo();
+    </script>
+</body>
+</html>
