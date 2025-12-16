@@ -36,7 +36,8 @@ form.addEventListener('submit', async function (e) {
                 window.location.href = '/login'
             }, 5000);
         } else {
-            const errorText = await response.text();
+            const err = await response.json();
+            const errorText = err.message || 'Unknown error';
             result.innerText = 'Error: ' + errorText;
             result.style.display = 'block';
         }

@@ -40,8 +40,11 @@ export function createAndAttachRow(item, container) {
             const res = await fetch(`/api/cart/remove/${item.cartItemId}`, { method: 'POST' });
             if (res.ok) {
                 loadAndShowCart();
+                return;
             }
-            else console.error('Failed to remove item, server responded with status:', res.status);
+            const err = await res.json();
+            const errorMsg = err.error + ":" + err.message;
+            alert('Failed to remove item: ' + errorMsg);
         } catch (err) {
             console.error('Failed to remove item:', err);
             console.log('CartItem ID:', item.cartItemId);
@@ -78,8 +81,9 @@ export async function addProductByPublicIdToCart(publicId) {
             messageDiv.className = 'alert alert-success';
             loadAndShowCart();
         } else {
-            const error = await response.text();
-            messageDiv.innerText = 'Error: ' + error;
+            const error = await response.json();
+            const text = error.error + ":" + error.message;
+            messageDiv.innerText = 'Error: ' + text;
             messageDiv.className = 'alert alert-error';
         }
 

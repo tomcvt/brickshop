@@ -4,33 +4,16 @@ const result = document.getElementById('result');
 
 // Call /api/checkout/create
 
-/*
-document.getElementById('createSessionBtn').addEventListener('click', async () => {
-    try {
-        const res = await fetch('/api/checkout/create', {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
-        });
-        if (!res.ok) throw new Error(await res.text());
-        checkoutSession = await res.json();
-
-        result.innerText = 'Checkout session created: ' + checkoutSession.uuidData;
-
-        // Now load addresses and cart
-        await getAndShowCart();
-        await loadAddresses();
-    } catch (err) {
-        result.innerText = 'Error: ' + err.message;
-    }
-});*/
-
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         const res = await fetch('/api/checkout/create', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
-        if (!res.ok) throw new Error(await res.text());
+        if (!res.ok) {
+            err = await res.json();
+            throw Error(err.message);
+        }
         checkoutSession = await res.json();
 
         result.innerText = 'Checkout session created: ' + checkoutSession.uuidData;
@@ -118,7 +101,8 @@ async function loadAddresses() {
             headers: { 'Content-Type': 'application/json' }
         });
         if (!res.ok) {
-
+            const err = await res.json();
+            throw Error(err.message);
         };
         addresses = await res.json();
 
@@ -163,7 +147,6 @@ document.getElementById('placeOrderBtn').addEventListener('click', async () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(checkoutData)
         });
-        const text = await res.text();
 
         if (res.status === 405) {
             result.innerText = 'Cart was modified, please review your order.';
@@ -171,13 +154,21 @@ document.getElementById('placeOrderBtn').addEventListener('click', async () => {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
-            if (!res2.ok) throw new Error(await res2.text());
+            if (!res2.ok) {
+                err = await res2.json();
+                throw Error(err.message);
+            }
             checkoutSession = await res2.json();
             await getAndShowCart();
             return;
         }
 
-        if (!res.ok) throw new Error(text);
+        if (!res.ok) {
+            const err = await res.json();
+            throw Error(err.message);
+        }
+        const msg = await res.json();
+        const text = msg.message;
 
         if (res.status === 201) {
             result.innerText = 'Order created successfully, your order number is: ' + text

@@ -25,13 +25,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 				body: categoryName
 			});
 			if (response.ok) {
+				// Expecting a success object or empty
 				categories.push(categoryName);
 				renderCategories(categories, selectedCategories);
 				newCategoryInput.value = '';
 				alert(`Category "${categoryName}" added successfully!`);
 			} else {
-				const errorText = await response.text();
-				alert(`Failed to add category: ${errorText}`);
+				let errorMsg = 'Failed to add category.';
+				try {
+					const errObj = await response.json();
+					if (errObj && errObj.message) {
+						errorMsg = errObj.message;
+					}
+				} catch (e) {
+					errorMsg = await response.text();
+				}
+				alert(`Failed to add category: ${errorMsg}`);
 			}
 		} catch (error) {
 			console.error('Error adding category:', error);
@@ -146,13 +155,22 @@ function renderCategories(categories, selectedCategories) {
 					body: category
 				});
 				if (response.ok) {
+					// Expecting a success object or empty
 					categories = categories.filter(cat => cat !== category);
 					selectedCategories = selectedCategories.filter(cat => cat !== category);
 					renderCategories(categories, selectedCategories);
 					alert(`Category "${category}" deleted successfully!`);
 				} else {
-					const errorText = await response.text();
-					alert(`Failed to delete category: ${errorText}`);
+					let errorMsg = 'Failed to delete category.';
+					try {
+						const errObj = await response.json();
+						if (errObj && errObj.message) {
+							errorMsg = errObj.message;
+						}
+					} catch (e) {
+						errorMsg = await response.text();
+					}
+					alert(`Failed to delete category: ${errorMsg}`);
 				}
 			} catch (error) {
 				console.error('Error deleting category:', error);

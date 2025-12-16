@@ -128,7 +128,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             file.value = ''; // Clear the file input
             alert('Image uploaded successfully!');
         } else {
-            alert('Image upload failed.');
+            const errorResponse = await uploadResponse.json();
+            alert('Error uploading image: ' + errorResponse.message);
         }
     });
 
@@ -145,13 +146,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 body: categoryName
             });
             if (response.ok) {
-                const newCategory = await response.text();
-                addCategory(categoriesListDiv, newCategory);
+                //const newCategory = await response.text();
+                addCategory(categoriesListDiv, categoryName);
                 newCategoryInput.value = ''; // Clear input field
                 alert(`Category "${newCategory}" added successfully!`);
             } else {
-                const errorText = await response.text();
-                alert(`Failed to add category: ${errorText}`);
+                const error = await response.json();
+                alert(`Failed to add category: ${error.message}`);
             }
         } catch (error) {
             console.error('Error adding category:', error);
@@ -182,8 +183,8 @@ function addCategory(categoriesListDiv, categoryName) {
                 categoriesListDiv.removeChild(label);
                 alert(`Category "${categoryName}" deleted successfully!`);
             } else {
-                const errorText = await response.text();
-                alert(`Failed to delete category: ${errorText}`);
+                const error = await response.json();
+                alert(`Failed to delete category: ${error.message}`);
             }
         } catch (error) {
             console.error('Error deleting category:', error);
@@ -224,8 +225,8 @@ function renderCategories(categories, productCategories, categoriesListDiv) {
                     categoriesListDiv.removeChild(label);
                     alert(`Category "${category}" deleted successfully!`);
                 } else {
-                    const errorText = await response.text();
-                    alert(`Failed to delete category: ${errorText}`);
+                    const error = await response.json();
+                    alert(`Failed to delete category: ${error.message}`);
                 }
             } catch (error) {
                 console.error('Error deleting category:', error);

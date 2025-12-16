@@ -20,10 +20,14 @@ async function loadOrder(sessionId) {
         });
 
         if (res.status === 401 || res.status === 403 || res.status === 404) {
-            throw new Error(await res.text());
+            const error = await res.json();
+            throw new Error(error.message);
         }
 
-        if (!res.ok) throw new Error(await res.text());
+        if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.message);
+        }
 
         const order = await res.json();
         const orderId = order.orderId;
@@ -86,7 +90,8 @@ function setupMockPayPalButton(orderId) {
                 headers: { 'Content-Type': 'application/json' }
             });
             if (!res.ok) {
-                const text = await res.text();
+                const error = await res.json();
+                let text = error.message || 'Unknown error';
                 showError('Payment verification failed: ' + text);
                 return;
             }

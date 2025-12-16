@@ -7,7 +7,10 @@ export async function fetchCategories() {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
-        if (!response.ok) throw new Error(`Error: ${response.status}`);
+        if (!response.ok) {
+            const err = await response.json();
+            throw Error(err.error + ":" + err.message);
+        }
         return await response.json(); // array of strings
     } catch (error) {
         console.error('Category fetch failed:', error);
@@ -38,7 +41,8 @@ export async function fetchData(keyword = '', categories = []) {
         });
 
         if (!response.ok) {
-            throw new Error(`Error: ${response.status}`);
+            const err = await response.json();
+            throw new Error(err.error + ":" + error.message);
         }
 
         const data = await response.json();
@@ -147,7 +151,10 @@ export async function initSearchBar(onResults, config = {}) {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
-            if (!response.ok) throw new Error(`Error: ${response.status}`);
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error + ":" + err.message);
+            }
             const data = await response.json();
             if (onResults) onResults(data, { page, query: keyword, categories: selectedCategories });
         } catch (error) {

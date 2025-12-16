@@ -20,7 +20,10 @@ async function loadOrder(orderId) {
             return;
         }*/
 
-        if (!res.ok) throw new Error(await res.text());
+        if (!res.ok) {
+            const error = await res.json();
+            throw Error(error.message);
+        }
 
         const order = await res.json();
         console.log(order);
@@ -70,6 +73,10 @@ async function getAndShowCart(cartId) {
     try {
         const response = await fetch(`/api/user/carts/${cartId}`);
         console.log(response);
+        if (!response.ok) {
+            const errObj = await response.json();
+            throw Error(errObj.message);
+        }
         const cart = await response.json();
         console.log(cart);
         renderCart(cart);

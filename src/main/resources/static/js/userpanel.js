@@ -66,8 +66,8 @@ document.getElementById('passwordForm').addEventListener('submit', async (event)
             panel.classList.remove('open');
             panelOpen = false;
         } else {
-            const error = await response.text();
-            messageDiv.innerText = 'Error: ' + error;
+            const error = await response.json();
+            messageDiv.innerText = 'Error: ' + error.error + ": " + error.message;
             messageDiv.className = 'alert alert-error';
             messageDiv.style.display = 'block';
         }
@@ -101,7 +101,10 @@ toggleOrdersHeader.addEventListener('click', async (event) => {
         if (!ordersForm.hasChildNodes()) {
             try {
                 const response = await fetch('/api/user/orders/summaries');
-                if (!response.ok) throw new Error(await response.text());
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.message);
+                }
                 const orders = await response.json();
 
                 if (orders.length === 0) {

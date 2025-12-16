@@ -2,7 +2,9 @@ async function fetchShipmentAddresses() {
     try {
         const response = await fetch(`${window.location.origin}/api/user/address/all`); // replace with your API endpoint
         if (!response.ok) {
-            throw new Error('Failed to fetch addresses');
+            const error = await response.json();
+            const text = error.error + error.message;
+            throw new Error(text);
         }
         const addresses = await response.json();
         console.log('Fetched addresses:', addresses);
@@ -130,8 +132,9 @@ editAddressForm.addEventListener('submit', async (e) => {
                 fetchShipmentAddresses();
             }, 1000);
         } else {
-            const error = await response.text();
-            editModalMessage.textContent = 'Error: ' + error;
+            const error = await response.json();
+            const errText = error.error + ":" + error.message;
+            editModalMessage.textContent = 'Error: ' + errText;
             editModalMessage.className = 'alert alert-error';
             editModalMessage.style.display = 'block';
         }
@@ -154,7 +157,8 @@ async function confirmDeleteAddress(publicId) {
         if (response.ok) {
             fetchShipmentAddresses();
         } else {
-            alert('Failed to delete address: ' + (await response.text()));
+            const error = await response.json();
+            alert('Failed to delete address: ' + error.error + ":" + error.message);
         }
     } catch (err) {
         alert('Network error: ' + err.message);
