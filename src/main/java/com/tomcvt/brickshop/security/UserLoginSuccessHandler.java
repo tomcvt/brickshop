@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tomcvt.brickshop.model.*;
 import com.tomcvt.brickshop.service.CartService;
+import com.tomcvt.brickshop.service.NtfyService;
 import com.tomcvt.brickshop.session.*;
 
 import jakarta.servlet.ServletException;
@@ -22,11 +23,13 @@ public class UserLoginSuccessHandler extends SavedRequestAwareAuthenticationSucc
 
     private final CartService cartService;
     private final TempCart tempCart;
+    private final NtfyService ntfyService;
     private static final Logger log = LoggerFactory.getLogger(UserLoginSuccessHandler.class);
 
-    public UserLoginSuccessHandler(TempCart tempCart, CartService cartService) {
+    public UserLoginSuccessHandler(TempCart tempCart, CartService cartService, NtfyService ntfyService) {
         this.tempCart = tempCart;
         this.cartService = cartService;
+        this.ntfyService = ntfyService;
     }
     //TODO learn super.onauthentication success, savedrequestawareauthenticationsuccesshandler
     //i can learn this by making breakpoints and inspecting the objects for example
@@ -38,6 +41,12 @@ public class UserLoginSuccessHandler extends SavedRequestAwareAuthenticationSucc
         WrapUserDetails userDetails = (WrapUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUser().getId();
 
+        var role = userDetails.getUser().getRole();
+        if (role.equals("ADMIN") || role.equals("SUPERUSER")) {
+            ntfyService.sendNotificationUrgent("Admin Login", "Admin user " + userDetails.getUsername() + " has logged in.");
+        } else {
+            ntfyService.sendNotification("User Login", "User " + userDetails.getUsername() + " has logged in.");
+        }
         //TODO SERVICE METHOD MERGE CARTS
         //made to get now for batch adding from temp cart to user cart
         logger.info("User with ID " + userId + " has logged in, carting temp cart items if any.\n");

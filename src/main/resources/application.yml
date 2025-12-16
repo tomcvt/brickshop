@@ -69,3 +69,8 @@ com:
     demo:
       password: ${DEMO_PASSWORD}
       email: ${MAIL_USERNAME}
+    ntfy:
+      topic: ${NTFY_TOPIC}
+      enabled: ${NTFY_ENABLED:false}
+      priority: 4
+      urgent-priority: 5

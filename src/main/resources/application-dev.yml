@@ -19,3 +19,8 @@ csvloader:
 dummyimageloader:
   path: ${DUMMYIMAGELOADER_PATH:dummydata/images}
 
+com:
+  tomcvt:
+    ntfy:
+      priority: 1
+      urgent-priority: 2

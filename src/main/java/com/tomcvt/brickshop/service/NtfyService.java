@@ -16,6 +16,22 @@ public class NtfyService {
         this.ntfyEnabled = ntfyEnabled;
     }
 
+    public void sendTestNotification(String title, String message) {
+        if (ntfyEnabled) {
+            ntfyClient.sendTestNotification(title, message)
+                .subscribe(
+                    response -> {
+                        log.info("TEST Ntfy notification sent successfully: {}", response);
+                    },
+                    error -> {
+                        log.error("Failed to send TEST Ntfy notification: {}", error.getMessage());
+                    }
+                );
+        } else {
+            log.info("Ntfy notifications are disabled. Skipping TEST notification: {} - {}", title, message);
+        }
+    }
+
     public void sendNotification(String title, String message) {
         if (ntfyEnabled) {
             ntfyClient.sendNotification(title, message)
@@ -29,6 +45,22 @@ public class NtfyService {
                 );
         } else {
             log.info("Ntfy notifications are disabled. Skipping notification: {} - {}", title, message);
+        }
+    }
+
+    public void sendNotificationUrgent(String title, String message) {
+        if (ntfyEnabled) {
+            ntfyClient.sendNotificationUrgent(title, message)
+                .subscribe(
+                    response -> {
+                        log.info("URGENT Ntfy notification sent successfully: {}", response);
+                    },
+                    error -> {
+                        log.error("Failed to send URGENT Ntfy notification: {}", error.getMessage());
+                    }
+                );
+        } else {
+            log.info("Ntfy notifications are disabled. Skipping URGENT notification: {} - {}", title, message);
         }
     }
 }

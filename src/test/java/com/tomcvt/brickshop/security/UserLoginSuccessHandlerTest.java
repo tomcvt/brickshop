@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import com.tomcvt.brickshop.model.User;
 import com.tomcvt.brickshop.model.WrapUserDetails;
 import com.tomcvt.brickshop.service.CartService;
+import com.tomcvt.brickshop.service.NtfyService;
 import com.tomcvt.brickshop.session.TempCart;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ public class UserLoginSuccessHandlerTest {
     @Mock Authentication authentication;
     @Mock HttpServletRequest request;
     @Mock HttpServletResponse response;
+    @Mock NtfyService ntfyService;
     
 
 
@@ -33,7 +35,7 @@ public class UserLoginSuccessHandlerTest {
         WrapUserDetails userDetails = new WrapUserDetails(user);
         when(authentication.getPrincipal()).thenReturn(userDetails);
 
-        UserLoginSuccessHandler successHandler = new UserLoginSuccessHandler(tempCart, cartService);
+        UserLoginSuccessHandler successHandler = new UserLoginSuccessHandler(tempCart, cartService, ntfyService);
 
         successHandler.onAuthenticationSuccess(request, response, authentication);
 

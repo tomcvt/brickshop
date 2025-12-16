@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.tomcvt.brickshop.exception.IllegalUsageException;
 import com.tomcvt.brickshop.network.BanRegistry;
+import com.tomcvt.brickshop.service.NtfyService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,10 +19,12 @@ public class UserLoginFailureHandler implements AuthenticationFailureHandler {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(UserLoginFailureHandler.class);
     private final LoginTracker loginTracker;
     private final BanRegistry banRegistry;
+    private final NtfyService ntfyService;
 
-    public UserLoginFailureHandler(LoginTracker loginTracker, BanRegistry banRegistry) {
+    public UserLoginFailureHandler(LoginTracker loginTracker, BanRegistry banRegistry, NtfyService ntfyService) {
         this.loginTracker = loginTracker;
         this.banRegistry = banRegistry;
+        this.ntfyService = ntfyService;
     }
 
     @Override
@@ -41,6 +44,7 @@ public class UserLoginFailureHandler implements AuthenticationFailureHandler {
         } catch (IllegalUsageException e) {
             log.error("Error recording failed login for user {}: {}", username, e.getMessage());
             banRegistry.banIp(clientIp);
+            ntfyService.sendNotificationUrgent("Security Alert", "IP " + clientIp + " has been banned due to excessive failed login attempts.");
             log.warn("Banned IP {} due to excessive failed login attempts", clientIp);
             response.setStatus(429);
             response.getWriter().write("Too many failed login attempts. Your IP has been temporarily banned.");
