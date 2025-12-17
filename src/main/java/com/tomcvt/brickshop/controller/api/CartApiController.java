@@ -14,8 +14,6 @@ import com.tomcvt.brickshop.service.CartService;
 import com.tomcvt.brickshop.session.CartModifiedFlag;
 import com.tomcvt.brickshop.session.TempCart;
 
-import io.micrometer.core.ipc.http.HttpSender.Response;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -33,7 +31,7 @@ public class CartApiController {
         this.cartModifiedFlag = cartModifiedFlag;
     }
     @GetMapping("/cartwithtotal")
-    public ResponseEntity<CartDto> getActiveCartWithTotalDto(@AuthenticationPrincipal WrapUserDetails userDetails) {
+    public ResponseEntity<CartDto> getActiveCartWithTotalDto(@AuthenticationPrincipal SecureUserDetails userDetails) {
         if (userDetails == null) {
             return ResponseEntity.ok(tempCart.getTempCartWithTotal());
         }
@@ -41,7 +39,7 @@ public class CartApiController {
     }
 
     @GetMapping("/wopictures")
-    public ResponseEntity<List<FlatCartRowDto>> getActiveCart(@AuthenticationPrincipal WrapUserDetails userDetails) {
+    public ResponseEntity<List<FlatCartRowDto>> getActiveCart(@AuthenticationPrincipal SecureUserDetails userDetails) {
         if (userDetails == null) {
             return ResponseEntity.ok(tempCart.getActiveTempFlatCartRowDto());
         }
@@ -49,7 +47,7 @@ public class CartApiController {
         return ResponseEntity.ok(cartService.getActiveFlatCartDtoByUserId(userId));
     }
     @GetMapping("/total")
-    public ResponseEntity<BigDecimal> getTotalAmount(@AuthenticationPrincipal WrapUserDetails userDetails) {
+    public ResponseEntity<BigDecimal> getTotalAmount(@AuthenticationPrincipal SecureUserDetails userDetails) {
         if (userDetails == null) {
             return ResponseEntity.ok(tempCart.getTotal());
         }
@@ -58,7 +56,7 @@ public class CartApiController {
     }
 
     @PostMapping("/remove/{cartItemId}")
-    public ResponseEntity<List<FlatCartRowDto>> removeCartItemById(@AuthenticationPrincipal WrapUserDetails userDetails,
+    public ResponseEntity<List<FlatCartRowDto>> removeCartItemById(@AuthenticationPrincipal SecureUserDetails userDetails,
             @PathVariable Long cartItemId) {
         if (userDetails == null) {
             tempCart.removeTempCartItem(cartItemId);
@@ -72,7 +70,7 @@ public class CartApiController {
 
     @PostMapping("/add")
     public ResponseEntity<FlatCartRowDto> addItemToUserCart(
-            @AuthenticationPrincipal WrapUserDetails userDetails, @RequestBody CartItemRequest cIrequest) {
+            @AuthenticationPrincipal SecureUserDetails userDetails, @RequestBody CartItemRequest cIrequest) {
         if (userDetails == null) {
             FlatCartRowDto fcrDto = tempCart.addCartItem(cIrequest.publicId(), cIrequest.quantity());
             return ResponseEntity.ok().body(fcrDto);

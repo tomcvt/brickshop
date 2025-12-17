@@ -10,8 +10,6 @@ import com.tomcvt.brickshop.pagination.SimplePage;
 import com.tomcvt.brickshop.service.CategoryService;
 import com.tomcvt.brickshop.service.ProductService;
 
-import io.micrometer.core.ipc.http.HttpSender.Response;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class ProductApiController {
     private final ProductService productService;
     private final CategoryService categoryService;
-    private final ProductMapper productMapper = ProductMapper.INSTANCE;
 
     public ProductApiController(ProductService productService, CategoryService categoryService) {
         this.productService = productService;
@@ -49,7 +46,7 @@ public class ProductApiController {
         }
         return productService.getProductSummariesByKeywordAndCategoriesAndPage(query, category, page, size);
     }
-    //TODO implement correct paging
+    // not used currently
     @GetMapping("/summaries-no-pic/search")
     public List<ProductSummaryDto> searchProducts(@RequestParam String keyword) {
         return productService.getProductSummariesNoPicByKeyword(keyword);

@@ -86,6 +86,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             ORDER BY pi.imgOrder ASC
             """)
     Optional<Product> findByPublicIdHydrated(UUID publicId);
-    //TODO maybe later project on intermediate DTO
-    
 }

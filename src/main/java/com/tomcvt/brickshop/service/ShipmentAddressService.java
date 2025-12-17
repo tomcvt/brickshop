@@ -43,11 +43,13 @@ public class ShipmentAddressService {
 
     @Transactional
     public ShipmentAddress updateShipmentAddressForUser(ShipmentAddressDto shipmentAddressDto, User user) {
-        //TODO custom exception
+        if (shipmentAddressDto.publicId() == null) {
+            throw new IllegalArgumentException("Public ID must be provided for update");
+        }
         ShipmentAddress shipmentAddress = shipmentAddressRepository.findByPublicId(shipmentAddressDto.publicId())
                 .orElseThrow(() -> new NotFoundException("Shipment address not found"));
         if (!shipmentAddress.getUser().getId().equals(user.getId())) {
-            throw new OwnershipMismatchException("Unauthorized to update this shipment address");
+            throw new OwnershipMismatchException("Shipment address not found");
         }
         shipmentAddress.loadFromDto(shipmentAddressDto);
         return shipmentAddressRepository.save(shipmentAddress);
@@ -57,8 +59,9 @@ public class ShipmentAddressService {
         ShipmentAddress shipmentAddress = shipmentAddressRepository.findByPublicId(publicId)
                 .orElseThrow(() -> new NotFoundException("Shipment address not found"));
         if (!shipmentAddress.getUser().getId().equals(user.getId())) {
-            throw new OwnershipMismatchException("Unauthorized to delete this shipment address");
+            throw new OwnershipMismatchException("Shipment address not found");
         }
         shipmentAddressRepository.delete(shipmentAddress);
     }
+
 }

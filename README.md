@@ -92,6 +92,7 @@ For not allowing bots to register the app is using the prototype of my own captc
 
 ## Security & Roles
 
+- Sanitization for publicly exposed endpoints
 - Spring Security for authentication and authorization.
 - Roles: (SUPERUSER, ADMIN, PACKER, MODERATOR, USER)
 - Session-based authentication (specify which).

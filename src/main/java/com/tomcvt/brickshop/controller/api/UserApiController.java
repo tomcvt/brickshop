@@ -11,18 +11,17 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.tomcvt.brickshop.dto.CartDto;
 import com.tomcvt.brickshop.dto.CustomerOrderDto;
-import com.tomcvt.brickshop.dto.ExtendedRegistrationRequest;
 import com.tomcvt.brickshop.dto.OrderSummaryDto;
 import com.tomcvt.brickshop.dto.PassPayload;
 import com.tomcvt.brickshop.dto.PublicIdDto;
-import com.tomcvt.brickshop.dto.RegistrationRequest;
 import com.tomcvt.brickshop.dto.ShipmentAddressDto;
 import com.tomcvt.brickshop.dto.TextResponse;
 import com.tomcvt.brickshop.model.ShipmentAddress;
-import com.tomcvt.brickshop.model.WrapUserDetails;
+import com.tomcvt.brickshop.model.SecureUserDetails;
 import com.tomcvt.brickshop.service.CartService;
 import com.tomcvt.brickshop.service.OrderService;
 import com.tomcvt.brickshop.service.ShipmentAddressService;
+import com.tomcvt.brickshop.utility.SanitizerUtil;
 import com.tomcvt.brickshop.service.AuthService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,7 +46,7 @@ public class UserApiController {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<?> changePassword(@AuthenticationPrincipal WrapUserDetails userDetails,
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal SecureUserDetails userDetails,
                                                  @RequestBody PassPayload passPayload) {
         if (userDetails == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
@@ -57,7 +56,7 @@ public class UserApiController {
     }
     //TODO additional endpoint
     @GetMapping("/orders")
-    public ResponseEntity<?> getUserOrders(@AuthenticationPrincipal WrapUserDetails userDetails) {
+    public ResponseEntity<?> getUserOrders(@AuthenticationPrincipal SecureUserDetails userDetails) {
         if (userDetails == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
@@ -66,7 +65,7 @@ public class UserApiController {
     }
 
     @GetMapping("/orders/summaries")
-    public ResponseEntity<?> getUserOrdersSummary(@AuthenticationPrincipal WrapUserDetails userDetails) {
+    public ResponseEntity<?> getUserOrdersSummary(@AuthenticationPrincipal SecureUserDetails userDetails) {
         if (userDetails == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
@@ -76,7 +75,7 @@ public class UserApiController {
 
 
     @GetMapping("/orders/{orderId}")
-    public ResponseEntity<?> getUserOrderById(@AuthenticationPrincipal WrapUserDetails userDetails,
+    public ResponseEntity<?> getUserOrderById(@AuthenticationPrincipal SecureUserDetails userDetails,
                                               @PathVariable Long orderId) {
         if (userDetails == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
@@ -86,7 +85,7 @@ public class UserApiController {
     }
 
     @GetMapping("/carts/{cartId}")
-    public ResponseEntity<?> getUserCartById(@AuthenticationPrincipal WrapUserDetails userDetails,
+    public ResponseEntity<?> getUserCartById(@AuthenticationPrincipal SecureUserDetails userDetails,
                                              @PathVariable Long cartId) {
         if (userDetails == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
@@ -95,7 +94,7 @@ public class UserApiController {
         return ResponseEntity.ok().body(cartDto);
     }
     @GetMapping("/address/all")
-    public ResponseEntity<?> getAllShipmentAddresses(@AuthenticationPrincipal WrapUserDetails wrapUserDetails) {
+    public ResponseEntity<?> getAllShipmentAddresses(@AuthenticationPrincipal SecureUserDetails wrapUserDetails) {
         if (wrapUserDetails == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
@@ -104,25 +103,27 @@ public class UserApiController {
         return ResponseEntity.ok().body(addresses);
     }
     @PostMapping("/address/add")
-    public ResponseEntity<?> addShipmentAddress(@AuthenticationPrincipal WrapUserDetails wrapUserDetails,
+    public ResponseEntity<?> addShipmentAddress(@AuthenticationPrincipal SecureUserDetails wrapUserDetails,
             @RequestBody ShipmentAddressDto shipmentAddressDto) {
         if (wrapUserDetails == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
+        validateShipmentAddressDto(shipmentAddressDto);
         var saDto = shipmentAddressService.addShipmentAddressForUser(shipmentAddressDto, wrapUserDetails.getUser()).toDto();
         return ResponseEntity.ok().body(saDto);
     }
     @PostMapping("/address/update")
-    public ResponseEntity<?> updateShipmentAddress(@AuthenticationPrincipal WrapUserDetails wrapUserDetails,
+    public ResponseEntity<?> updateShipmentAddress(@AuthenticationPrincipal SecureUserDetails wrapUserDetails,
             @RequestBody ShipmentAddressDto shipmentAddressDto) {
         if (wrapUserDetails == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
+        validateShipmentAddressDto(shipmentAddressDto);
         ShipmentAddress sa = shipmentAddressService.updateShipmentAddressForUser(shipmentAddressDto, wrapUserDetails.getUser());
         return ResponseEntity.ok().body(sa.toDto());
     }
     @PostMapping("/address/delete")
-    public ResponseEntity<?> deleteShipmentAddress(@AuthenticationPrincipal WrapUserDetails wrapUserDetails,
+    public ResponseEntity<?> deleteShipmentAddress(@AuthenticationPrincipal SecureUserDetails wrapUserDetails,
             @RequestBody PublicIdDto publicIdDto) {
         if (wrapUserDetails == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
@@ -130,5 +131,10 @@ public class UserApiController {
         shipmentAddressService.deleteShipmentAddressForUser(publicIdDto.publicId(), wrapUserDetails.getUser());
         return ResponseEntity.ok().build();
     }
+
+    private void validateShipmentAddressDto(ShipmentAddressDto dto) {
+        SanitizerUtil.validate(dto);
+    }
+
     
 }

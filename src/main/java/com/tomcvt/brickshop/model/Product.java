@@ -47,7 +47,6 @@ public class Product {
 
     public Product() {}
 
-    //TODO refactor price to string in constructor
     public Product(String name, String description, double price, int stock) {
         this.name = name;
         this.description = description;
@@ -138,11 +137,7 @@ public class Product {
                 .collect(Collectors.toSet());
         return new ProductDto(this.publicId, this.name, this.description, imageUrls, this.price, this.stock, categoryNames);
     }
-    //TODO service to set thumbnail on product add/edit and productimageservice on image add/delete
-    //ProductSummarydto gets cached thumbnail DONE
-    //cache thumbnail when adding image with order 1 DONE or when deleting image with order 1
-    //if no image with order 1, set to null DONE
-
+    @Override
     public String toString() {
         return "Product{id=" + id + ", publicId=" + publicId + ", name='" + name + "', description='" + description +
                 "', price=" + price + ", stock=" + stock + ",categories=" + getCategories().stream().map(Category::getName).collect(Collectors.toSet()) + "}";

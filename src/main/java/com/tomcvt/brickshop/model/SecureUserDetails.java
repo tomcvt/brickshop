@@ -7,10 +7,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class WrapUserDetails implements UserDetails {
+public class SecureUserDetails implements UserDetails {
     private User user;
 
-    public WrapUserDetails(User user) {
+    public SecureUserDetails(User user) {
         this.user = user;
     }
 

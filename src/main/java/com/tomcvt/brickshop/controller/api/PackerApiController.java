@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tomcvt.brickshop.dto.ShipmentDto;
 import com.tomcvt.brickshop.enums.ShipmentStatus;
-import com.tomcvt.brickshop.model.WrapUserDetails;
+import com.tomcvt.brickshop.model.SecureUserDetails;
 import com.tomcvt.brickshop.pagination.SimplePage;
 import com.tomcvt.brickshop.service.PackingService;
 
@@ -42,7 +42,7 @@ public class PackerApiController {
     }
     @PostMapping("/start-packing")
     public ResponseEntity<?> startPackingShipment(
-            @AuthenticationPrincipal WrapUserDetails userDetails,
+            @AuthenticationPrincipal SecureUserDetails userDetails,
             @RequestParam(name = "orderId") Long orderId
     ) {
         ShipmentDto dto = packingService.startPackingShipment(orderId, userDetails.getUser());

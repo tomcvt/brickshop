@@ -10,7 +10,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.tomcvt.brickshop.service.WrapUserDetailsService;
+import com.tomcvt.brickshop.service.SecureUserDetailsService;
 
 @Configuration
 public class AuthSecurityConfig {
@@ -22,7 +22,7 @@ public class AuthSecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider daoAuthenticationProvider(WrapUserDetailsService userDetailsService) {
+    public AuthenticationProvider daoAuthenticationProvider(SecureUserDetailsService userDetailsService) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder);
         return authProvider;

@@ -52,7 +52,6 @@ public class ProductImageService {
         }
         productImageRepository.save(productImage);
     }
-    //TODO change to public UUID, refactor reordering via list of uuids
     @Transactional
     public boolean saveImageOrderForProductId(ImageOrderDto ioDto) {
         Product product = productRepository.findById(ioDto.getProductId())
@@ -74,8 +73,6 @@ public class ProductImageService {
         }
         return true;
     }
-
-    //TODO encapsulate saving getting uuid and persisting to db, handle saving image from file and data
     @Transactional
     public String saveProductImage(MultipartFile file, UUID productPublicId, Integer imageOrder) {
         Product product = productRepository.findByPublicId(productPublicId)

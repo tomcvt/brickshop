@@ -33,7 +33,8 @@ public class LoginTracker {
         int attempts = failedLoginAttempts.get(username).getCount();
         //TODO make configurable
         if (attempts > 10) {
-            throw new IllegalUsageException("Too many failed login attempts. Please try again later.");
+            failedLoginAttempts.get(username).reset();
+            throw new IllegalUsageException("Too many failed login attempts. Please try again later or from another ip.");
         }
         log.info("Recorded failed login for user {}: {} attempts", username, failedLoginAttempts.get(username));
     }

@@ -2,7 +2,6 @@ package com.tomcvt.brickshop.controller.api;
 
 import java.util.UUID;
 
-import org.attoparser.dom.Text;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,7 +36,7 @@ public class CheckoutApiController {
     }
 
     @GetMapping("/create")
-    public ResponseEntity<?> getActiveCheckout(@AuthenticationPrincipal WrapUserDetails userDetails) {
+    public ResponseEntity<?> getActiveCheckout(@AuthenticationPrincipal SecureUserDetails userDetails) {
         if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                 new ErrorResponse("UNAUTHORIZED", "Login to proceed with checkout")
@@ -55,7 +54,7 @@ public class CheckoutApiController {
 
     @PostMapping("/close")
     public ResponseEntity<?> closeSessionAndCreateOrder(
-            @AuthenticationPrincipal WrapUserDetails userDetails,
+            @AuthenticationPrincipal SecureUserDetails userDetails,
             @RequestBody CheckoutDataDto checkoutData) {
         if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
@@ -91,7 +90,7 @@ public class CheckoutApiController {
         );
     }
     @GetMapping("/address/all")
-    public ResponseEntity<?> getAllShipmentAddresses(@AuthenticationPrincipal WrapUserDetails wrapUserDetails) {
+    public ResponseEntity<?> getAllShipmentAddresses(@AuthenticationPrincipal SecureUserDetails wrapUserDetails) {
         if (wrapUserDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

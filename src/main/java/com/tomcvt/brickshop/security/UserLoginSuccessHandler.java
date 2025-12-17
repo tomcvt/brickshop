@@ -38,7 +38,7 @@ public class UserLoginSuccessHandler extends SavedRequestAwareAuthenticationSucc
     public void onAuthenticationSuccess(HttpServletRequest request,
             HttpServletResponse response,
             Authentication authentication) throws ServletException, IOException {
-        WrapUserDetails userDetails = (WrapUserDetails) authentication.getPrincipal();
+        SecureUserDetails userDetails = (SecureUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUser().getId();
 
         var role = userDetails.getUser().getRole();

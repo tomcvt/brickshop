@@ -6,7 +6,7 @@ import com.tomcvt.brickshop.dto.CustomerOrderDto;
 import com.tomcvt.brickshop.dto.ErrorResponse;
 import com.tomcvt.brickshop.dto.TextResponse;
 import com.tomcvt.brickshop.model.User;
-import com.tomcvt.brickshop.model.WrapUserDetails;
+import com.tomcvt.brickshop.model.SecureUserDetails;
 import com.tomcvt.brickshop.service.OrderService;
 
 import java.util.UUID;
@@ -31,7 +31,7 @@ public class OrderApiController {
 
     @GetMapping("/withsession/{sessionId}")
     public ResponseEntity<CustomerOrderDto> getCustomerOrderDtoBySessionId(
-            @AuthenticationPrincipal WrapUserDetails userDetails, @PathVariable UUID sessionId) {
+            @AuthenticationPrincipal SecureUserDetails userDetails, @PathVariable UUID sessionId) {
         if (userDetails == null) {
             return ResponseEntity.status(403).build();
         }
@@ -43,7 +43,7 @@ public class OrderApiController {
     //TODO is this needed?
     @GetMapping("/{orderId}")
     public ResponseEntity<CustomerOrderDto> getCustomerOrderDtoByOrderId(
-            @AuthenticationPrincipal WrapUserDetails userDetails, @PathVariable Long orderId) {
+            @AuthenticationPrincipal SecureUserDetails userDetails, @PathVariable Long orderId) {
         if (userDetails == null) {
             return ResponseEntity.status(403).build();
         }
@@ -53,7 +53,7 @@ public class OrderApiController {
     }
     @GetMapping("/payment/token")
     public ResponseEntity<String> getPaymentToken(
-            @AuthenticationPrincipal WrapUserDetails userDetails, @RequestParam Long orderId) {
+            @AuthenticationPrincipal SecureUserDetails userDetails, @RequestParam Long orderId) {
         if (userDetails == null) {
             return ResponseEntity.status(403).build();
         }
@@ -62,7 +62,7 @@ public class OrderApiController {
     }
     @GetMapping("/payment/verify")
     public ResponseEntity<?> payForOrder(
-            @AuthenticationPrincipal WrapUserDetails userDetails, @RequestParam Long orderId) {
+            @AuthenticationPrincipal SecureUserDetails userDetails, @RequestParam Long orderId) {
         if (userDetails == null) {
             return ResponseEntity.status(403).build();
         }

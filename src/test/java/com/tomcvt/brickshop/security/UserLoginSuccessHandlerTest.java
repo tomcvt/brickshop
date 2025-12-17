@@ -8,7 +8,7 @@ import static org.mockito.Mockito.*;
 import org.springframework.security.core.Authentication;
 
 import com.tomcvt.brickshop.model.User;
-import com.tomcvt.brickshop.model.WrapUserDetails;
+import com.tomcvt.brickshop.model.SecureUserDetails;
 import com.tomcvt.brickshop.service.CartService;
 import com.tomcvt.brickshop.service.NtfyService;
 import com.tomcvt.brickshop.session.TempCart;
@@ -32,7 +32,7 @@ public class UserLoginSuccessHandlerTest {
     void testCartMergingCallOnLogin() throws Exception {
         User user = new User();
         user.setId(1L);
-        WrapUserDetails userDetails = new WrapUserDetails(user);
+        SecureUserDetails userDetails = new SecureUserDetails(user);
         when(authentication.getPrincipal()).thenReturn(userDetails);
 
         UserLoginSuccessHandler successHandler = new UserLoginSuccessHandler(tempCart, cartService, ntfyService);

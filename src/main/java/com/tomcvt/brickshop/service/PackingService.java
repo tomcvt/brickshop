@@ -37,21 +37,17 @@ public class PackingService {
     public SimplePage<ShipmentDto> getShipmentsByStatus(ShipmentStatus status, int page, int size) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         Page<Long> shipmentIds = shipmentRepository.findIdsByStatus(status, pageable);
-        //List<Shipment> shipments = shipmentRepository.findShipmentsWithItemsByIds(shipmentIds.getContent());
         List<Shipment> shipments = shipmentRepository.findShipmentsByIds(shipmentIds.getContent());
         return SimplePage.of(shipments, shipmentIds).map(Shipment::toShipmentDto);
     }
 
     public SimplePage<ShipmentDto> getShipmentsToPack(int page, int size) {
-        //TODO AND NOW HERE WE GO WITH PAGINATION
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         Page<Long> shipmentIds = shipmentRepository.findIdsByStatus(ShipmentStatus.PENDING, pageable);
-        //List<Shipment> shipments = shipmentRepository.findShipmentsWithItemsByIds(shipmentIds.getContent());
         List<Shipment> shipments = shipmentRepository.findShipmentsByIds(shipmentIds.getContent());
         return SimplePage.of(shipments, shipmentIds).map(Shipment::toShipmentDto);
     }
 
-    //TODO refactor to custom exception and better logging
     @Transactional
     public ShipmentDto startPackingShipment(Long orderId, User user) {
         Shipment shipment = shipmentRepository.findHydratedByOrderOrderId(orderId).orElseThrow(() -> new IllegalArgumentException("Shipment not found for order ID: " + orderId));
@@ -65,7 +61,6 @@ public class PackingService {
         return shipment.toShipmentDto();
     }
 
-    //TODO aybe later check if right user is packing
     @Transactional
     public ShipmentDto packItemInShipment(Long orderId, Long productId) {
         Shipment shipment = shipmentRepository.findHydratedByOrderOrderId(orderId).orElseThrow(() -> new IllegalArgumentException("Shipment not found for order ID: " + orderId));

@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'SUPERUSER')")
 @RequestMapping("/api/admin")
 public class AdminApiController {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AdminApiController.class);
     private final AdminOrchestrator adminOrchestrator;
     private final ProductService productService;
     private final CategoryService categoryService;
@@ -76,7 +75,6 @@ public class AdminApiController {
         imageOrderValidator.storeImageOrder(publicId, Set.copyOf(dto.imageUrls()));
         return ResponseEntity.ok().body(dto);
     }
-    //TODO add productId validation in path variable
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
     @PatchMapping("/edit-product")
     public ResponseEntity<?> postEditProduct(@RequestBody ProductDto productDto) {
@@ -96,7 +94,6 @@ public class AdminApiController {
                 ResponseEntity.ok().build():
                 ResponseEntity.status(400).body(new ErrorResponse("FAILED", "Category addition failed"));
     }
-    //TODO refactor sql error exception handling and response (inform about products with this category)
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
     @DeleteMapping("/delete-category")
     public ResponseEntity<?> removeCategory(@RequestBody String categoryName) {
@@ -106,7 +103,6 @@ public class AdminApiController {
                 ResponseEntity.status(400).body(new ErrorResponse("FAILED", "Category removal failed"));
     }
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR', 'SUPERUSER')")
-    //TODO add more admin endpoints for order management, user management, etc.
     @GetMapping("/orders/search")
     public ResponseEntity<SimplePage<CustomerOrderDto>> searchOrders(
             @RequestParam(required = false) String orderId,

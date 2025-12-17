@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.tomcvt.brickshop.model.WrapUserDetails;
+import com.tomcvt.brickshop.model.SecureUserDetails;
 
 import org.springframework.ui.Model;
 
@@ -15,7 +15,7 @@ import org.springframework.ui.Model;
 @PreAuthorize("isAuthenticated()")
 public class UserController {
     @GetMapping("/user")
-    public String getUserpanel(@AuthenticationPrincipal WrapUserDetails userDetails, Model model) {
+    public String getUserpanel(@AuthenticationPrincipal SecureUserDetails userDetails, Model model) {
         if (userDetails == null) {
             return "redirect:/login";
         } else {
@@ -24,7 +24,7 @@ public class UserController {
         return "userpanel";
     }
     @GetMapping("/user/orders/{orderId}")
-    public String getOrderDetails(@AuthenticationPrincipal WrapUserDetails userDetails, Model model, @PathVariable String orderId) {
+    public String getOrderDetails(@AuthenticationPrincipal SecureUserDetails userDetails, Model model, @PathVariable String orderId) {
         if (userDetails == null) {
             return "redirect:/login";
         } else {
@@ -33,9 +33,8 @@ public class UserController {
         }
         return "orderdetails";
     }
-    //TODO implement usr orders view
     @GetMapping("/user/orders")
-    public String getUserOrders(@AuthenticationPrincipal WrapUserDetails userDetails, Model model) {
+    public String getUserOrders(@AuthenticationPrincipal SecureUserDetails userDetails, Model model) {
         if (userDetails == null) {
             return "redirect:/login";
         } else {
@@ -43,11 +42,8 @@ public class UserController {
         }
         return "user-orders";
     }
-
-
-    //TODO implement user addresses view
     @GetMapping("/user/addresses")
-    public String getUserAddresses(@AuthenticationPrincipal WrapUserDetails userDetails, Model model) {
+    public String getUserAddresses(@AuthenticationPrincipal SecureUserDetails userDetails, Model model) {
         if (userDetails == null) {
             return "redirect:/login";
         } else {

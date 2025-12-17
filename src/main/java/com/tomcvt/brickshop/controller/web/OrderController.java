@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.tomcvt.brickshop.model.CheckoutSession;
-import com.tomcvt.brickshop.model.WrapUserDetails;
+import com.tomcvt.brickshop.model.SecureUserDetails;
 import com.tomcvt.brickshop.service.CheckoutSessionService;
 
 
@@ -23,7 +23,7 @@ public class OrderController {
         this.checkoutSessionService = checkoutSessionService;
     }
     @GetMapping("/order/{sessionId}")
-    public String getOrderPage(@AuthenticationPrincipal WrapUserDetails userDetails, @PathVariable UUID sessionId, Model model) {
+    public String getOrderPage(@AuthenticationPrincipal SecureUserDetails userDetails, @PathVariable UUID sessionId, Model model) {
         if (userDetails == null) {
             return "redirect:/login";
         }

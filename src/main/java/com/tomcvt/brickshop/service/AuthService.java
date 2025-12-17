@@ -57,13 +57,14 @@ public class AuthService {
         if (userRepository.findByEmail(email).isPresent()) {
             throw new UserAlreadyExistsException("Email already registered");
         }
+        validateUsername(username);
         validatePassword(rawPassword);
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(rawPassword));
         newUser.setRole(role);
         newUser.setEmail(email);
-        newUser.setEnabled(true); // User is not activated by default
+        newUser.setEnabled(true);
         newUser = userRepository.save(newUser);
         eventProvider.publishEvent(new NotificationEvent(
             "New User Registration",
@@ -93,6 +94,13 @@ public class AuthService {
         return passwordEncoder.matches(rawPassword, user.getPassword());
     }
 
+    private void validateUsername(String username) {
+        String pattern = "^[a-zA-Z0-9_]{3,20}$";
+        if (!username.matches(pattern)) {
+            throw new IllegalArgumentException("Username must be 3-20 characters long and can only contain letters, digits, and underscores.");
+        }
+    }
+
     private void validatePassword(String password) {
         String pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         if (!password.matches(pattern)) {
@@ -100,23 +108,18 @@ public class AuthService {
                     "at least one uppercase letter, one lowercase letter, one digit, and one special character (@$!%*?&).");
         }
     }
-
-    public void changePassword(Long userId, PassPayload passPayload) {
-        changePassword(userId, passPayload.oldPassword(), passPayload.newPassword());
-    }
-
     @Transactional
-    public boolean changePassword(Long userId, String oldRawPassword, String newRawPassword) {
+    public void changePassword(Long userId, PassPayload passPayload) {
+        String oldRawPassword = passPayload.oldPassword();
+        String newRawPassword = passPayload.newPassword();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        if (!checkPassword(userId, oldRawPassword)) {
-            return false; // Old password does not match
+        if(!passwordEncoder.matches(oldRawPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Old password does not match");
         }
         validatePassword(newRawPassword);
         user.setPassword(passwordEncoder.encode(newRawPassword));
         userRepository.save(user);
-        return true;
     }
 
     public void validateCaptcha(String captchaToken) {

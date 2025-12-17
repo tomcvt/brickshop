@@ -2,7 +2,6 @@ package com.tomcvt.brickshop.auth;
 
 import java.io.IOException;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -78,25 +77,13 @@ public class RateLimitingFilter extends OncePerRequestFilter {
             response.getWriter().flush();
             return;
         }
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        //For now, rate limit everyone except static resources
-        /*
-        if (principal instanceof WrapUserDetails) {
-            // Authenticated users are not rate-limited
-            filterChain.doFilter(request, response);
-            return;
-        }
-            */
         for (String url : EXCLUDE_URLS) {
             if (pathMatcher.match(url, request.getRequestURI())) {
                 filterChain.doFilter(request, response);
                 return;
             }
         }
-        //TODO later add ban on forbidden url access attempts
         boolean allowed = true;
-        //TODO make custom anonymous authentication token with IP
-        //TODO make responses in json format
         //TODO so make static util method for writing json response
         try {
             allowed = rateLimiterService.checkAndIncrement(clientIp);

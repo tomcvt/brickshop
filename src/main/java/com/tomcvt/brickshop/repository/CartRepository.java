@@ -54,7 +54,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     WHERE c.id = :id AND c.active = TRUE 
     """)
     Long countItemsInActiveCartById(@Param("id") Long id);
-    //TODO CART BY USER NOT USERID
 
     @Query("""
     SELECT c.id

@@ -26,7 +26,6 @@ public class CaptchaApiController {
     public CaptchaApiController(CvtCaptchaClient cvtCaptchaClient) {
         this.cvtCaptchaClient = cvtCaptchaClient;
     }
-    //TODO add rate limiting to prevent abuse and origin validation
     @PostMapping("/create")
     public ResponseEntity<CaptchaResponse> createCaptcha(@RequestBody CaptchaRequest request, HttpServletRequest httpRequest) {
         CaptchaResponse captchaResponse = null;
@@ -56,5 +55,7 @@ public class CaptchaApiController {
         }
         return ResponseEntity.ok(token);
     }
+
+
     
 }

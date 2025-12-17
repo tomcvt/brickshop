@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.tomcvt.brickshop.model.WrapUserDetails;
+import com.tomcvt.brickshop.model.SecureUserDetails;
 
 
 @Controller
@@ -17,7 +17,7 @@ public class HomeController {
     private static final List<String> PACKER_ROLES = List.of("ROLE_PACKER", "ROLE_ADMIN", "ROLE_SUPERUSER", "ROLE_MODERATOR");
 
     @GetMapping("/")
-    public String getHome(@AuthenticationPrincipal WrapUserDetails userDetails, Model model) {
+    public String getHome(@AuthenticationPrincipal SecureUserDetails userDetails, Model model) {
         model.addAttribute("isPacker", userDetails != null && userDetails.getAuthorities().stream()
                 .anyMatch(auth -> PACKER_ROLES.contains(auth.getAuthority())));
         model.addAttribute("isAdmin", userDetails != null && userDetails.getAuthorities().stream()

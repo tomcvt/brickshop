@@ -51,12 +51,8 @@ public class DemoPersistenceLayer {
         PaymentMethod paymentMethod = PaymentMethod.PAYPAL;
         UUID sessionId = UUID.randomUUID();
         //Reusing demo cart
-        //TODO think about using cartId in business logic to not fetch the cart when not needed
-        //TODO handle possible DataIntegrityViolationException on order ID conflict
-        //implement counter with retries, after 10 rethrow exception
         Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new RuntimeException("No demo cart found"));
         Long orderId = orderCreator.getNextOrderId();
-        // we relly here on having first mock order here, we can do this conditionally with null check too
         boolean created = false;
         Order newOrder = null;
         while (!created) {

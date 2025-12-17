@@ -83,8 +83,12 @@ public class CheckoutSessionService {
 
         PaymentMethod paymentMethod = PaymentMethod.fromCode(checkoutData.getPaymentMethodId());
         if (paymentMethod == null) throw new IllegalArgumentException("No payment method selected");
-        
-        UUID sessionId = UUID.fromString(checkoutData.getUuidData());
+        UUID sessionId = null;
+        try{
+            sessionId = UUID.fromString(checkoutData.getUuidData());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid checkout session ID");
+        }
         CheckoutSession session = checkoutSessionRepository.findById(sessionId).orElseThrow(() -> new RuntimeException("No such session"));
         //After basic checks, check if products are still available in stock
         Long cartId = session.getCart().getId();
@@ -106,6 +110,7 @@ public class CheckoutSessionService {
                 continue;
             }
         }
+        //TODO consider publishing event for shipment creation
         shipmentCreator.createShipmentForOrder(newOrder);
         return newOrder;
     }

@@ -28,7 +28,6 @@ public class Shipment {
     private ShipmentStatus status;
     @Column(name = "tracking_number", nullable = true)
     private String trackingNumber;
-    //TODO: implement tracking number assignment logic
     @Column(name = "address_string", nullable = false, length = 1000)
     private String addressString;
     @ManyToOne

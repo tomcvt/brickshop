@@ -6,15 +6,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.tomcvt.brickshop.model.User;
-import com.tomcvt.brickshop.model.WrapUserDetails;
+import com.tomcvt.brickshop.model.SecureUserDetails;
 import com.tomcvt.brickshop.repository.UserRepository;
 
 @Service
-public class WrapUserDetailsService implements UserDetailsService {
+public class SecureUserDetailsService implements UserDetailsService {
     
     private final UserRepository userRepository;
 
-    public WrapUserDetailsService(UserRepository userRepository) {
+    public SecureUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -22,6 +22,6 @@ public class WrapUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
         .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
-        return new WrapUserDetails(user);
+        return new SecureUserDetails(user);
     }
 }
