@@ -66,11 +66,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         let description = product.description;
         let price = product.price;
         let stock = product.stock;
+        let htmlDescription = product.htmlDescription;
         if (inEditMode) {
             name = document.getElementById('edit-name').value;
             description = document.getElementById('edit-description').value;
             price = document.getElementById('edit-price').value;
             stock = document.getElementById('edit-stock').value;
+            htmlDescription = document.getElementById('edit-html-description').value;
         }
         const ProductDto = {
             publicId: publicId,
@@ -79,7 +81,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             price,
             stock,
             imageUrls: newOrder,
-            categoriesNames: checkedCategories
+            categoriesNames: checkedCategories,
+            htmlDescription: htmlDescription
         };
         console.log('New Image Order:', newOrder);
         console.log('ProductImageDto:', ProductDto);
@@ -96,6 +99,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             product.price = price;
             product.stock = stock;
             product.imageUrls = newOrder;
+
+            window.location.reload();
+            
             setProductView(product);
             setProductEdit(product);
             detailsDiv.style.display = '';
@@ -243,6 +249,9 @@ function setProductView(product) {
     document.getElementById('product-description').textContent = product.description;
     document.getElementById('product-price').textContent = `${product.price} zł`;
     document.getElementById('product-stock').textContent = product.stock;
+    const htmlDescriptionDiv = document.getElementById('product-html-description');
+    console.log(htmlDescriptionDiv);
+    document.getElementById('product-html-description').innerHTML = product.htmlDescription || '';
 }
 
 function setProductEdit(product) {
@@ -250,6 +259,7 @@ function setProductEdit(product) {
     document.getElementById('edit-description').value = product.description;
     document.getElementById('edit-price').value = product.price;
     document.getElementById('edit-stock').value = product.stock;
+    document.getElementById('edit-html-description').value = product.htmlDescription || '';
 }
 
 function renderGallery(imageUrls, gallery) {

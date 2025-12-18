@@ -16,7 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.tomcvt.brickshop.dto.ImageOrderDto;
 import com.tomcvt.brickshop.dto.NewProductInput;
+import com.tomcvt.brickshop.dto.NewProductWithHtmlInput;
 import com.tomcvt.brickshop.dto.ProductDto;
+import com.tomcvt.brickshop.dto.ProductHtmlDto;
 import com.tomcvt.brickshop.dto.ProductInput;
 import com.tomcvt.brickshop.dto.ProductSummaryDto;
 import com.tomcvt.brickshop.exception.EntityAlreadyExists;
@@ -27,6 +29,7 @@ import com.tomcvt.brickshop.pagination.SimplePage;
 import com.tomcvt.brickshop.repository.CategoryRepository;
 import com.tomcvt.brickshop.repository.ProductRepository;
 import com.tomcvt.brickshop.utility.CategoryReferenceMap;
+import com.tomcvt.brickshop.utility.HtmlPolicies;
 
 
 
@@ -63,6 +66,26 @@ public class ProductService {
         if (existing.isPresent())
             log.warn("Product with name {} already exists", input.name());
         Product product = new Product();
+        product.setName(input.name());
+        product.setDescription(input.description());
+        product.setPrice(input.price());
+        product.setStock(input.stock());
+        Set<Category> categories = categoryReferenceMap.getIds(input.categories()).stream()
+                .map(id -> categoryRepository.getReferenceById(id)).collect(Collectors.toSet());
+        product.setCategories(categories);
+        product = productRepository.save(product);
+        productImageService.saveProductImages(images, product);
+        return productRepository.save(product);
+    }
+
+    @Transactional
+    public Product addProductWithHtmlDescriptionAndImages(NewProductWithHtmlInput input, List<MultipartFile> images) {
+        Optional<Product> existing = productRepository.findByName(input.name());
+        if (existing.isPresent())
+            log.warn("Product with name {} already exists", input.name());
+        Product product = new Product();
+        String safeHtml = HtmlPolicies.sanitizeHtmlV1(input.htmlDescription());
+        product.setHtmlDescription(safeHtml);
         product.setName(input.name());
         product.setDescription(input.description());
         product.setPrice(input.price());
@@ -146,9 +169,15 @@ public class ProductService {
     }
 
     @Transactional
-    public void editProductFromDto(ProductDto productDto) {
+    public void editProductFromDto(ProductHtmlDto productDto) {
         Product product = productRepository.findByPublicId(productDto.publicId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
+        if (productDto.htmlDescription() != null && !productDto.htmlDescription().isEmpty()) {
+            String safeHtml = HtmlPolicies.sanitizeHtmlV1(productDto.htmlDescription());
+            product.setHtmlDescription(safeHtml);
+        } else {
+            product.setHtmlDescription(null);
+        }
         product.setName(productDto.name());
         product.setDescription(productDto.description());
         product.setPrice(productDto.price());

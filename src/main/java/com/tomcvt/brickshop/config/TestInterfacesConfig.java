@@ -18,6 +18,5 @@ public class TestInterfacesConfig implements ApplicationListener<ApplicationRead
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         ntfyService.sendTestNotification("Test Notification", "This is a test notification sent on application startup.");
-        log.info("Test Ntfy notification sent on application startup.");
     }
 }

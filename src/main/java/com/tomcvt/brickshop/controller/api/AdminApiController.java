@@ -15,8 +15,10 @@ import com.tomcvt.brickshop.dto.AdminDashboardInfoDto;
 import com.tomcvt.brickshop.dto.CustomerOrderDto;
 import com.tomcvt.brickshop.dto.ErrorResponse;
 import com.tomcvt.brickshop.dto.NewProductInput;
+import com.tomcvt.brickshop.dto.NewProductWithHtmlInput;
 import com.tomcvt.brickshop.dto.OrderFullDto;
 import com.tomcvt.brickshop.dto.ProductDto;
+import com.tomcvt.brickshop.dto.ProductHtmlDto;
 import com.tomcvt.brickshop.mappers.OrderMapper;
 import com.tomcvt.brickshop.mappers.ProductMapper;
 import com.tomcvt.brickshop.model.Order;
@@ -67,17 +69,26 @@ public class AdminApiController {
         var dto = productMapper.toProductDto(product);
         return ResponseEntity.ok().body(dto);
     }
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
+    @PostMapping("/add-product-html")
+    public ResponseEntity<ProductDto> addProductWithHtmlDescription(@ModelAttribute NewProductWithHtmlInput productInput,
+            @RequestParam("images") List<MultipartFile> images
+    ) {
+        Product product = productService.addProductWithHtmlDescriptionAndImages(productInput, images);
+        var dto = productMapper.toProductDto(product);
+        return ResponseEntity.ok().body(dto);
+    }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER','MODERATOR')")
     @GetMapping("/edit-product/{publicId}")
-    public ResponseEntity<ProductDto> getProductEditRequest(@PathVariable UUID publicId) {
-        ProductDto dto = productMapper.toProductDto(productService.getProductByPublicId(publicId));
+    public ResponseEntity<ProductHtmlDto> getProductEditRequest(@PathVariable UUID publicId) {
+        ProductHtmlDto dto = productMapper.toProductHtmlDto(productService.getProductByPublicId(publicId));
         imageOrderValidator.storeImageOrder(publicId, Set.copyOf(dto.imageUrls()));
         return ResponseEntity.ok().body(dto);
     }
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
     @PatchMapping("/edit-product")
-    public ResponseEntity<?> postEditProduct(@RequestBody ProductDto productDto) {
+    public ResponseEntity<?> postEditProduct(@RequestBody ProductHtmlDto productDto) {
         if (!imageOrderValidator.validateImageOrder(productDto.publicId(), productDto.imageUrls())) {
             return ResponseEntity.status(400).body(new ErrorResponse("INVALIDATION_ERROR",
                     "Image order is invalid or has been tampered with"));

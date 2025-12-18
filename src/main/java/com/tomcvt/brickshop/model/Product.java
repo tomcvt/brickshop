@@ -29,6 +29,8 @@ public class Product {
     private String name;
     @Column(length = MAX_DESCRIPTION_LENGTH)
     private String description;
+    @Column(columnDefinition = "TEXT", name = "html_description", nullable = true)
+    private String htmlDescription;
     @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("imgOrder ASC")
@@ -78,6 +80,12 @@ public class Product {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+    public String getHtmlDescription() {
+        return htmlDescription;
+    }
+    public void setHtmlDescription(String htmlDescription) {
+        this.htmlDescription = htmlDescription;
     }
     public List<ProductImage> getProductImages() {
         return productImages;

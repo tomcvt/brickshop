@@ -22,7 +22,7 @@ const productId = getProductId();
 
 
 async function loadProduct(productId) {
-    const response = await fetch(`/api/products/${productId}`);
+    const response = await fetch(`/api/products/w-html/${productId}`);
     const product = await response.json();
     console.log('Loaded product:', product);
 
@@ -33,6 +33,7 @@ async function loadProduct(productId) {
         ? product.stock + ' in stock'
         : 'Out of stock';
     document.getElementById('addToCartBtn').disabled = product.stock === 0;
+    document.getElementById('productHtmlDescription').innerHTML = product.htmlDescription || '';
 
     const mainImage = document.getElementById('mainImage');
     if (product.imageUrls && product.imageUrls.length > 0) {

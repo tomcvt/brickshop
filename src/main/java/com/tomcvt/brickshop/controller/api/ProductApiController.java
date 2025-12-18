@@ -3,6 +3,7 @@ package com.tomcvt.brickshop.controller.api;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tomcvt.brickshop.dto.ProductDto;
+import com.tomcvt.brickshop.dto.ProductHtmlDto;
 import com.tomcvt.brickshop.dto.ProductSummaryDto;
 import com.tomcvt.brickshop.mappers.ProductMapper;
 import com.tomcvt.brickshop.model.Product;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductApiController {
     private final ProductService productService;
     private final CategoryService categoryService;
+    private final ProductMapper productMapper = ProductMapper.INSTANCE;
 
     public ProductApiController(ProductService productService, CategoryService categoryService) {
         this.productService = productService;
@@ -50,6 +52,12 @@ public class ProductApiController {
     @GetMapping("/summaries-no-pic/search")
     public List<ProductSummaryDto> searchProducts(@RequestParam String keyword) {
         return productService.getProductSummariesNoPicByKeyword(keyword);
+    }
+    @GetMapping("/w-html/{publicId}")
+    public ResponseEntity<ProductHtmlDto> getProductWithHtmlByPublicId(@PathVariable UUID publicId) {
+        var product = productService.getProductHydratedByPublicId(publicId);
+        var dto = productMapper.toProductHtmlDto(product);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/{publicId}")
