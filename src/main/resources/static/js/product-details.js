@@ -28,7 +28,7 @@ async function loadProduct(productId) {
 
     document.getElementById('productName').innerText = product.name;
     document.getElementById('productDescription').innerText = product.description;
-    document.getElementById('productPrice').innerText = product.price + ' $';
+    document.getElementById('productPrice').innerText = product.price + ' PLN';
     document.getElementById('productStock').innerText = product.stock > 0
         ? product.stock + ' in stock'
         : 'Out of stock';
@@ -64,7 +64,7 @@ async function loadProduct(productId) {
         document.getElementById('lightbox').style.display = 'none';
     });
 
-    document.getElementById('addToCartBtn').addEventListener('click', () => {SidebarCart.addProductByIdToCart(productId)});
+    document.getElementById('addToCartBtn').addEventListener('click', () => {SidebarCart.addProductByPublicIdToCart(productId)});
 }
 loadProduct(productId);
 

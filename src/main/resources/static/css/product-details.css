@@ -129,3 +129,11 @@ body {
 }
 
 
+.product-html-description {
+    max-width: 800px;
+    padding: var(--space-md);
+    background: #fff;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    margin: var(--space-lg) auto;
+}
