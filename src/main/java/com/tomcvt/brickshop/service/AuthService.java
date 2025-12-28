@@ -34,6 +34,16 @@ public class AuthService {
         this.eventProvider = eventProvider;
     }
 
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
+
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElse(null);
+    }
+
     @Transactional
     public User registerActivatedUser(String username, String rawPassword, String email, String role) {
         if (userRepository.findByUsername(username).isPresent()) {

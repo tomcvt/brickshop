@@ -6,38 +6,31 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.tomcvt.brickshop.model.User;
-import com.tomcvt.brickshop.repository.UserRepository;
+import com.tomcvt.brickshop.service.AuthService;
 
 @Component
 public class SuperuserInitializer {
     private static final Logger log = LoggerFactory.getLogger(SuperuserInitializer.class);
-    private final UserRepository userRepository;
+    private final AuthService authService;
     private final String username;
     private final String password;
     private final String email;
     
-    public SuperuserInitializer(UserRepository userRepository,
+    public SuperuserInitializer(AuthService authService,
         @Value("${com.tomcvt.superuser.username}") String username,
         @Value("${com.tomcvt.superuser.password}") String password,
         @Value("${com.tomcvt.superuser.email}") String email
     ) {
-        this.userRepository = userRepository;
+        this.authService = authService;
         this.username = username;
         this.password = password;
         this.email = email;
     }
 
     public void initializeSuperuser() {
-        User superuser = userRepository.findByUsername(username).orElse(null);
+        User superuser = authService.getUserByUsername(username);
         if (superuser == null) {
-            superuser = new User();
-            superuser.setUsername(username);
-            superuser.setPassword(password); // In a real application, ensure this is hashed
-            superuser.setEmail(email);
-            superuser.setRole("SUPERUSER");
-            superuser.setEnabled(true);
-            userRepository.save(superuser);
-            log.info("Superuser created with username: {}", username);
+            authService.registerActivatedUser(username, password, email, "SUPERUSER");
         } else {
             log.info("Superuser already exists with username: {}", username);
         }

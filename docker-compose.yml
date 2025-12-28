@@ -1,10 +1,9 @@
-version: "3.9"
 services:
   brickshop:
     container_name: brickshop
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile2
       args:
         APP_VERSION: ${APP_VERSION}
     image: brickshop:${APP_VERSION}
