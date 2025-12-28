@@ -197,9 +197,19 @@ export async function initSearchBar(onResults, config = {}) {
             }
         });
     }
+    const initialUrlCategories = config.getCategories ? config.getCategories() : getSelectedCategories();
+    if (initialUrlCategories.length > 0) {
+        // Pre-check categories from URL
+        const checkboxes = checkboxList.querySelectorAll('input[type=checkbox]');
+        checkboxes.forEach(cb => {
+            if (initialUrlCategories.includes(cb.value)) {
+                cb.checked = true;
+            }
+        });
+    }
 
     setTimeout(() => {
-        handleSearch({ page: 0 });
+        handleSearch({ page: 0 , query: '', categories: initialUrlCategories});
     }, 0);
 }
 

@@ -20,12 +20,26 @@ function getProductId() {
 
 const productId = getProductId();
 
+function renderCategories(categories) {
+    const container = document.getElementById('categories-container');
+    container.innerHTML = '';
+    if (categories && categories.length > 0) {
+        categories.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.innerText = cat;
+            btn.classList.add('btn', 'btn-small', 'btn-tertiary', 'category-btn');
+            btn.addEventListener('click', () => {
+                window.location.href = `/products?category=${encodeURIComponent(cat)}`;
+            });
+            container.appendChild(btn);
+        });
+    }
+}
 
 async function loadProduct(productId) {
     const response = await fetch(`/api/products/w-html/${productId}`);
     const product = await response.json();
     console.log('Loaded product:', product);
-
     document.getElementById('productName').innerText = product.name;
     document.getElementById('productDescription').innerText = product.description;
     document.getElementById('productPrice').innerText = product.price + ' PLN';
@@ -34,6 +48,8 @@ async function loadProduct(productId) {
         : 'Out of stock';
     document.getElementById('addToCartBtn').disabled = product.stock === 0;
     document.getElementById('productHtmlDescription').innerHTML = product.htmlDescription || '';
+
+    renderCategories(product.categoriesNames);
 
     const mainImage = document.getElementById('mainImage');
     if (product.imageUrls && product.imageUrls.length > 0) {

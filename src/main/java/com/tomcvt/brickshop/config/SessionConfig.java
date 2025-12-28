@@ -11,4 +11,23 @@ public class SessionConfig {
     public SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
     }
+ /*  Doesnt work as expected, fall back to default onceperrequestfilter */
+ /*
+    @Bean
+    public InvalidSessionStrategy invalidSessionStrategy() {
+        return new CustomInvalidSessionStrategy();
+    }
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
+    }
+    @Bean
+    public SessionManagementFilter sessionManagementFilter(SessionAuthenticationStrategy sessionAuthenticationStrategy,
+                                   InvalidSessionStrategy invalidSessionStrategy) {
+        SessionManagementFilter filter = new SessionManagementFilter(securityContextRepository(), sessionAuthenticationStrategy);
+        filter.setInvalidSessionStrategy(invalidSessionStrategy);
+        return filter;
+    }
+        */
+
 }

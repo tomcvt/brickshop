@@ -10,6 +10,10 @@ let lastCategories = [];
 let lastResults = null;
 
 document.addEventListener('DOMContentLoaded', function () {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('category')) {
+        lastCategories = params.getAll('category');
+    }
     initSearchBar((results, opts = {}) => {
         // opts: { page, query, categories }
         if (opts.page !== undefined) currentPage = opts.page;

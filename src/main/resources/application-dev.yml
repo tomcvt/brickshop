@@ -20,7 +20,7 @@ dummyimageloader:
   path: ${DUMMYIMAGELOADER_PATH:dummydata/images}
 
 html-description-loader:
-  path: ${HTML_DESCRIPTION_LOADER_PATH:dummydata/html-desc}
+  path: ${HTML_DESCRIPTION_LOADER_PATH:dummydata/html_desc}
 
 com:
   tomcvt:

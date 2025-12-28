@@ -16,6 +16,9 @@
     --color-secondary: #f18f1f;
     --color-secondary-hover: #ffa43c;
     --color-secondary-active: #c57315;
+    --color-tertiary: #8e44ad;
+    --color-tertiary-hover: #9b59b6;
+    --color-tertiary-active: #6c3483;
     --color-border-light: #ddd;
     --color-border-dark: #aaa;
 
@@ -162,6 +165,19 @@ p {
     background: var(--color-secondary-active);
 }
 
+.clr-tertiary {
+    background: var(--color-tertiary);
+    color: #fff;
+}
+
+.clr-tertiary:hover {
+    background: var(--color-tertiary-hover);
+}
+
+.clr-tertiary:active {
+    background: var(--color-tertiary-active);
+}
+
 /* Alerts */
 .alert {
     padding: 0.75rem 1rem;
@@ -226,6 +242,19 @@ p {
 
 .btn-secondary:active {
     background: var(--color-secondary-active);
+}
+
+.btn-tertiary {
+    background: var(--color-tertiary);
+    color: #fff;
+}
+
+.btn-tertiary:hover {
+    background: var(--color-tertiary-hover);
+}
+
+.btn-tertiary:active {
+    background: var(--color-tertiary-active);
 }
 
 .btn-small {

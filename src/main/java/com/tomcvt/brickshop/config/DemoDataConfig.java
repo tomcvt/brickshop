@@ -1,5 +1,6 @@
 package com.tomcvt.brickshop.config;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.tomcvt.brickshop.model.User;
 import com.tomcvt.brickshop.repository.UserRepository;
+import com.tomcvt.brickshop.utility.TestUtils;
 import com.tomcvt.brickshop.zdemo.DemoDataLoader;
 
 
@@ -45,6 +47,15 @@ public class DemoDataConfig implements ApplicationListener<ApplicationReadyEvent
             log.info("Application is running with 'dev' profile. Demo data is available.");
             makeDevPasswordsSimple();
             log.info("All user passwords have been set to '123' for development purposes.");
+        }
+        //Testing purpose only
+        //TODO change this to proper e2e tests
+        try {
+            TestUtils.sendInvalidSessionRequest("http://localhost:8082/products");
+        } catch (IOException e) {
+            log.error("Failed to send test invalid session request", e);
+        } catch (Exception e) {
+            log.error("Unexpected error during test invalid session request", e);
         }
     }
 

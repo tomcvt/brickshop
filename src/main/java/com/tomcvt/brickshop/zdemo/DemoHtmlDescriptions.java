@@ -1,6 +1,7 @@
 package com.tomcvt.brickshop.zdemo;
 
 import java.io.File;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import com.tomcvt.brickshop.utility.HtmlPolicies;
 public class DemoHtmlDescriptions {
     private final ProductRepository productRepository;
     private final String pathOfHtmlDescriptions;
+    // Pattern to match files named like "test_html_123.txt" end extract the number
     private final Pattern pattern = Pattern.compile("^test_html_(.*)\\.txt$");
 
     public DemoHtmlDescriptions(ProductRepository productRepository,
@@ -30,8 +32,9 @@ public class DemoHtmlDescriptions {
             if (files != null) {
                 for (File file : files) {
                     String fileName = file.getName();
-                    if (pattern.matcher(fileName).matches()) {
-                        String number = pattern.matcher(fileName).group(1);
+                    Matcher matcher = pattern.matcher(fileName);
+                    if (matcher.matches()) {
+                        String number = matcher.group(1);
                         Long productId = Long.parseLong(number);
                         productRepository.findById(productId).ifPresent(product -> {
                             try {
