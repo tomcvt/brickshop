@@ -24,7 +24,7 @@
     <!-- Other logs to app.log -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="com.tomcvt.brickshop.logging.StringBlockFilter">
-            <blockedSubstringsList>/actuator</blockedSubstringsList>
+            <blockedSubstringsList>/actuator,/js/,/outsideimages/,/css/</blockedSubstringsList>
         </filter>
         <level>DEBUG</level>
         <encoder>
@@ -33,7 +33,7 @@
     </appender>
     <appender name="APP_FILE" class="ch.qos.logback.core.FileAppender">
         <filter class="com.tomcvt.brickshop.logging.StringBlockFilter">
-            <blockedSubstringsList>/actuator</blockedSubstringsList>
+            <blockedSubstringsList>/actuator,/js/,/outsideimages/,/css/</blockedSubstringsList>
         </filter>
         <file>logs/app.log</file>
         <encoder>

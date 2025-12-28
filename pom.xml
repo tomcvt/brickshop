@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.tomcvt</groupId>
 	<artifactId>brickshop</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3</version>
 	<name>brickshop</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>

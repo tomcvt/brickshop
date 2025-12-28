@@ -22,12 +22,13 @@ public class DemoDataLoader {
     private final DemoCarts demoCarts;
     private final DemoCache demoCache;
     private final DemoAddresses demoAddresses;
+    private final DemoHtmlDescriptions demoHtmlDescriptions;
 
     public DemoDataLoader(
             DemoAddresses demoAddresses, CSVloader csvloader, 
             CategoryExtractor categoryExtractor, 
             DummyImageLoader dummyImageLoader, DemoOrders demoOrders, DemoUsers demoUsers,
-            DemoCarts demoCarts, DemoCache demoCache, UserRepository userRepository) {
+            DemoCarts demoCarts, DemoCache demoCache, UserRepository userRepository, DemoHtmlDescriptions demoHtmlDescriptions) {
         this.demoAddresses = demoAddresses;
         this.csvloader = csvloader;
         this.categoryExtractor = categoryExtractor;
@@ -37,6 +38,7 @@ public class DemoDataLoader {
         this.demoCarts = demoCarts;
         this.demoCache = demoCache;
         this.userRepository = userRepository;
+        this.demoHtmlDescriptions = demoHtmlDescriptions;
     }
 
     public void loadDemoData() {
@@ -49,6 +51,7 @@ public class DemoDataLoader {
         }
         demoUsers.createDemoUsers();
         csvloader.loadProductsFromCSV();
+        demoHtmlDescriptions.uploadHtmlDescriptions();
         categoryExtractor.initCategories();
         demoCarts.createDemoCarts();
         log.info("Demo closed carts IDs: " + demoCache.demoClosedCartsIds);
