@@ -8,13 +8,14 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.tomcvt.brickshop.repository.ProductRepository;
+import com.tomcvt.brickshop.utility.HtmlPolicies;
 
 @Component
 @Profile({ "dev", "demo" })
 public class DemoHtmlDescriptions {
     private final ProductRepository productRepository;
     private final String pathOfHtmlDescriptions;
-    private final Pattern pattern = Pattern.compile("^html-desc-[.*]\\.txt$");
+    private final Pattern pattern = Pattern.compile("^test_html_(.*)\\.txt$");
 
     public DemoHtmlDescriptions(ProductRepository productRepository,
             @Value("${html-description-loader.path}") String pathOfHtmlDescriptions) {
@@ -35,8 +36,9 @@ public class DemoHtmlDescriptions {
                         productRepository.findById(productId).ifPresent(product -> {
                             try {
                                 String htmlDescription = new String(java.nio.file.Files.readAllBytes(file.toPath()));
-                                if (htmlDescription == null || htmlDescription.trim().isEmpty()) {
-                                    product.setHtmlDescription(htmlDescription);
+                                if (product.getHtmlDescription() == null || product.getHtmlDescription().isEmpty()) {
+                                    String sanitized = HtmlPolicies.sanitizeHtmlV1(htmlDescription);
+                                    product.setHtmlDescription(sanitized);
                                     productRepository.save(product);
                                 }
                             } catch (Exception e) {
@@ -48,4 +50,5 @@ public class DemoHtmlDescriptions {
             }
         }
     }
+    
 }
