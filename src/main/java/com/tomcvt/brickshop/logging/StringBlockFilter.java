@@ -8,7 +8,6 @@ import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.FilterReply;
 
 public class StringBlockFilter extends Filter<ILoggingEvent> {
-    //private static final Logger log = org.slf4j.LoggerFactory.getLogger(StringBlockFilter.class);
     private final CopyOnWriteArrayList<String> blockedSubstringsList = new CopyOnWriteArrayList<>();
 
     public StringBlockFilter() {

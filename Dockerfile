@@ -21,7 +21,7 @@ ENV APP_VERSION=${APP_VERSION}
 ENV SPRING_PROFILES_ACTIVE=demo
 
 WORKDIR /app
-COPY --from=build /app/target/brickshop-${APP_VERSION}.jar cvtcaptcha.jar
+COPY --from=build /app/target/brickshop-${APP_VERSION}.jar brickshop.jar
 COPY jvm-options.txt jvm-options.txt
 COPY dummydata dummydata
 
@@ -30,4 +30,4 @@ HEALTHCHECK --interval=1m --timeout=3s --start-period=15s --retries=3 \
   CMD curl -f http://localhost:8082/actuator/health || exit 1
 
 EXPOSE 8080
-ENTRYPOINT ["sh", "-c", "java @jvm-options.txt -Dspring.profiles.active=$SPRING_PROFILES_ACTIVE -jar cvtcaptcha.jar"]
+ENTRYPOINT ["sh", "-c", "java @jvm-options.txt -Dspring.profiles.active=$SPRING_PROFILES_ACTIVE -jar brickshop.jar"]
