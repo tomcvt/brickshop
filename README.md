@@ -65,7 +65,7 @@ For not allowing bots to register the app is using the prototype of my own captc
 2. Chose dockerfile depending on automation vs fast local compilation
 3. Build the project:
    ```
-   mvn clean package -skipTests
+   mvn clean package -DskipTests
    ```
 4. Run the application:
    ```

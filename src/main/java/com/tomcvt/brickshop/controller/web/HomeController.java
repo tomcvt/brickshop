@@ -31,4 +31,8 @@ public class HomeController {
         }
         return "index";
     }
+    @GetMapping("/about")
+    public String getAbout() {
+        return "about";
+    }
 }
