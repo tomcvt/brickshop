@@ -15,12 +15,13 @@ public class TestUtils {
     conn.setRequestProperty("Cookie", "JSESSIONID=INVALIDSESSIONID123");
     int responseCode = conn.getResponseCode();
     System.out.println("Response Code: " + responseCode);
-
+/*
     // Print response headers
     for (Map.Entry<String, List<String>> header : conn.getHeaderFields().entrySet()) {
         System.out.println(header.getKey() + ": " + header.getValue());
     }
-
+        */
+ /*
     // Print response body
     try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
         String inputLine;
@@ -32,6 +33,7 @@ public class TestUtils {
     } catch (Exception e) {
         System.out.println("No response body or error: " + e.getMessage());
     }
+        */
     conn.disconnect();
 }
 }
