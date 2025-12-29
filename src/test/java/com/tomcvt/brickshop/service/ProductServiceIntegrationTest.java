@@ -4,7 +4,9 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -46,6 +48,15 @@ public class ProductServiceIntegrationTest {
         registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
         registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
+    }
+
+    @Autowired
+    private Flyway flyway;
+
+    @BeforeEach
+    public void setUp() {
+        flyway.clean();
+        flyway.migrate();
     }
 
     @Autowired

@@ -31,6 +31,9 @@ spring:
     test-connection: true
   lifecycle:
     timeout-per-shutdown-phase: 30s
+  docker:
+    compose:
+      enabled: false
 
 server:
   port: ${APP_PORT:8082}

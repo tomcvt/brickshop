@@ -127,6 +127,11 @@ public class AuthService {
         if(!passwordEncoder.matches(oldRawPassword, user.getPassword())) {
             throw new IllegalArgumentException("Old password does not match");
         }
+        changePassword(user, newRawPassword);
+    }
+
+    @Transactional
+    public void changePassword(User user, String newRawPassword) {
         validatePassword(newRawPassword);
         user.setPassword(passwordEncoder.encode(newRawPassword));
         userRepository.save(user);

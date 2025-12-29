@@ -12,10 +12,11 @@ spring:
   flyway:
     locations: classpath:db/migration
     detect-encoding: true
+    clean-disabled: false
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/brickshopdb_test
-    username: brickshop_app
+    username: brickshop_test
     password: testpassword
 
   mail:
@@ -68,3 +69,8 @@ com:
     demo:
       password: test_demo_password
       email: test@example.com
+    ntfy:
+      topic: test_notifications_topic
+      enabled: false
+      priority: 1
+      urgent-priority: 1

@@ -32,6 +32,8 @@ public class UserLoginSuccessHandlerTest {
     void testCartMergingCallOnLogin() throws Exception {
         User user = new User();
         user.setId(1L);
+        user.setUsername("User");
+        user.setRole("USER");
         SecureUserDetails userDetails = new SecureUserDetails(user);
         when(authentication.getPrincipal()).thenReturn(userDetails);
 
@@ -40,5 +42,6 @@ public class UserLoginSuccessHandlerTest {
         successHandler.onAuthenticationSuccess(request, response, authentication);
 
         verify(cartService).cartTempCartItemsToUserActiveCart(1L, tempCart);
+        verify(ntfyService).sendNotification("User Login", "User " + userDetails.getUsername() + " has logged in.");
     }
 }
