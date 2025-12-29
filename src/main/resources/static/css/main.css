@@ -425,7 +425,12 @@ form {
     box-shadow: var(--shadow-md);
 }
 
-
+.flex-row-gap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    justify-content: center;
+}
 
 
 
