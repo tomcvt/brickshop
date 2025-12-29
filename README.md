@@ -41,10 +41,10 @@ For not allowing bots to register the app is using the prototype of my own captc
 - Spring Boot
 - Spring Data JPA (Hibernate)
 - Spring Security
-- PostgreSQL (or your DB)
-- Thymeleaf (if using server-side rendering)
+- PostgreSQL
+- Thymeleaf
 - Docker (optional)
-- Other libraries: (list here)
+- OWASP Html Sanitizer
 
 ## Getting Started
 
@@ -62,19 +62,23 @@ For not allowing bots to register the app is using the prototype of my own captc
    git clone https://github.com/yourusername/brickshop.git
    cd brickshop
    ```
-2. Configure environment variables or application.yml files.
+2. Chose dockerfile depending on automation vs fast local compilation
 3. Build the project:
    ```
-   ./mvnw clean install
+   mvn clean package -skipTests
    ```
 4. Run the application:
    ```
-   ./mvnw spring-boot:run
+   run-app.sh
+   or
+   docker compose up
    ```
+
+Local run needs the database setup
 
 ## Configuration
 
-- Application properties are in `src/main/resources/application.yml` (or `.properties`).
+- Application properties are in `src/main/resources/application.yml`.
 - Environment variables for DB, mail, etc.
 - Example configuration:
   ```
@@ -88,7 +92,7 @@ For not allowing bots to register the app is using the prototype of my own captc
 ## Database
 
 - Uses JPA/Hibernate for ORM.
-- Database migrations via Flyway/Liquibase (if used).
+- Database migrations via Flyway.
 
 ## Security & Roles
 

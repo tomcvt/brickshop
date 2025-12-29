@@ -10,10 +10,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.session.SessionManagementFilter;
 
 import com.tomcvt.brickshop.auth.RateLimitingFilter;
 import com.tomcvt.brickshop.auth.UserLoginFailureHandler;
 import com.tomcvt.brickshop.security.UserLoginSuccessHandler;
+import com.tomcvt.brickshop.session.InvalidSessionCookieFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -25,6 +27,7 @@ public class SecurityConfig {
     private final RateLimitingFilter rateLimitingFilter;
     private final SessionRegistry sessionRegistry;
     private final UserLoginFailureHandler userLoginFailureHandler;
+    private final InvalidSessionCookieFilter invalidSessionCookieFilter;
     private final String[] WHITELIST = {
         "/",
         "/js/**",
@@ -73,13 +76,15 @@ public class SecurityConfig {
     //TODO refactor for config properties later
 
     SecurityConfig(AuthenticationManager authenticationManager, UserLoginSuccessHandler userLoginSuccessHandler, 
-    RateLimitingFilter rateLimitingFilter, SessionRegistry sessionRegistry, UserLoginFailureHandler userLoginFailureHandler
+    RateLimitingFilter rateLimitingFilter, SessionRegistry sessionRegistry, UserLoginFailureHandler userLoginFailureHandler,
+    InvalidSessionCookieFilter invalidSessionCookieFilter
     ) {
         this.authenticationManager = authenticationManager;
         this.userLoginSuccessHandler = userLoginSuccessHandler;
         this.rateLimitingFilter = rateLimitingFilter;
         this.sessionRegistry = sessionRegistry;
         this.userLoginFailureHandler = userLoginFailureHandler;
+        this.invalidSessionCookieFilter = invalidSessionCookieFilter;
     }
     
     @Bean
@@ -116,7 +121,8 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 .maximumSessions(20)
                 .sessionRegistry(sessionRegistry)
-            );
+            )
+            .addFilterAfter(invalidSessionCookieFilter, SessionManagementFilter.class);
         return http.build();
     }
 

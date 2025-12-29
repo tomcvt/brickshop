@@ -122,10 +122,9 @@ public class ProductImageService {
     public String saveProductImage(MultipartFile file, Product product, Integer imageOrder) {
         Optional<ProductImage> existingImage = productImageRepository.findByProductIdAndImgOrder(product.getId(), imageOrder);
         String uuidData = null;
-        //String ext = getFileExtension(file.getOriginalFilename());
         if (existingImage.isPresent()) {
             uuidData = existingImage.get().getImageUuid().toString();
-            //System.out.println("Image exists with " + uuidData + ", overwriting");
+            log.info("Image exists with " + uuidData + ", overwriting");
         } else {
             ProductImage newProductImage = new ProductImage();
             newProductImage.setProduct(product);
@@ -133,20 +132,17 @@ public class ProductImageService {
             product.addProductImage(newProductImage);
             newProductImage = productImageRepository.save(newProductImage);
             uuidData = newProductImage.getImageUuid().toString();
-            //System.out.println("New image created with " + uuidData);
+            log.info("New image created with " + uuidData);
         }
         if (imageOrder == 1) {
             product.setThumbnailUuid(UUID.fromString(uuidData));
             productRepository.save(product);
         }
-        // uuidData = uuidData + "." + ext;
         uuidData = uuidData + ".jpg";
         String filenameUuid = saveImage(file, uuidData);
         return filenameUuid;
     }
-
-
-    //Method for saving image from file directly
+    //helper for demo data loading
     @Transactional
     public String saveProductImageFromFile(File file) {
         String[] parts = file.getName().split("_");
@@ -161,8 +157,7 @@ public class ProductImageService {
         String uuidData = null;
         if (existingImage.isPresent()) {
             uuidData = existingImage.get().getImageUuid().toString();
-
-            System.out.println("Image exists with " + uuidData + ", overwriting");
+            log.info("Image exists with " + uuidData + ", overwriting");
         } else {
             ProductImage newProductImage = new ProductImage();
             newProductImage.setProduct(product);
