@@ -1,0 +1,17 @@
+.about-container {
+    border: 2px solid var(--color-tertiary);
+    margin-top: 40px;
+}
+
+.about-title {
+    color: var(--color-tertiary);
+    text-align: center;
+}
+
+.about-section {
+    background: var(--color-tertiary);
+    color: #fff;
+    border-radius: var(--radius-md);
+    padding: 24px;
+    margin-bottom: 24px;
+}

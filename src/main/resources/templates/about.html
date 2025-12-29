@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>About - Brickshop</title>
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/about.css" />
+    <script type="module" src="/js/navbar.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <ul class="navbar-list">
+            <li class="navbar-item"><a href="/" class="navbar-link">Home</a></li>
+            <li class="navbar-item"><a href="/about" class="navbar-link">About</a></li>
+            <li class="navbar-item dropdown">
+                <a href="/products" class="navbar-link">Products</a>
+            </li>
+            <li class="navbar-item dropdown">
+                <a href="#" class="navbar-link">Profile</a>
+                <ul class="dropdown-menu">
+                    <li><a href="/user" class="dropdown-link">Details</a></li>
+                    <li><a href="/user/orders" class="dropdown-link">Orders</a></li>
+                    <li><a href="/user/addresses" class="dropdown-link">Addresses</a></li>
+                </ul>
+            </li>
+            <li class="navbar-item dropdown">
+                <a href="#" class="navbar-link">Management</a>
+                <ul class="dropdown-menu">
+                    <li><a href="/admin" class="dropdown-link">Dashboard</a></li>
+                    <li><a href="/admin/manage-products" class="dropdown-link">Products</a></li>
+                    <li><a href="/admin/orders" class="dropdown-link">Orders</a></li>
+                    <li><a href="/admin/packages" class="dropdown-link">Packages</a></li>
+                </ul>
+            </li>
+            <li class="navbar-item navbar-logout">
+                <form action="/logout" method="post" style="display:inline;">
+                    <button type="submit" class="navbar-link logout-btn">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+    <script>import('/js/navbar.js').then(m => m.Navbar.init());</script>
+    <!-- Navbar End -->
+    <div class="container about-container">
+        <h1 class="about-title">About Brickshop</h1>
+        <section class="about-section">
+            <h2>Hello</h2>
+            <p>Portfolio Demo: This application runs in a demo environment. User data is reset weekly (every Sunday), and the site does not support real transactions or payments.</p>
+        </section>
+        <section class="about-section">
+            <h2>Section Title 2</h2>
+            <p>Section 2 content goes here. Replace this with your own text.</p>
+        </section>
+        <section class="about-section">
+            <h2>Section Title 3</h2>
+            <p>Section 3 content goes here. Replace this with your own text.</p>
+        </section>
+    </div>
+</body>
+</html>
