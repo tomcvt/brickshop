@@ -78,5 +78,5 @@ com:
     ntfy:
       topic: ${NTFY_TOPIC}
       enabled: ${NTFY_ENABLED:false}
-      priority: 4
-      urgent-priority: 5
+      priority: 3
+      urgent-priority: 4

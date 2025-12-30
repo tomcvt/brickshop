@@ -46,7 +46,8 @@ public class SecurityConfig {
         "/.well-known/**",
         "/error",
         "/public/**",
-        "/no-image.jpg"
+        "/no-image.jpg",
+        "/about"
     };
     private final String[] SUPERUSER_WHITELIST = {
         "/superuser/**",
