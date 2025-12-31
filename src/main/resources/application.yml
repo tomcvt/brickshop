@@ -43,6 +43,7 @@ server:
     session:
       timeout: 15m
   shutdown: graceful
+  forward-headers-strategy: framework
 
 
 cors:
