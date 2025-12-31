@@ -5,11 +5,12 @@
 /* Override page background + padding */
 body {
     background-color: #eee;
-    padding: 40px 0;
     text-align: center;
-    margin-top: 60px;
 }
 
+.navbar {
+    margin-bottom: 0 !important;
+}
 /* Container layout for subpage */
 .container {
     display: flex;
@@ -70,14 +71,17 @@ body {
     width: auto; /* override full-width from main.css */
 }
 
+.content-window {
+    position: relative;
+}
+
 .search-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
+    position: sticky;
+    top: 55px;
     width: 100%;
     background-color: #fff; /* Change to match site theme */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    z-index: 50;
     padding: 10px 0;
 }
 

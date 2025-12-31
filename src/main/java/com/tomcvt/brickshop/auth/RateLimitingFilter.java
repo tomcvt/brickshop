@@ -2,6 +2,9 @@ package com.tomcvt.brickshop.auth;
 
 import java.io.IOException;
 
+import org.springframework.boot.actuate.endpoint.SecurityContext;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -9,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.tomcvt.brickshop.exception.IllegalUsageException;
 import com.tomcvt.brickshop.network.BanRegistry;
 import com.tomcvt.brickshop.service.RateLimiterService;
+import com.tomcvt.brickshop.session.RequestAuthenticationDetails;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,10 +29,10 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         "/js/**",
         "/css/**",
         "/images/**",
-        "/no-image.jpg",
         "/outsideimages/**",
         "/.well-known/**",
-        "/api/**"
+        "/api/**",
+        "/favicon.ico"
     };
     //TODO make configurable
     private static final String[] EXCLUDE_IP = {
@@ -70,6 +74,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
                 return;
             }
         }
+        log.debug("Checking rate limiting for URI {} IP: {}", request.getRequestURI(), clientIp);
 
         if(banRegistry.isIpBanned(clientIp)) {
             response.setStatus(429);
@@ -83,6 +88,12 @@ public class RateLimitingFilter extends OncePerRequestFilter {
                 return;
             }
         }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        var details = (RequestAuthenticationDetails) auth.getDetails();
+        String ipAddress = details.getIpAddress();
+        String status = rateLimiterService.checkStatus(ipAddress);
+        //log.debug("Rate limiting status for IP {}: {}", ipAddress, status);
+
         boolean allowed = true;
         //TODO so make static util method for writing json response
         try {

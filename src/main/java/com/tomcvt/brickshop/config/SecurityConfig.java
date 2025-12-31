@@ -28,6 +28,8 @@ public class SecurityConfig {
     private final SessionRegistry sessionRegistry;
     private final UserLoginFailureHandler userLoginFailureHandler;
     private final InvalidSessionCookieFilter invalidSessionCookieFilter;
+    private final RequestAuthenticationDetailsSource requestAuthenticationDetailsSource;
+    private final AnonymousAuthenticationFilter anonIpAuthenticationFilter;
     private final String[] WHITELIST = {
         "/",
         "/js/**",
@@ -46,8 +48,8 @@ public class SecurityConfig {
         "/.well-known/**",
         "/error",
         "/public/**",
-        "/no-image.jpg",
-        "/about"
+        "/about",
+        "/favicon.ico"
     };
     private final String[] SUPERUSER_WHITELIST = {
         "/superuser/**",
@@ -78,7 +80,8 @@ public class SecurityConfig {
 
     SecurityConfig(AuthenticationManager authenticationManager, UserLoginSuccessHandler userLoginSuccessHandler, 
     RateLimitingFilter rateLimitingFilter, SessionRegistry sessionRegistry, UserLoginFailureHandler userLoginFailureHandler,
-    InvalidSessionCookieFilter invalidSessionCookieFilter
+    InvalidSessionCookieFilter invalidSessionCookieFilter, RequestAuthenticationDetailsSource requestAuthenticationDetailsSource,
+    AnonymousAuthenticationFilter anonIpAuthenticationFilter
     ) {
         this.authenticationManager = authenticationManager;
         this.userLoginSuccessHandler = userLoginSuccessHandler;
@@ -86,6 +89,8 @@ public class SecurityConfig {
         this.sessionRegistry = sessionRegistry;
         this.userLoginFailureHandler = userLoginFailureHandler;
         this.invalidSessionCookieFilter = invalidSessionCookieFilter;
+        this.requestAuthenticationDetailsSource = requestAuthenticationDetailsSource;
+        this.anonIpAuthenticationFilter = anonIpAuthenticationFilter;
     }
     
     @Bean
@@ -108,6 +113,7 @@ public class SecurityConfig {
                 .loginProcessingUrl("/login")
                 .successHandler(userLoginSuccessHandler)
                 .failureHandler(userLoginFailureHandler)
+                .authenticationDetailsSource(requestAuthenticationDetailsSource)
                 .permitAll()
             )
             .logout(logout -> logout
@@ -117,7 +123,11 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIONID")
                 .permitAll()
             )
-            .anonymous(Customizer.withDefaults())
+            .anonymous(anon -> anon
+                .authenticationFilter(anonIpAuthenticationFilter)
+                .principal("anonymousUser")
+                .authorities("ROLE_ANONYMOUS")
+            )
             .addFilterAfter(rateLimitingFilter, AnonymousAuthenticationFilter.class)
             .sessionManagement(session -> session
                 .maximumSessions(20)

@@ -74,14 +74,12 @@
                 row.style.alignItems = 'center';
                 row.style.gap = '16px';
 
-                // Thumbnail
                 const thumb = document.createElement('img');
                 thumb.className = 'cart-thumb';
-                thumb.src = item.thumbnailUuid ? `/outsideimages/${item.thumbnailUuid}.jpg` : '/no-image.jpg';
+                thumb.src = item.thumbnailUuid ? `/outsideimages/${item.thumbnailUuid}.jpg` : '/images/no-image.jpg';
                 thumb.alt = 'Product image';
                 row.appendChild(thumb);
 
-                // Name (link)
                 const nameLink = document.createElement('a');
                 nameLink.className = 'cart-row-link';
                 nameLink.href = `/products/${item.productPublicId}`;
@@ -89,20 +87,17 @@
                 nameLink.target = '_blank';
                 row.appendChild(nameLink);
 
-                // Quantity
                 const qty = document.createElement('span');
                 qty.innerText = `Qty: ${item.quantity}`;
                 qty.style.marginLeft = '16px';
                 row.appendChild(qty);
 
-                // Price (quantity * price)
                 const price = document.createElement('span');
                 const total = (item.price * item.quantity).toFixed(2);
                 price.innerText = `Subtotal: $${total}`;
                 price.style.marginLeft = '16px';
                 row.appendChild(price);
 
-                // Remove button
                 const removeBtn = document.createElement('button');
                 removeBtn.className = 'cart-row-x';
                 removeBtn.innerText = '×';

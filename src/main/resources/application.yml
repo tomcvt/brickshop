@@ -36,9 +36,9 @@ spring:
       enabled: false
 
 server:
-  port: ${APP_PORT:8082}
+  port: ${APP_PORT}
   address:
-    ${APP_HOST:0.0.0.0}
+    ${APP_HOST}
   servlet:
     session:
       timeout: 15m

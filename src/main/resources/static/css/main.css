@@ -46,6 +46,7 @@ body {
     background: var(--color-bg);
     color: var(--color-text);
     margin: 0;
+    margin-bottom: var(--space-xl);
     padding: 0;
     line-height: 1.5;
 }

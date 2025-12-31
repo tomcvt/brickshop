@@ -77,7 +77,7 @@ function createProductCard(item) {
     const img = document.createElement('img');
     img.src = item.thumbnailUrl 
         ? `${window.location.origin}/outsideimages/${item.thumbnailUrl}` 
-        : `${window.location.origin}/no-image.jpg`;
+        : `${window.location.origin}/images/no-image.jpg`;
     img.alt = item.name;
 
     const title = document.createElement('h2');

@@ -60,6 +60,28 @@ public class RateLimiterService {
         return true;
     }
 
+    public String getStatus() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("RateLimiterService Status:\n");
+        sb.append("Total tracked IPs: ").append(requestCounters.size()).append("\n");
+        for (Map.Entry<String, RequestCounter> entry : requestCounters.entrySet()) {
+            sb.append("IP: ").append(entry.getKey())
+              .append(", Requests in window: ").append(entry.getValue().getCount())
+              .append(", Requests in ban window: ").append(entry.getValue().getSmallCount())
+              .append("\n");
+        }
+        return sb.toString();
+    }
+
+    public String checkStatus(String clientIp) {
+        RequestCounter counter = requestCounters.get(clientIp);
+        if (counter == null) {
+            return "No requests recorded for IP: " + clientIp;
+        }
+        return "IP: " + clientIp + ", Requests in window: " + counter.getCount() +
+               ", Requests in ban window: " + counter.getSmallCount();
+    }
+
     @Scheduled(fixedRate = 60000 * 10)
     public void cleanupOldEntries() {
         long currentTime = System.currentTimeMillis();
