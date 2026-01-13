@@ -45,7 +45,6 @@ server:
   shutdown: graceful
   forward-headers-strategy: framework
 
-
 cors:
   allowed-origins: ${CORS_ALLOWED_ORIGINS}
 

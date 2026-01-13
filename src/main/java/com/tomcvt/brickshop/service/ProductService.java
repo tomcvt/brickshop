@@ -23,6 +23,7 @@ import com.tomcvt.brickshop.dto.ProductInput;
 import com.tomcvt.brickshop.dto.ProductSummaryDto;
 import com.tomcvt.brickshop.exception.EntityAlreadyExists;
 import com.tomcvt.brickshop.exception.ProductNotFoundException;
+import com.tomcvt.brickshop.mappers.ProductMapper;
 import com.tomcvt.brickshop.model.Category;
 import com.tomcvt.brickshop.model.Product;
 import com.tomcvt.brickshop.pagination.SimplePage;
@@ -40,6 +41,7 @@ public class ProductService {
     private final ProductImageService productImageService;
     private final CategoryRepository categoryRepository;
     private final CategoryReferenceMap categoryReferenceMap;
+    private final ProductMapper productMapper = ProductMapper.INSTANCE;
 
     public ProductService(ProductRepository productRepository, ProductImageService productImageService,
             CategoryReferenceMap categoryReferenceMap, CategoryRepository categoryRepository) {
@@ -196,5 +198,13 @@ public class ProductService {
     //TODO validate categories
     public long getTotalProductCount() {
         return productRepository.count();
+    }
+
+    public List<ProductSummaryDto> getSearchbarSuggestions(String keyword, int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        Page<Product> productPage = productRepository.findByNameOrDescriptionContaining(keyword, pageable);
+        return productPage.getContent().stream()
+                .map(productMapper::toProductSummaryDto)
+                .toList();
     }
 }

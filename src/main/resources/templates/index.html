@@ -85,6 +85,20 @@
             <button class="btn btn-secondary" type="submit">Logout</button>
         </form>
     </div>
+    <div id="footer-popup" class="footer" style="display: block; position: fixed;">
+        <button id="close-popup-btn" title="Close" aria-label="Close popup">&times;</button>
+        <h2>Hello</h2>
+        <p>Portfolio Demo: This application runs in a demo environment. User data is reset weekly (every Sunday), 
+            and the site does not support real transactions or payments. <b>Feel free to explore the features, 
+            and create a free account with mock data</b> to test the user functionalities, admin panel and packing interface. For now
+            adding products, images etc. is disabled to prevent malicious use. Sites uses cookies for session management.
+        </p>
+    </div>
+    <script>
+        document.getElementById('close-popup-btn').addEventListener('click', function() {
+            document.getElementById('footer-popup').style.display = 'none';
+        });
+    </script>
 </body>
 
 </html>

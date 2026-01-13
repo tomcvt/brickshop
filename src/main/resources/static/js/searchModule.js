@@ -42,7 +42,7 @@ export async function fetchData(keyword = '', categories = []) {
 
         if (!response.ok) {
             const err = await response.json();
-            throw new Error(err.error + ":" + error.message);
+            throw new Error(err.error + ":" + err.message);
         }
 
         const data = await response.json();
@@ -57,8 +57,9 @@ export async function initSearchBar(onResults, config = {}) {
     const searchInput = document.getElementById('searchKeyword');
     const searchButton = document.getElementById('searchButton');
     const searchBarContainer = document.getElementById('searchBarContainer') || searchInput.parentElement;
+    const debounceDelay = config.debounceDelay || 300;
 
-    // Create category filter UI
+    // --- Category filter UI (unchanged) ---
     let categoryContainer = document.getElementById('categoryFilter');
     if (!categoryContainer) {
         categoryContainer = document.createElement('div');
@@ -122,13 +123,128 @@ export async function initSearchBar(onResults, config = {}) {
             .map(cb => cb.value);
     }
 
+    // --- Suggestions popup logic ---
+    let suggestionPopup = document.getElementById('searchSuggestionsPopup');
+    if (!suggestionPopup) {
+        suggestionPopup = document.createElement('div');
+        suggestionPopup.id = 'searchSuggestionsPopup';
+        suggestionPopup.style.position = 'absolute';
+        suggestionPopup.style.background = '#fff';
+        suggestionPopup.style.border = '1px solid #ccc';
+        suggestionPopup.style.borderRadius = '4px';
+        suggestionPopup.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+        suggestionPopup.style.display = 'none';
+        suggestionPopup.style.minWidth = searchInput.offsetWidth + 'px';
+        suggestionPopup.style.zIndex = '100';
+        suggestionPopup.style.maxHeight = '220px';
+        suggestionPopup.style.overflowY = 'auto';
+        suggestionPopup.style.fontSize = '15px';
+        suggestionPopup.style.left = searchInput.offsetLeft + 'px';
+        suggestionPopup.style.top = (searchInput.offsetTop + searchInput.offsetHeight + 2) + 'px';
+        searchBarContainer.appendChild(suggestionPopup);
+    }
+
+    function formatPrice(price) {
+        if (typeof price === 'number') return price.toFixed(2) + ' zł';
+        if (typeof price === 'string') return price + ' zł';
+        return '';
+    }
+
+    function showSuggestions(suggestions) {
+        suggestionPopup.innerHTML = '';
+        if (!suggestions || suggestions.length === 0) {
+            suggestionPopup.style.display = 'none';
+            return;
+        }
+        suggestions.forEach(item => {
+            const row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.justifyContent = 'space-between';
+            row.style.alignItems = 'center';
+            row.style.padding = '7px 12px';
+            row.style.cursor = 'pointer';
+            row.style.borderBottom = '1px solid #f0f0f0';
+            row.addEventListener('mouseover', () => row.style.background = '#f5f5f5');
+            row.addEventListener('mouseout', () => row.style.background = '#fff');
+            row.addEventListener('click', () => {
+                window.location.href = '/products/' + item.publicId;
+            });
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = item.name;
+            nameSpan.style.flex = '1';
+            nameSpan.style.marginRight = '12px';
+            const priceSpan = document.createElement('span');
+            priceSpan.textContent = formatPrice(item.price);
+            priceSpan.style.whiteSpace = 'nowrap';
+            row.appendChild(nameSpan);
+            row.appendChild(priceSpan);
+            suggestionPopup.appendChild(row);
+        });
+        suggestionPopup.style.display = 'block';
+    }
+
+    function hideSuggestions() {
+        suggestionPopup.style.display = 'none';
+    }
+
+    // Debounce helper
+    function debounce(fn, delay) {
+        let timer = null;
+        return function(...args) {
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => fn.apply(this, args), delay);
+        };
+    }
+
+    // Fetch suggestions from API
+    async function fetchSuggestions(keyword) {
+        if (!keyword || keyword.trim() === '') {
+            hideSuggestions();
+            return;
+        }
+        try {
+            const response = await fetch(`/api/products/suggestions?keyword=${encodeURIComponent(keyword)}&limit=5`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (!response.ok) {
+                hideSuggestions();
+                return;
+            }
+            const data = await response.json();
+            showSuggestions(data);
+        } catch (e) {
+            hideSuggestions();
+        }
+    }
+
+    const debouncedFetchSuggestions = debounce(fetchSuggestions, debounceDelay);
+
+    // Show suggestions on input
+    searchInput.addEventListener('input', (e) => {
+        debouncedFetchSuggestions(searchInput.value);
+    });
+
+    // Show suggestions on focus/click
+    searchInput.addEventListener('focus', () => {
+        fetchSuggestions(searchInput.value);
+    });
+    searchInput.addEventListener('click', () => {
+        fetchSuggestions(searchInput.value);
+    });
+
+    // Hide suggestions on click outside
+    document.addEventListener('mousedown', (e) => {
+        if (!suggestionPopup.contains(e.target) && e.target !== searchInput) {
+            hideSuggestions();
+        }
+    });
+
+    // --- Main search logic (unchanged) ---
     async function handleSearch(opts = {}) {
-        // opts: { page, query, categories }
         let keyword = opts.query !== undefined ? opts.query : searchInput.value;
         let selectedCategories = opts.categories !== undefined ? opts.categories : getSelectedCategories();
         let page = opts.page !== undefined ? opts.page : 0;
-
-        // Build endpoint with page
         let endpoint = '/api/products/summaries';
         const params = [];
         if (keyword.trim() !== '') {
@@ -145,7 +261,6 @@ export async function initSearchBar(onResults, config = {}) {
         if (params.length > 0) {
             endpoint += '?' + params.join('&');
         }
-
         try {
             const response = await fetch(endpoint, {
                 method: 'GET',

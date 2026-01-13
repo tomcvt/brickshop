@@ -66,8 +66,12 @@ public class ProductApiController {
         return ResponseEntity.ok(dto);
     }
     @GetMapping("/categories")
-    public List<String> getCategoriesNames() {
+    public ResponseEntity<List<String>> getCategoriesNames() {
         System.out.print(categoryService.getCategoriesNames());
-        return categoryService.getCategoriesNames();
+        return ResponseEntity.ok(categoryService.getCategoriesNames());
+    }
+    @GetMapping("/suggestions")
+    public ResponseEntity<List<ProductSummaryDto>> getSearchbarSuggestions(@RequestParam String keyword, @RequestParam(defaultValue = "5") int limit) {
+        return ResponseEntity.ok(productService.getSearchbarSuggestions(keyword, limit));
     }
 }

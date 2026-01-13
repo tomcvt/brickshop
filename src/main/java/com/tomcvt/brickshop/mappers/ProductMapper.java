@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.tomcvt.brickshop.dto.ProductDto;
 import com.tomcvt.brickshop.dto.ProductHtmlDto;
+import com.tomcvt.brickshop.dto.ProductSummaryDto;
 import com.tomcvt.brickshop.model.Product;
 
 public class ProductMapper {
@@ -44,6 +45,17 @@ public class ProductMapper {
             product.getCategories().stream()
                 .map(c -> c.getName())
                 .collect(Collectors.toSet())
+        );
+    }
+
+    public ProductSummaryDto toProductSummaryDto(Product product) {
+        String thumbnailUrl = product.getThumbnailUuid() != null ? product.getThumbnailUuid() + ".jpg" : null;
+        return new ProductSummaryDto(
+            product.getPublicId(),
+            product.getName(),
+            product.getPrice(),
+            product.getStock(),
+            thumbnailUrl
         );
     }
 
