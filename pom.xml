@@ -120,7 +120,8 @@
 			<artifactId>spring-boot-docker-compose</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-	</dependencies>
+	
+ </dependencies>
 	<build>
 		<plugins>
 			<plugin>

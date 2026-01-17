@@ -5,12 +5,13 @@ import java.util.UUID;
 
 import jakarta.persistence.*;
 
+// @Index(name = "idx_prt_token", columnList = "token"),
+// @Index(name = "idx_prt_expires_at", columnList = "expiresAt"),
+// @Index(name = "idx_prt_user_id", columnList = "user_id")
+
+
 @Entity
-@Table(name = "pass_recovery_tokens", indexes = {
-    @Index(name = "idx_token", columnList = "token"),
-    @Index(name = "idx_expires_at", columnList = "expiresAt"),
-    @Index(name = "idx_user_id", columnList = "user_id")
-})
+@Table(name = "pass_recovery_tokens")
 public class PassRecoveryToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

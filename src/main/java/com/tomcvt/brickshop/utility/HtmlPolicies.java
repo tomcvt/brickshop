@@ -27,7 +27,12 @@ public class HtmlPolicies {
             .allowUrlProtocols("http", "https")
             .requireRelNofollowOnLinks()
             .toFactory().and(Sanitizers.IMAGES);
+    private static final PolicyFactory NO_HTML = new HtmlPolicyBuilder()
+            .toFactory();
     public static String sanitizeHtmlV1(String html) {
         return HTML_POLICY_V1.sanitize(html);
+    }
+    public static String sanitizeNoHtml(String html) {
+        return NO_HTML.sanitize(html);
     }
 }
