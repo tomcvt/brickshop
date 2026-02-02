@@ -43,6 +43,7 @@ public class SecurityConfig {
         "/login", "/logout",
         "/login.html", "/registration",
         "/api/public/**",
+        "/api/reviews/**",
         "/mock-payment/**",
         "/api/captcha/**",
         "/.well-known/**",

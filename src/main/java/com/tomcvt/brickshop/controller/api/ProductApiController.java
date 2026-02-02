@@ -10,6 +10,7 @@ import com.tomcvt.brickshop.model.Product;
 import com.tomcvt.brickshop.pagination.SimplePage;
 import com.tomcvt.brickshop.service.CategoryService;
 import com.tomcvt.brickshop.service.ProductService;
+import com.tomcvt.brickshop.service.ReviewService;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,11 +24,15 @@ import org.springframework.web.bind.annotation.*;
 public class ProductApiController {
     private final ProductService productService;
     private final CategoryService categoryService;
+    private final ReviewService reviewService;
     private final ProductMapper productMapper = ProductMapper.INSTANCE;
 
-    public ProductApiController(ProductService productService, CategoryService categoryService) {
+    public ProductApiController(ProductService productService, CategoryService categoryService, 
+        ReviewService reviewService
+    ) {
         this.productService = productService;
         this.categoryService = categoryService;
+        this.reviewService = reviewService;
     }
     @GetMapping("/all")
     public List<Product> getAllProducts() {
@@ -74,4 +79,15 @@ public class ProductApiController {
     public ResponseEntity<List<ProductSummaryDto>> getSearchbarSuggestions(@RequestParam String keyword, @RequestParam(defaultValue = "5") int limit) {
         return ResponseEntity.ok(productService.getSearchbarSuggestions(keyword, limit));
     }
+
+    @GetMapping("/reviews/{productPublicId}")
+    public ResponseEntity<SimplePage<?>> getReviewsByProductPublicId(
+        @PathVariable UUID productPublicId,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+    ) {
+        var reviewsPage = reviewService.getReviewDtosByProductPublicId(productPublicId, page, size);
+        return ResponseEntity.ok(reviewsPage);
+    }
+
 }

@@ -83,6 +83,33 @@
     <div id="productHtmlDescription" class="product-html-description">
     </div>
 
+    <div class="reviews-section">
+        <h2>Customer Reviews</h2>
+        <div id="userReview"></div>
+        <div id="reviewsContainer"></div>
+        <div id="paginationControls" class="pagination-controls"></div>
+
+        <div class="review-form-container">
+            <h3>Add / Edit Your Review</h3>
+            <form id="reviewForm">
+                <label for="rating">Rating:</label>
+                <select id="rating" name="rating" required>
+                    <option value="" disabled selected>Select rating</option>
+                    <option value="1">1 - Poor</option>
+                    <option value="2">2 - Fair</option>
+                    <option value="3">3 - Good</option>
+                    <option value="4">4 - Very Good</option>
+                    <option value="5">5 - Excellent</option>
+                </select>
+
+                <label for="comment">Comment:</label>
+                <textarea id="comment" name="comment" rows="4" required></textarea>
+
+                <button type="submit" class="btn-primary">Submit Review</button>
+            </form>
+        </div>
+    </div>
+
     <div class="lightbox" id="lightbox">
         <img src="" alt="Zoomed image" id="lightboxImg">
     </div>

@@ -137,3 +137,111 @@ body {
     box-shadow: var(--shadow-sm);
     margin: var(--space-lg) auto;
 }
+
+/* --- Reviews Section Styling --- */
+.reviews-section {
+    max-width: 800px;
+    margin: var(--space-lg) auto;
+    background: #fff;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-lg) var(--space-md);
+}
+
+#reviewsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.review-item {
+    background: #f9fafb;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-md);
+    margin-bottom: 0;
+    border: 1px solid var(--color-border-light);
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-xs);
+}
+
+.review-user {
+    font-weight: bold;
+    color: var(--color-heading);
+}
+
+.review-rating {
+    color: var(--color-secondary);
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+}
+
+.review-comment {
+    color: var(--color-text);
+    font-size: 1rem;
+    margin-top: var(--space-xs);
+    white-space: pre-line;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.pagination-controls .btn {
+    min-width: 36px;
+    font-size: 1.1rem;
+    padding: 0.4rem 0.8rem;
+}
+
+.pagination-controls .btn:disabled {
+    background: #eee;
+    color: #aaa;
+    cursor: not-allowed;
+    border: 1px solid #ddd;
+}
+
+.review-form-container {
+    background: #f5f6fa;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-md);
+    margin-top: var(--space-md);
+}
+
+#reviewForm label {
+    font-weight: 500;
+    color: var(--color-heading);
+    margin-bottom: 4px;
+    align-self: flex-start;
+}
+
+#reviewForm select,
+#reviewForm textarea {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border-light);
+    margin-bottom: var(--space-sm);
+    box-sizing: border-box;
+}
+
+#reviewForm textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+#reviewForm .btn-primary {
+    width: 100%;
+    margin-top: var(--space-sm);
+}

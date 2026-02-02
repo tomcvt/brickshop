@@ -3,11 +3,15 @@ package com.tomcvt.brickshop.service;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.aspectj.weaver.ast.Not;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.tomcvt.brickshop.dto.ReviewDto;
+import com.tomcvt.brickshop.exception.NotAuthorizedException;
+import com.tomcvt.brickshop.exception.NotFoundException;
 import com.tomcvt.brickshop.model.Product;
 import com.tomcvt.brickshop.model.Review;
 import com.tomcvt.brickshop.model.User;
@@ -17,13 +21,21 @@ import com.tomcvt.brickshop.repository.ReviewsRepository;
 import com.tomcvt.brickshop.utility.HtmlPolicies;
 
 @Service
-public class ReviewsService {
+public class ReviewService {
     private final ReviewsRepository reviewsRepository;
     private final ProductRepository productRepository;
 
-    public ReviewsService(ReviewsRepository reviewsRepository, ProductRepository productRepository) {
+    public ReviewService(ReviewsRepository reviewsRepository, ProductRepository productRepository) {
         this.reviewsRepository = reviewsRepository;
         this.productRepository = productRepository;
+    }
+
+    public SimplePage<ReviewDto> getReviewDtosByProductPublicId(UUID productPublicId, int page, int size) {
+        var product = productRepository.findByPublicId(productPublicId)
+                .orElseThrow(() -> new NotFoundException("Product not found"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        var reviewsPage = reviewsRepository.findReviewDtosByProduct(product, pageable);
+        return SimplePage.fromPage(reviewsPage);
     }
 
     public SimplePage<Review> getReviewsByProduct(Product product, int page, int size) {
@@ -34,7 +46,7 @@ public class ReviewsService {
 
     public SimplePage<Review> getReviewsByProductPublicId(UUID productPublicId, int page, int size) {
         var product = productRepository.findByPublicId(productPublicId)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+                .orElseThrow(() -> new NotFoundException("Product not found"));
         return getReviewsByProduct(product, page, size);
     }
 
@@ -54,9 +66,12 @@ public class ReviewsService {
         return getReviewByUserAndProduct(user, productOpt.get());
     }
 
-    public Review editReview(UUID reviewPublicId, Integer rating, String comment) {
+    public Review editReviewByUser(User user, UUID reviewPublicId, Integer rating, String comment) {
         var review = getReviewByPublicId(reviewPublicId)
-                .orElseThrow(() -> new IllegalArgumentException("Review not found"));
+                .orElseThrow(() -> new NotFoundException("Review not found"));
+        if (!review.getUser().getId().equals(user.getId())) {
+            throw new NotAuthorizedException("You are not authorized to edit this review");
+        }
         return editReview(review, rating, comment);
     }
 
@@ -65,6 +80,12 @@ public class ReviewsService {
         String sanitizedComment = HtmlPolicies.sanitizeNoHtml(comment);
         review.setComment(sanitizedComment);
         return reviewsRepository.save(review);
+    }
+
+    public Review addReview(User user, UUID productPublicId, Integer rating, String comment) {
+        Product product = productRepository.findByPublicId(productPublicId)
+                .orElseThrow(() -> new NotFoundException("Product not found"));
+        return addReview(user, product, rating, comment);
     }
 
     public Review addReview(User user, Product product, Integer rating, String comment) {
@@ -80,4 +101,14 @@ public class ReviewsService {
         review.setComment(sanitizedComment);
         return reviewsRepository.save(review);
     }
+
+    public void deleteReviewByUser(User user, UUID reviewPublicId) {
+        var review = getReviewByPublicId(reviewPublicId)
+                .orElseThrow(() -> new NotFoundException("Review not found"));
+        if (!review.getUser().getId().equals(user.getId())) {
+            throw new NotAuthorizedException("You are not authorized to delete this review");
+        }
+        reviewsRepository.delete(review);
+    }
+
 }

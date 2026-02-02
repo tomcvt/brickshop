@@ -1,4 +1,5 @@
 import * as SidebarCart from './sidebar-cart.js';
+import { initSearchModule, fetchPage } from './pageModule.js';
 
 
 function getProductId() {
@@ -80,8 +81,104 @@ async function loadProduct(productId) {
         document.getElementById('lightbox').style.display = 'none';
     });
 
-    document.getElementById('addToCartBtn').addEventListener('click', () => {SidebarCart.addProductByPublicIdToCart(productId)});
+    document.getElementById('addToCartBtn').addEventListener('click', () => { SidebarCart.addProductByPublicIdToCart(productId) });
 }
 loadProduct(productId);
 
 SidebarCart.loadAndShowCart();
+
+// --- Reviews Section ---
+const reviewsContainer = document.getElementById('reviewsContainer');
+const paginationControls = document.getElementById('paginationControls');
+
+function renderReviewsPage(results, opts) {
+    reviewsContainer.innerHTML = '';
+    if (!results || !results.content || results.content.length === 0) {
+        reviewsContainer.innerHTML = '<p>No reviews yet.</p>';
+        return;
+    }
+    results.content.forEach(review => {
+        const reviewDiv = document.createElement('div');
+        reviewDiv.className = 'review-item';
+        reviewDiv.innerHTML = `
+            <div class="review-header">
+                <span class="review-user">${review.username || 'Anonymous'}</span>
+                <span class="review-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</span>
+            </div>
+            <div class="review-comment">${review.comment ? review.comment.replace(/</g, '&lt;').replace(/>/g, '&gt;') : ''}</div>
+        `;
+        reviewsContainer.appendChild(reviewDiv);
+    });
+}
+
+
+
+// Patch: ensure nav bar buttons are updated after initial fetch
+document.addEventListener('DOMContentLoaded', () => {
+    const virtualSearchBtn = document.createElement('button');
+    virtualSearchBtn.style.display = 'none';
+    virtualSearchBtn.id = 'virtualReviewsSearchBtn';
+    document.body.appendChild(virtualSearchBtn);
+
+    // Setup paginated reviews loader
+    let updateNavBarsRef = null;
+    initSearchModule((results, opts) => {
+        renderReviewsPage(results, opts);
+    }, {
+        navBarIds: ['paginationControls'],
+        getCurrentPage: () => 0, // handled by pageModule
+        getQuery: () => '',
+        getSize: () => 5,
+        getState: () => '',
+        getEndpoint: () => `/api/products/reviews/${productId}`,
+        searchButtonId: 'virtualReviewsSearchBtn' // no search button for reviews
+    });
+
+    setTimeout(() => {
+        virtualSearchBtn.click();
+    }, 100);
+
+});
+/*
+fetchPage(`/api/products/reviews/${productId}`, { page: 0, size: 5 }).then(results => {
+    console.log('Initial reviews load:', results);
+    renderReviewsPage(results, { page: 0, size: 5 });
+});
+*/
+
+// --- Review Form Submission ---
+const reviewForm = document.getElementById('reviewForm');
+if (reviewForm) {
+    reviewForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const rating = parseInt(document.getElementById('rating').value, 10);
+        const comment = document.getElementById('comment').value;
+        const payload = {
+            productPublicId: productId,
+            rating: rating,
+            comment: comment
+        };
+        try {
+            const resp = await fetch('/api/reviews/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!resp.ok) {
+                const err = await resp.json();
+                const msg = err.message || 'Unknown error';
+                alert('Failed to submit review: ' + msg);
+                return;
+            }
+            console.log(await resp.json());
+            // Clear form
+            reviewForm.reset();
+            // Reload reviews
+            fetchPage(`/api/products/reviews/${productId}`, { page: 0, size: 5 }).then(results => {
+                renderReviewsPage(results, { page: 0, size: 5 });
+            });
+        } catch (error) {
+            alert('Error submitting review.');
+        }
+    });
+}

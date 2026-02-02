@@ -57,8 +57,7 @@ export async function initSearchModule(onResults, config) {
                     lastSize = config.getSize ? config.getSize() : lastSize;
                     const opts = { page: currentPage, query: lastQuery, state: lastState, size: lastSize };
                     const results = await fetchPage(endpoint, opts);
-                    onResults(results, opts);
-                    updateNavBars(results);
+                    onResultsWrapper(results, opts);
                 }
             };
             nextBtn.onclick = async () => {
@@ -66,8 +65,7 @@ export async function initSearchModule(onResults, config) {
                 lastSize = config.getSize ? config.getSize() : lastSize;
                 const opts = { page: currentPage, query: lastQuery, state: lastState, size: lastSize };
                 const results = await fetchPage(endpoint, opts);
-                onResults(results, opts);
-                updateNavBars(results);
+                onResultsWrapper(results, opts);
             };
         }
     });
@@ -100,9 +98,18 @@ export async function initSearchModule(onResults, config) {
             lastState = state;
             lastSize = size;
             const results = await fetchPage(endpoint, opts);
-            onResults(results, opts);
-            updateNavBars(results);
+            onResultsWrapper(results, opts);
+            //updateNavBars(results);
         };
+    }
+
+    function onResultsWrapper(results, opts) {
+        currentPage = opts.page;
+        lastQuery = opts.query;
+        lastState = opts.state;
+        lastSize = opts.size;
+        onResults(results, opts);
+        updateNavBars(results);
     }
 }
 

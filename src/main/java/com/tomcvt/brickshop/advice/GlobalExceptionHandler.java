@@ -157,4 +157,11 @@ public class GlobalExceptionHandler {
             new ErrorResponse("BAD_REQUEST", ex.getMessage())
         );
     }
+    @ExceptionHandler(NotLoggedInException.class)
+    public ResponseEntity<ErrorResponse> handleNotLoggedInException(NotLoggedInException ex) {
+        log.error("NotLoggedInException: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+            new ErrorResponse("UNAUTHORIZED", ex.getMessage())
+        );
+    }
 }
